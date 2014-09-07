@@ -12,25 +12,26 @@ waitUntil {sleep 0.78; time > 1};
 
 {
 	if (_x isKindOf "Air") then { 
-		zlt_radarObjects set [count zlt_radarObjects, _x];
+		zlt_radarObjects pushback _x;
 	};
 } foreach vehicles;
 
 
 while {alive player} do {
 	while {visibleMap} do {
+		_objsToDelete = [];
 		{
 			_vehNetId = netId _x;
 			_mname = "zlt_rdr"+ "!" +_vehNetId;
 			if ( not alive _x ) then {
-				zlt_radarObjects = zlt_radarObjects - [_x]; 
+				_objsToDelete pushback _x;
 				if (_mname in zlt_radarMarkers) then {
 					zlt_radarMarkers = zlt_radarMarkers - [_mname];
 					deleteMarkerLocal _mname;
 				};
 			} else {
 				if (not (_mname in zlt_radarMarkers)) then {
-					zlt_radarMarkers = zlt_radarMarkers + [_mname];
+					zlt_radarMarkers pushback _mname;
 
 					createMarkerLocal [_mname, getPos _x];
 					_mname setMarkerPosLocal (getPos _x);
@@ -54,7 +55,7 @@ while {alive player} do {
 			};
 
 		} foreach zlt_radarObjects;
-
+		zlt_radarObjects = zlt_radarObjects - _objsToDelete; 
 		sleep 0.71;
 	};
 
