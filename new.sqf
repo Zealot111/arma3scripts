@@ -117,13 +117,14 @@ zlt_fnc_getcode = {
 
 
 zlt_fnc_cycleKindOf = {
+	_ret = false;
 	{
-		if ( (_this select 0) isKindOf _x) then {
-			return true;
+		if ( (_this select 0) isKindOf _x) exitWith {
+			_ret = true;
 		};
 
 	} foreach (_this select 1);
-	return false;
+	_ret
 };
 
 zlt_fnc_getallcode = {
@@ -154,7 +155,7 @@ zlt_fnc_getallcode = {
 	
 	_txt = _txt + "if (isserver) then {" + _br;
 	{
-		_global = (typeof _x) in zlt_new_globalobjs;
+		_global = ([_x,zlt_new_globalobjs] call zlt_fnc_cycleKindOf );
 		if (_global) then {
 			_txt = _txt + ([_x, false] call zlt_fnc_getcode);
 		};
@@ -165,7 +166,7 @@ zlt_fnc_getallcode = {
 	_txt = _txt + "if (isdedicated) exitwith {};" + _br;
 	_txt = _txt + "waituntil {time > 0; player == player;};" + _br;
 	{
-		_global = (typeof _x) in zlt_new_globalobjs;
+		_global = ([_x,zlt_new_globalobjs] call zlt_fnc_cycleKindOf );
 		if not (_global) then {
 			_txt = _txt + ([_x, true] call zlt_fnc_getcode);
 		};
@@ -243,7 +244,7 @@ zlt_new_15cmfix = ["Land_CncBarrierMedium4_F"];
 zlt_new_globalobjs = ["Land_Cargo_House_V1_F","Land_Cargo_HQ_V1_F","Land_Cargo_Patrol_V1_F","Land_Cargo_Tower_V1_F",
 "Land_Cargo_House_V3_F","Land_Cargo_HQ_V3_F","Land_Cargo_Patrol_V3_F","Land_Cargo_Tower_V3_F", "Land_Dome_Big_F","Land_Dome_Small_F","Land_Research_house_V1_F","Land_Research_HQ_F",
 "Land_Mil_WiredFence_F","Land_Mil_WiredFence_Gate_F","Land_Mil_WiredFenceD_F","Land_Net_Fence_Gate_F", "Land_BarGate_F",
- "Land_Cargo20_military_green_F"
+ "Land_Cargo20_military_green_F","House_F"
 ];
 
 zlt_new_disablesim = ["Land_Pallet_F",
