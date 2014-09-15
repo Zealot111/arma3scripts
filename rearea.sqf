@@ -10,9 +10,9 @@ if (not isDedicated) then {
 };*/
 
 
-#define MAX_TIME_OUT 30
+#define MAX_TIME_OUT 15
 
-_trigger1 = _this select 0;
+zlt_rearea_trigger1 = _this select 0;
 
 
 
@@ -24,12 +24,17 @@ zlt_fnc_notify3 = {
 };
 
 
+zlt_check_cond = {
+	player in list zlt_rearea_trigger1
+};
+
+
 _timeOutZone = 0;
 
 waitUntil {sleep 0.34; time > 0};
 
 while {alive player} do {
-	if (player in list _trigger1) then {
+	if ([] call zlt_check_cond) then {
 		if (_timeOutZone != 0) then {
 			_timeOutZone = 0;
 			("Вы вернулись в разрешенную зону.") call zlt_fnc_notify3;
@@ -38,7 +43,7 @@ while {alive player} do {
 
 	} else {
 		_timeOutZone = _timeOutZone + 1;
-		format ["У вас %1 сек на возвращение назад в разрешенную зону!", MAX_TIME_OUT - _timeOutZone] call zlt_fnc_notify3;
+		format ["У вас %1 сек на возвращение назад в разрешенную зону!", 0 max (MAX_TIME_OUT - _timeOutZone)] call zlt_fnc_notify3;
 		if (_timeOutZone > MAX_TIME_OUT) then {
 			hint "Вы будете расстреляны за дезертирство!";
 			sleep 1.;
@@ -49,7 +54,7 @@ while {alive player} do {
 	};
 
 
-	sleep 1.04;
+	sleep 0.64;
 
 };
 
