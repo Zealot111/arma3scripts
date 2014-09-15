@@ -280,7 +280,9 @@ zlt_comp_data = [
 zlt_curr_comp = 0;
 
 
-zlt_objs_wth_markers = ["Land_CncWall4_F","Land_CncWall4_F","Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F", "Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F", "House_F"] ;
+zlt_objs_wth_markers = ["Land_CncWall4_F","Land_CncWall4_F","Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F",
+"Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F", "House_F",
+"Land_BagBunker_Small_F","Land_BagBunker_Large_F"] ;
 
 
 if (isNil "zlt_eh_keydown") then {
