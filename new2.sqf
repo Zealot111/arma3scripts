@@ -55,11 +55,179 @@ zlt_movecam = {
 	
 */
 
+#define PR(x) private ['x']; x
+#define PARAM(X,Y,Z) private ['X']; X=[_this, Y, Z] call BIS_fnc_param;
 
 
-//["Land_BagBunker_Tower_F","Land_BagFence_Long_F",[2.69531,-1.67871,-0.911802],"Land_BagFence_Long_F",[2.63086,1.33398,-0.911802]]
 
-zlt_fnc_boundingbox = { private ["_obj","_id","_logic","_bbox","_b1","_b2","_bbx","_bby","_marker"]; if(!hasInterface)exitWith{}; _bbox = [_this, 0] call BIS_fnc_param; _dir = [_this, 1] call BIS_fnc_param; _pos = [_this, 2] call BIS_fnc_param; _color = [_this, 3, "ColorBlack"] call BIS_fnc_param; _alpha = [_this, 4, 1.0] call BIS_fnc_param; if (isnil "zlt_bb_id") then { zlt_bb_id = 0; };	_b1 = _bbox select 0; _b2 = _bbox select 1;	_bbx = (abs(_b1 select 0) + abs(_b2 select 0)); _bby= (abs(_b1 select 1) + abs(_b2 select 1)); _marker = createmarkerlocal [ format [ "WMT_BundingBoxMarker_%1",zlt_bb_id ], _pos ]; zlt_bb_id = zlt_bb_id + 1;	_marker setmarkerdir _dir; _marker setmarkershapelocal "rectangle";	_marker setmarkersizelocal 	[_bbx/2,_bby/2]; _marker setmarkercolor	_color;	_marker setmarkeralphalocal _alpha;	_marker };
+/*
+ *
+ *
+ *  РИСОВАНИЕ РАМОК
+ *
+ */
+zlt_drawBox = {
+	PR(_obj) = _this select 0;
+	PR(_color) = _this select 1;
+
+	PR(_boxBot) = (boundingboxreal _obj) select 0;
+	PR(_boxTop) = (boundingboxreal _obj) select 1;
+
+	PR(_xB) = _boxBot select 0;	PR(_xT) = _boxTop select 0;
+	PR(_yB) = _boxBot select 1;	PR(_yT) = _boxTop select 1;
+	PR(_zB) = _boxBot select 2;	PR(_zT) = _boxTop select 2;
+
+	drawLine3D [ _obj modeltoworld [_xB, _yB, _zB], _obj modeltoworld [_xT, _yB, _zB], _color];
+	drawLine3D [ _obj modeltoworld [_xB, _yT, _zB], _obj modeltoworld [_xT, _yT, _zB], _color];
+	drawLine3D [ _obj modeltoworld [_xB, _yB, _zB], _obj modeltoworld [_xB, _yT, _zB], _color];
+	drawLine3D [ _obj modeltoworld [_xT, _yB, _zB], _obj modeltoworld [_xT, _yT, _zB], _color];
+
+	drawLine3D [ _obj modeltoworld [_xB, _yB, _zT], _obj modeltoworld [_xT, _yB, _zT], _color];
+	drawLine3D [ _obj modeltoworld [_xB, _yT, _zT], _obj modeltoworld [_xT, _yT, _zT], _color];
+	drawLine3D [ _obj modeltoworld [_xB, _yB, _zT], _obj modeltoworld [_xB, _yT, _zT], _color];
+	drawLine3D [ _obj modeltoworld [_xT, _yB, _zT], _obj modeltoworld [_xT, _yT, _zT], _color];
+
+	drawLine3D [ _obj modeltoworld [_xB, _yB, _zB], _obj modeltoworld [_xB, _yB, _zT], _color];
+	drawLine3D [ _obj modeltoworld [_xB, _yT, _zB], _obj modeltoworld [_xB, _yT, _zT], _color];
+	drawLine3D [ _obj modeltoworld [_xT, _yB, _zB], _obj modeltoworld [_xT, _yB, _zT], _color];
+	drawLine3D [ _obj modeltoworld [_xT, _yT, _zB], _obj modeltoworld [_xT, _yT, _zT], _color];
+};
+
+zlt_onEachFrame = {
+	
+	[zlt_newlb, [1,0,0,1]] call zlt_drawBox;
+
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+zlt_fnc_getObjParam = {
+	PR(_obj) = _this;
+	PR(_pitchBank) = _obj call BIS_fnc_getPitchBank;
+	_obj setvectorup [0,0,1];
+	PR(_posATL) = getPosATL _obj;
+	PR(_posASL) = getPosASL _obj;
+	PR(_dir) = getDir _obj;
+	PR(_pitch) = _pitchBank select 0;
+	PR(_bank) = _pitchBank select 1;
+	[_obj, _pitch, _bank] call BIS_fnc_setPitchBank;
+	[typeof _obj, _posATL, _dir, _pitch, _bank];
+};
+
+zlt_fnc_genPseudoCodeFromObjects1 = {
+	PARAM(_objs, 0, [])
+	PARAM(_parentObj, 1, objNull)
+	PARAM(_parentObjParams, 2, [])
+	PR(_paramArr) = [];
+	PR(_resultArr) = [1];
+	PR(_childblocks) = [];
+	{
+		_paramArr = _x call zlt_fnc_getObjParam;
+		if (not isNull _parentObj) then {
+			_paramArr set [1, _parentObj modelToWorld (_paramArr select 1)];
+			_paramArr set [2, (_paramArr select 2) - (_parentObjParams select 2)];
+			_paramArr set [3, (_paramArr select 3) - (_parentObjParams select 3)];
+			_paramArr set [4, (_paramArr select 4) - (_parentObjParams select 4)];
+		};
+	
+		_paramArr pushback ([_x, zlt_new_globalobjs] call zlt_fnc_cycleKindOf); // глобальный
+		_paramArr pushback ([_x, zlt_new_disablesim] call zlt_fnc_cycleKindOf); // выключена симуляция
+		_paramArr pushback (not ([_x, zlt_new_globalobjs] call zlt_fnc_cycleKindOf)); //выключены повреждения
+		_paramArr pushback (if ([_x, zlt_objs_wth_markers] call zlt_fnc_cycleKindOf) then {[(boundingBoxReal _x),direction _x, position _x]} else {[]}); // нужна метка
+		_resultArr pushback _paramArr;
+		_childblocks = _x getVariable ["zlt_new_childblocks",[]];
+		if (count _childblocks != 0) then {
+			_resultArr pushback ([_childblocks, _x, _paramArr] call zlt_fnc_genPseudoCodeFromObjects1);
+		};
+	} foreach _objs;
+	_resultArr;
+};
+
+// [версия, класс, позиция, направление, питч, банк, глоб, симул. выкл., выкл. повр., парам. метки, дочеррние объекты ]
+//   -1         0       1          2        3     4     5      6              7           8                 9 (опц)
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+zlt_printto = {
+	PARAM(_str, 0, "")
+	PARAM(_txt, 1, "")
+	PARAM(_endl, 2, false)
+	_str = _str + _txt;
+	if (_endl) then {
+		_str = _str + toString [13, 10];
+		diag_log _str;
+	};
+	_str
+};
+
+
+zlt_fnc_getallcode = {
+	private ["_br","_listobj","_txt","_global"];
+	_br = toString [13, 10];
+	_listobj = +(_this);
+	{
+		_childs = _x getVariable ["zlt_new_childblocks",[]];
+		{
+			_listobj set [count _listobj, _x];
+		} foreach _childs;
+	} foreach _this;
+	_txt = "//Generated using generator by [STELS]Zealot"+_br+'if (isnil "zlt_new_blocks") then {zlt_new_blocks = [];};'+_br;
+	_txt = _txt + "zlt_fnc_boundingbox = " + str(zlt_fnc_boundingbox) +";"+ _br;
+	_txt = _txt + "if(not isDedicated) then {" + _br;
+	{
+		if ( [_x,zlt_objs_wth_markers] call zlt_fnc_cycleKindOf ) then {
+			_txt = _txt +"    "+format["[%1,%2,%3] call zlt_fnc_boundingbox;",str(boundingBoxReal _x),direction _x, position _x]+_br;
+		};
+
+	} foreach _listobj;
+	_txt = _txt + "};" + _br;
+	_txt = _txt + "waituntil {time > 0};" + _br;
+	_txt = _txt + "if (isserver) then {" + _br;
+	{
+		_global = ([_x,zlt_new_globalobjs] call zlt_fnc_cycleKindOf );
+		if (_global) then {
+			_txt = _txt + ([_x, false] call zlt_fnc_getcode);
+		};
+	} foreach _listobj;
+	_txt = _txt + "};" + _br;
+	_txt = _txt + "if (isdedicated) exitwith {};" + _br;
+	_txt = _txt + "waituntil {time > 0};" + _br;
+	{
+		_global = ([_x,zlt_new_globalobjs] call zlt_fnc_cycleKindOf );
+		if not (_global) then {
+			_txt = _txt + ([_x, true] call zlt_fnc_getcode);
+		};
+	} foreach _listobj;
+	_txt;
+};
+
+zlt_fnc_getcode = {		
+	_obj = _this select 0;
+	_local = _this select 1;
+	_objType = typeOf _obj;
+	_spawnType = "CAN_COLLIDE";
+	_pitchBank = _obj call BIS_fnc_getPitchBank;
+	_obj setvectorup [0,0,1];
+	_posATL = getPosATL _obj;
+	_posASL = getPosASL _obj;
+	_dir = getDir _obj;
+	_pitch = _pitchBank select 0;
+	_bank = _pitchBank select 1;
+	[_obj, _pitch, _bank] call BIS_fnc_setPitchBank;
+	_br = toString [13, 10];
+	_copiedTxt = "";
+	if (not _local) then {
+		_copiedTxt = format ["_pos = %1; zlt_newlb = createVehicle [""%2"", _pos, [], 0, ""%3""]; zlt_newlb setDir %4; zlt_newlb setPosATL _pos;[zlt_newlb, %5, %6] call BIS_fnc_setPitchBank;zlt_new_blocks pushback zlt_newlb;", _posATL, _objType, _spawnType, _dir, _pitch, _bank];
+	} else {
+		_copiedTxt = format ["_pos = %1; zlt_newlb = ""%2"" createVehiclelocal _pos; zlt_newlb setDir %3; zlt_newlb setPosATL _pos; [zlt_newlb, %4, %5] call BIS_fnc_setPitchBank; zlt_new_blocks pushback zlt_newlb; zlt_newlb allowdamage false;", _posATL, _objType, _dir, _pitch, _bank];
+	};
+	if (_objType in zlt_new_disablesim) then {
+		_copiedTxt = _copiedTxt + "zlt_newlb enableSimulation false;";
+	};
+	_copiedTxt = _copiedTxt + _br;
+	_copiedTxt;
+};
 
 zlt_fnc_compFromObjs = {
 	_list = zlt_comp_curr;
@@ -69,7 +237,6 @@ zlt_fnc_compFromObjs = {
 	_pitchbank = (_mainobj call BIS_fnc_getPitchBank);
 	_pitch = _pitchBank select 0;
 	_bank = _pitchBank select 1;
-
 	_res = [typeof _mainobj];
 	{
 		_res = _res + [typeof _x];
@@ -85,36 +252,11 @@ zlt_fnc_compFromObjs = {
 };
 
 
-zlt_fnc_getcode = {		
-	_obj = _this select 0;
-	_local = _this select 1;
 
-	_objType = typeOf _obj;
-	_spawnType = "CAN_COLLIDE";
-	_pitchBank = _obj call BIS_fnc_getPitchBank;
-	_obj setvectorup [0,0,1];
-	_posATL = getPosATL _obj;
-	_posASL = getPosASL _obj;
-	_dir = getDir _obj;
-	_pitch = _pitchBank select 0;
-	_bank = _pitchBank select 1;
-	[_obj, _pitch, _bank] call BIS_fnc_setPitchBank;
-	_br = toString [13, 10];
-	_copiedTxt = "";
-	if (not _local) then {
-		_copiedTxt = format ["_pos = %1;_object = createVehicle [""%2"", _pos, [], 0, ""%3""];_object setDir %4;_object setPosATL _pos;[_object, %5, %6] call BIS_fnc_setPitchBank;zlt_new_blocks set [count zlt_new_blocks,_object];", _posATL, _objType, _spawnType, _dir, _pitch, _bank];
-	} else {
-		_copiedTxt = format ["_pos = %1;_object = ""%2"" createVehiclelocal _pos;_object setDir %3;_object setPosATL _pos;[_object, %4, %5] call BIS_fnc_setPitchBank;zlt_new_blocks set [count zlt_new_blocks,_object]; _object allowdamage false;", _posATL, _objType, _dir, _pitch, _bank];
-	};
-	if (_objType in zlt_new_disablesim) then {
-		_copiedTxt = _copiedTxt + "_object enableSimulation false;";
-	};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//["Land_BagBunker_Tower_F","Land_BagFence_Long_F",[2.69531,-1.67871,-0.911802],"Land_BagFence_Long_F",[2.63086,1.33398,-0.911802]]
 
-
-	_copiedTxt = _copiedTxt + _br;
-	_copiedTxt;
-};
-
+zlt_fnc_boundingbox = { private ["_dir","_pos","_color","_alpha","_bbox","_b1","_b2","_bbx","_bby","_marker"]; if(!hasInterface)exitWith{}; _bbox = [_this, 0] call BIS_fnc_param; _dir = [_this, 1] call BIS_fnc_param; _pos = [_this, 2] call BIS_fnc_param; _color = [_this, 3, "ColorBlack"] call BIS_fnc_param; _alpha = [_this, 4, 1.0] call BIS_fnc_param; if (isnil "zlt_bb_id") then { zlt_bb_id = 0; };	_b1 = _bbox select 0; _b2 = _bbox select 1;	_bbx = (abs(_b1 select 0) + abs(_b2 select 0)); _bby= (abs(_b1 select 1) + abs(_b2 select 1)); _marker = createmarkerlocal [ format [ "WMT_BundingBoxMarker_%1",zlt_bb_id ], _pos ]; zlt_bb_id = zlt_bb_id + 1;	_marker setmarkerdir _dir; _marker setmarkershapelocal "rectangle";	_marker setmarkersizelocal 	[_bbx/2,_bby/2]; _marker setmarkercolor	_color;	_marker setmarkeralphalocal _alpha;	_marker };
 
 zlt_fnc_cycleKindOf = {
 	_ret = false;
@@ -127,56 +269,12 @@ zlt_fnc_cycleKindOf = {
 	_ret
 };
 
-zlt_fnc_getallcode = {
-	private ["_br","_listobj","_txt","_global"];
-	_br = toString [13, 10];
-	_listobj = +(_this);
 
-	{
-		_childs = _x getVariable ["zlt_new_childblocks",[]];
-		{
-			_listobj set [count _listobj, _x];
+//////////////////////////////////////////////
 
-		} foreach _childs;
-	} foreach _this;
-
-	_txt = "//Generated using generator by [STELS]Zealot"+_br+'if (isnil "zlt_new_blocks") then {zlt_new_blocks = [];};'+_br;
-	_txt = _txt + "zlt_fnc_boundingbox = " + str(zlt_fnc_boundingbox) +";"+ _br;
-	_txt = _txt + "if(not isDedicated) then {" + _br;
-	{
-		if ( [_x,zlt_objs_wth_markers] call zlt_fnc_cycleKindOf ) then {
-			_txt = _txt +"    "+format["[%1,%2,%3] call zlt_fnc_boundingbox;",str(boundingBoxReal _x),direction _x, position _x]+_br;
-		};
-
-	} foreach _listobj;
-	_txt = _txt + "};" + _br;
-
-	_txt = _txt + "waituntil {time > 0};" + _br;
-	
-	_txt = _txt + "if (isserver) then {" + _br;
-	{
-		_global = ([_x,zlt_new_globalobjs] call zlt_fnc_cycleKindOf );
-		if (_global) then {
-			_txt = _txt + ([_x, false] call zlt_fnc_getcode);
-		};
-
-	} foreach _listobj;
-	_txt = _txt + "};" + _br;
-	
-	_txt = _txt + "if (isdedicated) exitwith {};" + _br;
-	_txt = _txt + "waituntil {time > 0; player == player;};" + _br;
-	{
-		_global = ([_x,zlt_new_globalobjs] call zlt_fnc_cycleKindOf );
-		if not (_global) then {
-			_txt = _txt + ([_x, true] call zlt_fnc_getcode);
-		};
-
-	} foreach _listobj;
-	_txt;
+zlt_fnc_modeindication = {
+	[ format["<t size='0.5' color='#ffff00'>%1</t>","aaa"], -0.9,0,1,0,0,335] spawn bis_fnc_dynamicText;
 };
-
-
-
 
 zlt_fnc_notify = {
 	 [ format["<t size='0.75' color='#ffff00'>%1</t>",_this], 0,1,5,0,0,331] spawn bis_fnc_dynamicText;
@@ -282,8 +380,7 @@ zlt_curr_comp = 0;
 
 zlt_objs_wth_markers = ["Land_CncWall4_F","Land_CncWall4_F","Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F",
 "Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F", "House_F",
-"Land_BagBunker_Small_F","Land_BagBunker_Large_F", "Land_HBarrier_3_F","Land_HBarrier_5_F"];
-
+"Land_BagBunker_Small_F","Land_BagBunker_Large_F"] ;
 
 
 if (isNil "zlt_eh_keydown") then {
@@ -295,12 +392,9 @@ if (isNil "zlt_eh_keydown") then {
 
 	
 	zlt_cur_class = zlt_obj_list select 0;	
-	if (isnil "zlt_new_blocks") then {zlt_new_blocks = [];};
-	zlt_new_lastblock = objNull;
+	if (isnil "zlt_new_blocks") then {lzt_new_blocks = [];};
+	zlt_newlb = objNull;
 	zlt_new_vectorup = true;
-	zlt_new_placemode = "RIGHT"; 
-	zlt_new_previousblock = objnull;
-	zlt_new_alignmode = "PLAYER";
 
 	// композиции
 	zlt_is_comp = false;
@@ -311,45 +405,10 @@ if (isNil "zlt_eh_keydown") then {
 	// handle колбека выключения режима установки 
 	zlt_new_plc_mode_cb = nil;
 
+	addMissionEventHandler ["Draw3D", "call zlt_onEachFrame"];
 
 	
-	bbb = "Sign_Arrow_Large_F" createVehicle getpos player;
-	ccc = [];
-	{ ccc = ccc + ["Sign_Sphere10cm_F" createVehicle getpos player] } foreach [1,2,3,4,5,6];
-	
-	[] spawn {
-		while {true} do {
-			if ( not isnull cursortarget) then {
-				[ format["<t size='0.5' font='PuristaMedium' color='#dfd7a5' shadow = 2>%1</t>",str [typeof cursorTarget,cursorTarget]], 0,0.55,0.5,0,0,412] spawn bis_fnc_dynamicText;
-			};
-			sleep 0.5;
-		};
-	};
-	
-	[]	spawn {
-		while {true} do {
-			sleep 0.2;
-			if ( not isnil "zlt_new_lastblock" and {not isNull zlt_new_lastblock}) then {
-				_bboxreal = boundingboxreal zlt_new_lastblock;
-				// // 	[-1.56135,-0.255241,-0.458448],[1.56135,0.255241,0.458448]]
-				_ggg = [ [_bboxreal select 0 select 0, 0, 0] , [_bboxreal select 1 select 0, 0, 0] ,
-					[0, _bboxreal select 0 select 1, 0] , [0, _bboxreal select 1 select 1, 0] ,
-					[0,0,_bboxreal select 0 select 2] , [0,0,_bboxreal select 1 select 2] ];
-					
-				for "_i" from 0 to count (ccc) -1 do {
-					_sph = ccc select _i;
-					_coord = _ggg select _i;
-					_sph setposatl (zlt_new_lastblock modeltoworld _coord);
-				};
-				
-				bbb setposatl ( (zlt_new_lastblock modeltoworld [0,0, (boundingboxreal zlt_new_lastblock select 1 select 2) + 1] ) );
-			} else {
-				bbb setposatl [0.5,0.5, 0];
-				{_x setposatl [0.5,0.5, 0];} foreach ccc;
-			
-			};
-		};
-	};
+
 };
 
 
@@ -359,8 +418,8 @@ zlt_new_moveblock = {
 	private ["_class", "_pos", "_dir", "_pitch", "_bank","_obj"];
 	_mode = _this select 0;
 	_val = _this select 1;
-	if ( isnil "zlt_new_lastblock" or {isNull zlt_new_lastblock} ) exitwith {};
-	_obj = zlt_new_lastblock;
+	if ( isnil "zlt_newlb" or {isNull zlt_newlb} ) exitwith {};
+	_obj = zlt_newlb;
 	_obj call zlt_new_comp_removeaux;
 	//получить координаты
 	_dir = getdir _obj;
@@ -372,12 +431,8 @@ zlt_new_moveblock = {
 	_dir = getDir _obj;
 	_pdir = 0;
 	
-	switch (zlt_new_alignmode) do {
-					case ("PLAYER") : {_pdir = getdir player;};
-					case ("LASTBLOCK") : { if (not isNull zlt_new_previousblock) then {_pdir = getdir zlt_new_previousblock;};};
-	};
-	
-	
+	_pdir = getdir player;
+
 	switch (_mode) do {
 		case ("UP") : { _obj setposatl [_pos select 0, _pos select 1, (_pos select 2) + _val]; };
 		case ("RIGHT") : {_obj setposatl [(_pos select 0) + (sin (_pdir + 90) * _val ), (_pos select 1) + (cos (_pdir + 90)* _val ), (_pos select 2)]; };
@@ -409,8 +464,8 @@ zlt_new_keydown =
 		_alt  = _this select 4;
 		//player globalchat format ["%1 - %2",_key,_this];
 		_ret = true;
-		_pos = getposatl zlt_new_lastblock;
-		_dir = getdir zlt_new_lastblock;
+		_pos = getposatl zlt_newlb;
+		_dir = getdir zlt_newlb;
 		
 		_coeff = 0.3;
 		_angle = 5;
@@ -436,7 +491,7 @@ zlt_new_keydown =
 			
 			case (_key == 205 && _alt && !_ctrl) : {   ["BANKUP", -_angle] call zlt_new_moveblock;  };
 			//вставить
-			case (_key == 210 && _alt && _ctrl) : {[_ctrl] call zlt_new_block; zlt_comp_curr = zlt_comp_curr + [zlt_new_lastblock]; zlt_is_comp = true; "Композиция начата!" call zlt_fnc_notify; };
+			case (_key == 210 && _alt && _ctrl) : {[_ctrl] call zlt_new_block; zlt_comp_curr = zlt_comp_curr + [zlt_newlb]; zlt_is_comp = true; "Композиция начата!" call zlt_fnc_notify; };
 			//end
 			case (_key == 207 && _alt && _ctrl) : {  copyToClipboard str ([] call zlt_fnc_compFromObjs); diag_log str ([] call zlt_fnc_compFromObjs); zlt_is_comp = false; zlt_comp_curr = [];"Сохронил!" call zlt_fnc_notify; };
 
@@ -505,65 +560,43 @@ zlt_new_keydown =
 			
 			//delete
 			case (_key == 211) : {
-				zlt_new_blocks = zlt_new_blocks - [zlt_new_lastblock];
-				zlt_new_lastblock call zlt_new_comp_removeaux; deletevehicle zlt_new_lastblock;
-				zlt_new_lastblock = if (count zlt_new_blocks == 0 )then {objNull;} else {zlt_new_blocks select ((count zlt_new_blocks) - 1);};
+				zlt_new_blocks = zlt_new_blocks - [zlt_newlb];
+				zlt_newlb call zlt_new_comp_removeaux; deletevehicle zlt_newlb;
+				zlt_newlb = if (count zlt_new_blocks == 0 )then {objNull;} else {zlt_new_blocks select ((count zlt_new_blocks) - 1);};
 				zlt_comp_curr = zlt_comp_curr - [_new];
 				"Удалено!" call zlt_fnc_notify;
 			};
 			
 			// home 
 			case (_key == 199) : {
-				if (_ctrl) then { zlt_new_lastblock call zlt_new_comp_removeaux; zlt_new_lastblock setposatl [ getposatl zlt_new_lastblock select 0,  getposatl zlt_new_lastblock select 1, 0]; };
+				if (_ctrl) then { zlt_newlb call zlt_new_comp_removeaux; zlt_newlb setposatl [ getposatl zlt_newlb select 0,  getposatl zlt_newlb select 1, 0]; };
 				if ( zlt_new_vectorup) then {
-					zlt_new_lastblock call zlt_new_comp_removeaux;
-					zlt_new_lastblock setvectorup ( surfaceNormal (getpos zlt_new_lastblock) );
-					zlt_new_lastblock call zlt_new_comp_placeaux;
+					zlt_newlb call zlt_new_comp_removeaux;
+					zlt_newlb setvectorup ( surfaceNormal (getpos zlt_newlb) );
+					zlt_newlb call zlt_new_comp_placeaux;
 					"Нормаль" call zlt_fnc_notify;
 					zlt_new_vectorup = false;
 				} else {
-					zlt_new_lastblock call zlt_new_comp_removeaux;
-					[zlt_new_lastblock, 0,0] call bis_fnc_setpitchbank;
-					zlt_new_lastblock call zlt_new_comp_placeaux;
+					zlt_newlb call zlt_new_comp_removeaux;
+					[zlt_newlb, 0,0] call bis_fnc_setpitchbank;
+					zlt_newlb call zlt_new_comp_placeaux;
 					zlt_new_vectorup = true;
 					"Вертикаль" call zlt_fnc_notify;
 				};
 			};
 			// "/"
 			case (_key == 181 and _ctrl) : {
-				[] call zlt_select_block; if (not (zlt_new_lastblock in zlt_new_blocks) and not (isnull zlt_new_lastblock)) then {zlt_new_blocks = zlt_new_blocks + [zlt_new_lastblock];}; 
+				[] call zlt_select_block; if (not (zlt_newlb in zlt_new_blocks) and not (isnull zlt_newlb)) then {zlt_new_blocks = zlt_new_blocks + [zlt_newlb];}; 
 			};
 			case (_key == 181 and not _ctrl) : {
 				if ( cursorTarget in zlt_new_blocks) then { [] call zlt_select_block; }; 
 			};
 			
 			// NUM 8
-			case (_key == 72 ) : {_ind =  (zlt_new_blocks find zlt_new_lastblock ) max 0; _ind = _ind + 1; if (_ind > (count (zlt_new_blocks) -1)) then {_ind = count (zlt_new_blocks) -1 ;}; zlt_new_lastblock = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_new_lastblock, typeof zlt_new_lastblock]) call zlt_fnc_notify;};
+			case (_key == 72 ) : {_ind =  (zlt_new_blocks find zlt_newlb ) max 0; _ind = _ind + 1; if (_ind > (count (zlt_new_blocks) -1)) then {_ind = count (zlt_new_blocks) -1 ;}; zlt_newlb = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_newlb, typeof zlt_newlb]) call zlt_fnc_notify;};
 			// NUM 2
-			case (_key == 80 ) : {_ind =  (zlt_new_blocks find zlt_new_lastblock ) max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_new_lastblock = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_new_lastblock, typeof zlt_new_lastblock]) call zlt_fnc_notify; };
-			// num 7
-			case (_key == 71) : {
-			
-				switch (zlt_new_placemode) do {
-					case ("RIGHT") : { zlt_new_placemode = "LEFT";};
-					case ("LEFT") : { zlt_new_placemode = "UP";};
-					case ("UP") : { zlt_new_placemode = "DOWN";};
-					case ("DOWN") : { zlt_new_placemode = "FRONT";};
-					case ("FRONT") : { zlt_new_placemode = "BACK";};
-					case ("BACK") : { zlt_new_placemode = "RIGHT";};
-				};
-				( format ["Режим: %1",zlt_new_placemode ] ) call zlt_fnc_notify;
-			};
-			// num 1
-			case (_key == 79) : {
-			
-				switch (zlt_new_alignmode) do {
-					case ("PLAYER") : { zlt_new_alignmode = "LASTBLOCK";};
-					case ("LASTBLOCK") : { zlt_new_alignmode = "NORTH";};
-					case ("NORTH") : { zlt_new_alignmode = "PLAYER";};
-					};
-				( format ["Режим контекста: %1",zlt_new_alignmode ] ) call zlt_fnc_notify;
-			};
+			case (_key == 80 ) : {_ind =  (zlt_new_blocks find zlt_newlb ) max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_newlb = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_newlb, typeof zlt_newlb]) call zlt_fnc_notify; };
+
 			
 			default {_ret = false;};
 		};
@@ -575,7 +608,7 @@ zlt_new_keydown =
 zlt_new_block = {
 	_class = zlt_cur_class;
 	_ctrl = [_this,0,false ] call bis_fnc_param;
-	_placemode = [_this, 1, zlt_new_placemode] call bis_fnc_param;
+	_placemode = [_this, 1, "UP"] call bis_fnc_param;
 	
 	_new = if (_class in zlt_new_globalobjs) then { createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"]; } else { _class createVehiclelocal [0,0,0]; };
 	if (_class in zlt_new_disablesim) then {
@@ -591,11 +624,11 @@ zlt_new_block = {
 	};
 	
 	
-	if (not _ctrl and not isNull zlt_new_lastblock) then {
-		_olddir = getdir zlt_new_lastblock;
+	if (not _ctrl and not isNull zlt_newlb) then {
+		_olddir = getdir zlt_newlb;
 		_new setdir _olddir;
-		_oldpos = getposatl zlt_new_lastblock; 
-		_bboxold = boundingboxreal zlt_new_lastblock;
+		_oldpos = getposatl zlt_newlb; 
+		_bboxold = boundingboxreal zlt_newlb;
 		_bboxnew = boundingboxreal _new;
 		
 		_lng = 0;
@@ -644,44 +677,31 @@ zlt_new_block = {
 			};
 		
 		};
-		diag_log format ["NEW BLOCK %1 %2 _olddir=%3 _bboxold=%4 _bboxnew=%5 _lng=%6 _oldpos=%7 _pos1=%8", zlt_new_lastblock, _new, _olddir, _bboxold, _bboxnew, _lng, _oldpos,_pos1  ];
+		diag_log format ["NEW BLOCK %1 %2 _olddir=%3 _bboxold=%4 _bboxnew=%5 _lng=%6 _oldpos=%7 _pos1=%8", zlt_newlb, _new, _olddir, _bboxold, _bboxnew, _lng, _oldpos,_pos1  ];
 		((typeof _new) + " блок установлен!") call zlt_fnc_notify;
 	};
 	_new setposatl _pos1;
-	zlt_new_previousblock = zlt_new_lastblock;
-	zlt_new_lastblock = _new;
-	zlt_new_blocks = zlt_new_blocks + [zlt_new_lastblock];
+	zlt_newlb = _new;
+	zlt_new_blocks = zlt_new_blocks + [zlt_newlb];
 };
-
-
-//["Land_BagBunker_Tower_F","Land_BagFence_Long_F",[2.69531,-1.67871,-0.911802],"Land_BagFence_Long_F",[2.63086,1.33398,-0.911802]]
 
 zlt_new_comp = {
 	private "_declaration";
 	_declaration = +(_this);
 
 	_mainclass = _declaration select 0;
-	if ( isNull zlt_new_lastblock ) exitWith {};
-	if ( typeof zlt_new_lastblock != _mainclass) exitWith {};
+	if ( isNull zlt_newlb ) exitWith {};
+	if ( typeof zlt_newlb != _mainclass) exitWith {};
 
 	diag_log ["newcomp", _mainclass, _declaration];
-	//_declaration = _declaration - [_mainclass];
 	_newblocks = [];
-	
-	// _first = _mainclass createVehiclelocal [0,0,0]; 
-	// _pos1 = player modeltoworld [0, ((boundingboxreal _first select 1 select 0) max (boundingboxreal _first select 1 select 1) ) +1 ,0];
-	// _first setposatl _pos1;
 
-	_first = zlt_new_lastblock;
+	_first = zlt_newlb;
 	_first setVariable ["zlt_new_masterblock", _first];
 	_first setVariable ["zlt_new_decl", _declaration];
 
 	_first call zlt_new_comp_placeaux;
-
-	zlt_new_previousblock = zlt_new_lastblock;
-	zlt_new_lastblock = _first;
-	// zlt_new_blocks = zlt_new_blocks + [zlt_new_lastblock];
-
+	zlt_newlb = _first;
 
 };
 
@@ -742,13 +762,13 @@ zlt_new_comp_removeaux = {
 zlt_select_block = {
 	if not (isNull cursortarget) then {
 		_masterblock = cursortarget getVariable ["zlt_new_masterblock", cursorTarget];
-		zlt_new_lastblock = _masterblock;
+		zlt_newlb = _masterblock;
 	};
 };
 
 zlt_save_comp = {
 	_objs = _this ;
-	_text = (_objs call zlt_fnc_getallcode);
+	_text = str ([_objs] call zlt_fnc_genPseudoCodeFromObjects1);
 	
 	diag_log _text;
 	copytoclipboard _text;
