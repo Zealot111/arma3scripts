@@ -406,7 +406,7 @@ if (isNil "zlt_eh_keydown") then {
 
 	
 	zlt_cur_class = zlt_obj_list select 0;	
-	if (isnil "zlt_new_blocks") then {lzt_new_blocks = [];};
+	if (isnil "zlt_new_blocks") then {zlt_new_blocks = [];};
 	zlt_newlb = objNull;
 	zlt_new_vectorup = true;
 
