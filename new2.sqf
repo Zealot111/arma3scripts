@@ -776,7 +776,7 @@ zlt_select_block = {
 
 zlt_save_comp = {
 	_objs = _this ;
-	_text = str (_objs call zlt_fnc_getallcode);
+	_text = (_objs call zlt_fnc_getallcode);
 	
 	diag_log _text;
 	copytoclipboard _text;
