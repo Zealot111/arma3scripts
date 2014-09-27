@@ -55,10 +55,24 @@ zlt_movecam = {
 	
 */
 
+#define KEY_UP 				200
+#define KEY_DOWN 			208
+#define KEY_LEFT 			203
+#define KEY_RIGHT 			205
+#define KEY_HOME 			199
+#define KEY_END				207
+#define KEY_INSERT          0xD2    /* Insert on arrow keypad */
+#define KEY_PGUP            0xC9    /* PgUp on arrow keypad */
+#define KEY_PGDN            0xD1    /* PgDn on arrow keypad */
+#define KEY_END             0xCF    /* End on arrow keypad */
+#define KEY_HOME            0xC7    /* Home on arrow keypad */
+#define KEY_DELETE          0xD3    /* Delete on arrow keypad */
+#define KEY_DIVIDE          0xB5
+#define KEY_NUM8			0x48
+#define KEY_NUM2			0x50
+
 #define PR(x) private ['x']; x
 #define PARAM(X,Y,Z) private ['X']; X=[_this, Y, Z] call BIS_fnc_param;
-
-
 
 /*
  *
@@ -470,55 +484,49 @@ zlt_new_keydown =
 		_coeff = 0.3;
 		_angle = 5;
 		if (_shift) then {_coeff = 0.1; _angle = 1;};
-		
+
 		switch (true) do
 		{
-			//вверх
-			case (_key == 200 && _ctrl && !_alt && !zlt_new_is_plc_mode) : {   ["UP", _coeff] call zlt_new_moveblock;  };
-			//вниз
-			case (_key == 208 && _ctrl && !_alt && !zlt_new_is_plc_mode) : {   ["UP", -_coeff] call zlt_new_moveblock;  };
-			//влево
-			case (_key == 203 && _ctrl && !_alt) : {   ["ROLLZ", -_angle] call zlt_new_moveblock;  };
-			//вправо
-			case (_key == 205 && _ctrl && !_alt) : {   ["ROLLZ", _angle] call zlt_new_moveblock;  };
+			case (_key == KEY_UP && _ctrl && !_alt && !zlt_new_is_plc_mode) : {   ["UP", _coeff] call zlt_new_moveblock;  };
+			case (_key == KEY_DOWN && _ctrl && !_alt && !zlt_new_is_plc_mode) : {   ["UP", -_coeff] call zlt_new_moveblock;  };
+			case (_key == KEY_LEFT && _ctrl && !_alt) : {   ["ROLLZ", -_angle] call zlt_new_moveblock;  };
+			case (_key == KEY_RIGHT && _ctrl && !_alt) : {   ["ROLLZ", _angle] call zlt_new_moveblock;  };
+			case (_key == KEY_UP && _alt && !_ctrl) : {   ["PITCHUP", -_angle] call zlt_new_moveblock;  };
 			
+			case (_key == KEY_DOWN && _alt && !_ctrl) : {   ["PITCHUP", _angle] call zlt_new_moveblock;  };
 			
-			case (_key == 200 && _alt && !_ctrl) : {   ["PITCHUP", -_angle] call zlt_new_moveblock;  };
+			case (_key == KEY_LEFT && _alt && !_ctrl) : {   ["BANKUP", _angle] call zlt_new_moveblock;  };
 			
-			case (_key == 208 && _alt && !_ctrl) : {   ["PITCHUP", _angle] call zlt_new_moveblock;  };
-			
-			case (_key == 203 && _alt && !_ctrl) : {   ["BANKUP", _angle] call zlt_new_moveblock;  };
-			
-			case (_key == 205 && _alt && !_ctrl) : {   ["BANKUP", -_angle] call zlt_new_moveblock;  };
+			case (_key == KEY_RIGHT && _alt && !_ctrl) : {   ["BANKUP", -_angle] call zlt_new_moveblock;  };
 			//вставить
-			case (_key == 210 && _alt && _ctrl) : {[_ctrl] call zlt_new_block; zlt_comp_curr = zlt_comp_curr + [zlt_newlb]; zlt_is_comp = true; "Композиция начата!" call zlt_fnc_notify; };
+			case (_key == KEY_INSERT && _alt && _ctrl) : {[_ctrl] call zlt_new_block; zlt_comp_curr = zlt_comp_curr + [zlt_newlb]; zlt_is_comp = true; "Композиция начата!" call zlt_fnc_notify; };
 			//end
-			case (_key == 207 && _alt && _ctrl) : {  copyToClipboard str ([] call zlt_fnc_compFromObjs); diag_log str ([] call zlt_fnc_compFromObjs); zlt_is_comp = false; zlt_comp_curr = [];"Сохронил!" call zlt_fnc_notify; };
+			case (_key == KEY_END && _alt && _ctrl) : {  copyToClipboard str ([] call zlt_fnc_compFromObjs); diag_log str ([] call zlt_fnc_compFromObjs); zlt_is_comp = false; zlt_comp_curr = [];"Сохронил!" call zlt_fnc_notify; };
 
 
 			//вставить
-			case (_key == 210 && _alt) : {(zlt_comp_data select zlt_curr_comp) call zlt_new_comp};
+			case (_key == KEY_INSERT && _alt) : {(zlt_comp_data select zlt_curr_comp) call zlt_new_comp};
 
 			// PD
-			case (_key == 209 && _alt) : {_ind =  zlt_curr_comp max 0; _ind = _ind + 1; if (_ind > (count (zlt_comp_data) -1)) then {_ind = count (zlt_comp_data) -1 ;};  zlt_curr_comp = _ind;  [zlt_comp_names select zlt_curr_comp, zlt_comp_names] call zlt_fnc_notifyhint;  };
+			case (_key == KEY_PGDN && _alt) : {_ind =  zlt_curr_comp max 0; _ind = _ind + 1; if (_ind > (count (zlt_comp_data) -1)) then {_ind = count (zlt_comp_data) -1 ;};  zlt_curr_comp = _ind;  [zlt_comp_names select zlt_curr_comp, zlt_comp_names] call zlt_fnc_notifyhint;  };
 			//PU
-			case (_key == 201 && _alt) : {_ind =  zlt_curr_comp max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_curr_comp = _ind;  [zlt_comp_names select zlt_curr_comp, zlt_comp_names] call zlt_fnc_notifyhint; };
+			case (_key == KEY_PGUP && _alt) : {_ind =  zlt_curr_comp max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_curr_comp = _ind;  [zlt_comp_names select zlt_curr_comp, zlt_comp_names] call zlt_fnc_notifyhint; };
 			
 			
 
 			//вверх
-			case (_key == 200 && !zlt_new_is_plc_mode ) : {["FARER", _coeff] call zlt_new_moveblock;};
+			case (_key == KEY_UP && !zlt_new_is_plc_mode ) : {["FARER", _coeff] call zlt_new_moveblock;};
 			//вниз
-			case (_key == 208 && !zlt_new_is_plc_mode ) : {["FARER", -_coeff] call zlt_new_moveblock;};
+			case (_key == KEY_DOWN && !zlt_new_is_plc_mode ) : {["FARER", -_coeff] call zlt_new_moveblock;};
 			//влево
-			case (_key == 203 && !zlt_new_is_plc_mode ) : {["LEFT", _coeff] call zlt_new_moveblock;};
+			case (_key == KEY_LEFT && !zlt_new_is_plc_mode ) : {["LEFT", _coeff] call zlt_new_moveblock;};
 			//вправо
-			case (_key == 205 && !zlt_new_is_plc_mode ) : {["RIGHT", _coeff] call zlt_new_moveblock;};
+			case (_key == KEY_RIGHT && !zlt_new_is_plc_mode ) : {["RIGHT", _coeff] call zlt_new_moveblock;};
 			
 			// вставить
-			case (_key == 210 && _ctrl) : {[_ctrl] call zlt_new_block};
+			case (_key == KEY_INSERT && _ctrl) : {[_ctrl] call zlt_new_block};
 
-			case (_key == 210) : {
+			case (_key == KEY_INSERT) : {
 				// режим установки 
 				zlt_new_is_plc_mode = true;
 				// handle колбека выключения режима установки 
@@ -531,35 +539,35 @@ zlt_new_keydown =
 				hint "Режим установки";
 			};
 			//ctrl up down
-			case (zlt_new_is_plc_mode && _key == 200 && _ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [false,"UP"] call zlt_new_block; hint "Установка";};
-			case (zlt_new_is_plc_mode && _key == 208 && _ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [false,"DOWN"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == KEY_UP && _ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [false,"UP"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == KEY_DOWN && _ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [false,"DOWN"] call zlt_new_block; hint "Установка";};
 			//up down
-			case (zlt_new_is_plc_mode && _key == 208 && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"BACK"] call zlt_new_block; hint "Установка";};
-			case (zlt_new_is_plc_mode && _key == 200 && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"FRONT"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == KEY_DOWN && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"BACK"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == KEY_UP && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"FRONT"] call zlt_new_block; hint "Установка";};
 			//left right
-			case (zlt_new_is_plc_mode && _key == 203 && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"LEFT"] call zlt_new_block; hint "Установка";};
-			case (zlt_new_is_plc_mode && _key == 205 && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"RIGHT"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == KEY_LEFT && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"LEFT"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == KEY_RIGHT && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"RIGHT"] call zlt_new_block; hint "Установка";};
 
 
 			//
 			
 			// PD + ctrl
-			case (_key == 209 and _ctrl ) : {  if (zlt_obj_list_index < ( count (zlt_obj_list_all) - 1 ) ) then { zlt_obj_list_index = zlt_obj_list_index +1 ;}; zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index; zlt_cur_class = zlt_obj_list select 0; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
+			case (_key == KEY_PGDN and _ctrl ) : {  if (zlt_obj_list_index < ( count (zlt_obj_list_all) - 1 ) ) then { zlt_obj_list_index = zlt_obj_list_index +1 ;}; zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index; zlt_cur_class = zlt_obj_list select 0; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
 			// PU + ctrl
-			case (_key == 201 and _ctrl ) : {  if (zlt_obj_list_index > 0 ) then { zlt_obj_list_index = zlt_obj_list_index -1 ;}; zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index; zlt_cur_class = zlt_obj_list select 0; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
+			case (_key == KEY_PGUP and _ctrl ) : {  if (zlt_obj_list_index > 0 ) then { zlt_obj_list_index = zlt_obj_list_index -1 ;}; zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index; zlt_cur_class = zlt_obj_list select 0; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
 			
 			
 			
 			// PD
-			case (_key == 209 ) : {_ind =  (zlt_obj_list find zlt_cur_class ) max 0; _ind = _ind + 1; if (_ind > (count (zlt_obj_list) -1)) then {_ind = count (zlt_obj_list) -1 ;}; zlt_cur_class = zlt_obj_list select _ind; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
+			case (_key == KEY_PGDN ) : {_ind =  (zlt_obj_list find zlt_cur_class ) max 0; _ind = _ind + 1; if (_ind > (count (zlt_obj_list) -1)) then {_ind = count (zlt_obj_list) -1 ;}; zlt_cur_class = zlt_obj_list select _ind; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
 			//PU
-			case (_key == 201 ) : {_ind =  (zlt_obj_list find zlt_cur_class ) max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_cur_class = zlt_obj_list select _ind; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
+			case (_key == KEY_PGUP ) : {_ind =  (zlt_obj_list find zlt_cur_class ) max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_cur_class = zlt_obj_list select _ind; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
 			
 			//end
-			case (_key == 207 ) : { zlt_new_blocks call zlt_save_comp ; "Сохронил!" call zlt_fnc_notify; };
+			case (_key == KEY_END ) : { zlt_new_blocks call zlt_save_comp ; "Сохронил!" call zlt_fnc_notify; };
 			
 			//delete
-			case (_key == 211) : {
+			case (_key == KEY_DELETE) : {
 				zlt_new_blocks = zlt_new_blocks - [zlt_newlb];
 				zlt_newlb call zlt_new_comp_removeaux; deletevehicle zlt_newlb;
 				zlt_newlb = if (count zlt_new_blocks == 0 )then {objNull;} else {zlt_new_blocks select ((count zlt_new_blocks) - 1);};
@@ -568,7 +576,7 @@ zlt_new_keydown =
 			};
 			
 			// home 
-			case (_key == 199) : {
+			case (_key == KEY_HOME) : {
 				if (_ctrl) then { zlt_newlb call zlt_new_comp_removeaux; zlt_newlb setposatl [ getposatl zlt_newlb select 0,  getposatl zlt_newlb select 1, 0]; };
 				if ( zlt_new_vectorup) then {
 					zlt_newlb call zlt_new_comp_removeaux;
@@ -585,17 +593,17 @@ zlt_new_keydown =
 				};
 			};
 			// "/"
-			case (_key == 181 and _ctrl) : {
+			case (_key == KEY_DIVIDE and _ctrl) : {
 				[] call zlt_select_block; if (not (zlt_newlb in zlt_new_blocks) and not (isnull zlt_newlb)) then {zlt_new_blocks = zlt_new_blocks + [zlt_newlb];}; 
 			};
-			case (_key == 181 and not _ctrl) : {
+			case (_key == KEY_DIVIDE and not _ctrl) : {
 				if ( cursorTarget in zlt_new_blocks) then { [] call zlt_select_block; }; 
 			};
 			
 			// NUM 8
-			case (_key == 72 ) : {_ind =  (zlt_new_blocks find zlt_newlb ) max 0; _ind = _ind + 1; if (_ind > (count (zlt_new_blocks) -1)) then {_ind = count (zlt_new_blocks) -1 ;}; zlt_newlb = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_newlb, typeof zlt_newlb]) call zlt_fnc_notify;};
+			case (_key == KEY_NUM8 ) : {_ind =  (zlt_new_blocks find zlt_newlb ) max 0; _ind = _ind + 1; if (_ind > (count (zlt_new_blocks) -1)) then {_ind = count (zlt_new_blocks) -1 ;}; zlt_newlb = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_newlb, typeof zlt_newlb]) call zlt_fnc_notify;};
 			// NUM 2
-			case (_key == 80 ) : {_ind =  (zlt_new_blocks find zlt_newlb ) max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_newlb = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_newlb, typeof zlt_newlb]) call zlt_fnc_notify; };
+			case (_key == KEY_NUM2 ) : {_ind =  (zlt_new_blocks find zlt_newlb ) max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_newlb = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_newlb, typeof zlt_newlb]) call zlt_fnc_notify; };
 
 			
 			default {_ret = false;};
@@ -768,7 +776,7 @@ zlt_select_block = {
 
 zlt_save_comp = {
 	_objs = _this ;
-	_text = str ([_objs] call zlt_fnc_genPseudoCodeFromObjects1);
+	_text = str (_objs call zlt_fnc_getallcode);
 	
 	diag_log _text;
 	copytoclipboard _text;
