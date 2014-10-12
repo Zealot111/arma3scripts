@@ -114,7 +114,33 @@ zlt_drawBox = {
 zlt_onEachFrame = {
 	
 	[zlt_newlb, [1,0,0,1]] call zlt_drawBox;
-
+	
+	if (!zlt_is_comp) then {
+		_mb = zlt_newlb getVariable ["zlt_new_masterblock", objNull];
+		if (!isnull _mb) then {
+			if (_mb != zlt_newlb) then {
+				[_mb, [0,0,1,1]] call zlt_drawBox;
+			};
+		};
+		
+		_childs = zlt_newlb getVariable ["zlt_new_childblocks", []];
+		{
+			if (_x != zlt_newlb) then {
+				[_x, [0,1,0,1]] call zlt_drawBox;
+			};
+		} foreach _childs;
+	} else {
+		// ДЛЯ РЕЖИМА КОМПОЗИЦИИ
+		_mb = zlt_new_blocks select 0;
+		if (_mb != zlt_newlb) then {
+			[_mb, [0,0,1,1]] call zlt_drawBox;
+		};
+		{
+			if (_x != zlt_newlb) then {
+				[_x, [0,1,0,1]] call zlt_drawBox;
+			};
+		} foreach (zlt_new_blocks-[_mb]);
+	};
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,13 +210,18 @@ zlt_fnc_getallcode = {
 	private ["_br","_listobj","_txt","_global"];
 	_br = toString [13, 10];
 	_listobj = +(_this);
+	
 	{
 		_childs = _x getVariable ["zlt_new_childblocks",[]];
 		{
-			_listobj set [count _listobj, _x];
+			_x setvariable ["zlt_cb", true];
+			_listobj pushback _x;
+			
 		} foreach _childs;
 	} foreach _this;
+	
 	_txt = "//Generated using generator by [STELS]Zealot"+_br+'if (isnil "zlt_new_blocks") then {zlt_new_blocks = [];};'+_br;
+	
 	_txt = _txt + "zlt_fnc_boundingbox = " + str(zlt_fnc_boundingbox) +";"+ _br;
 	_txt = _txt + "if(not isDedicated) then {" + _br;
 	{
@@ -200,6 +231,7 @@ zlt_fnc_getallcode = {
 
 	} foreach _listobj;
 	_txt = _txt + "};" + _br;
+	
 //	_txt = _txt + "waituntil {time > 0};" + _br;
 	_txt = _txt + "if (isserver) then {" + _br;
 	{
@@ -243,12 +275,22 @@ zlt_fnc_getcode = {
 	if (_objType in zlt_new_disablesim) then {
 		_copiedTxt = _copiedTxt + "zlt_newlb enableSimulation false;";
 	};
+	_decl = _obj getVariable ["zlt_new_decl",[]];
+	if (count (_decl) != 0 ) then {
+		_copiedTxt=_copiedTxt+'if(not isDedicated)then{zlt_newlb setVariable ["zlt_new_decl",' + str(_decl) + '];};';
+	};
+	
+	if (_obj getvariable ["zlt_cb", false]) then {
+		_copiedTxt=_copiedTxt+'zlt_newlb setVariable ["zlt_cb",true];';
+	};
+
 	_copiedTxt = _copiedTxt + _br;
+	diag_log _copiedTxt;
 	_copiedTxt;
 };
 
 zlt_fnc_compFromObjs = {
-	_list = zlt_comp_curr;
+	_list = _this;
 	_res = [];
 	_mainobj = _list select 0;
 	_dir = getDir _mainobj;
@@ -291,7 +333,45 @@ zlt_fnc_cycleKindOf = {
 //////////////////////////////////////////////
 
 zlt_fnc_modeindication = {
-	[ format["<t size='0.5' color='#ffff00'>%1</t>","aaa"], -0.9,0,1,0,0,335] spawn bis_fnc_dynamicText;
+	private ["_n","_b","_txt"];
+	_txt = "";
+	if (not isNil "zlt_is_comp" and {zlt_is_comp}) then {
+		_txt = _txt + "КОМП<br/>";
+	} else {
+		_txt = _txt + "<br/>";
+	};
+	
+	// покажем текущий блок
+	if (not isnull zlt_newlb) then {
+		// previous
+		_ci = zlt_new_blocks find zlt_newlb;
+		
+		if (_ci < (count zlt_new_blocks -1)) then {
+			_n = _ci + 1;
+			_b = zlt_new_blocks select _n;
+		
+			_txt = _txt + "   " + str(_n) + " "+ typeOf _b + "<br/>";
+		} else { _txt=_txt + "<br/>"; };		
+		
+		
+		if (_ci != -1) then {
+			_n = _ci;
+			_b = zlt_new_blocks select _n;
+		
+			_txt = _txt + " > " + str(_n) + " "+ typeOf _b + "<br/>";
+		} else { _txt=_txt + "<br/>"; };
+		
+		if (_ci > 0) then {
+			_n = (_ci - 1);
+			_b = zlt_new_blocks select _n;
+			_txt = _txt + "   " + str(_n) + " "+ typeOf _b + "<br/>";
+		} else { _txt=_txt + "<br/>"; };
+		
+
+	};
+	//diag_log [_txt];
+	// конец показа текущего блока
+	[ format["<t size='0.5' align='left' color='#ffff00'>%1</t>",_txt], safezonex,safezoney+0.1,1,0,0,335] spawn bis_fnc_dynamicText;
 };
 
 zlt_fnc_notify = {
@@ -336,13 +416,13 @@ zlt_obj_list_all = [
 	["Land_Wall_IndCnc_2deco_F","Land_PortableLight_single_F","Land_ConcretePipe_F", "Land_CinderBlocks_F", "Land_MetalBarrel_empty_F" , "Land_MetalBarrel_F", "Land_Sign_WarningMilitaryArea_F","RoadCone_F","RoadCone_L_F","RoadBarrier_F","RoadBarrier_small_F", "TapeSign_F","Land_Scaffolding_F"],
 	["Land_WIP_F","Land_i_Barracks_V1_F","Land_Unfinished_Building_01_F","Land_Unfinished_Building_02_F","Land_u_House_Big_01_V1_F","Land_i_House_Big_01_V1_F","Land_i_House_Big_02_V1_F","Land_i_Shop_02_V1_F","Land_i_House_Small_01_V1_F","Land_i_House_Small_02_V1_F","Land_i_House_Small_03_V1_F","Land_i_Stone_HouseBig_V1_F","Land_i_Stone_HouseSmall_V1_F", "Land_cargo_addon02_V2_F"],
 	["Land_Shoot_House_Wall_F","Land_Shoot_House_Wall_Stand_F","Land_Shoot_House_Wall_Crouch_F","Land_Shoot_House_Wall_Prone_F","Land_Shoot_House_Wall_Long_F","Land_Shoot_House_Wall_Long_Stand_F","Land_Shoot_House_Wall_Long_Crouch_F","Land_Shoot_House_Wall_Long_Prone_F","Land_Shoot_House_Corner_F","Land_Shoot_House_Corner_Stand_F","Land_Shoot_House_Corner_Crouch_F","Land_Shoot_House_Corner_Prone_F","Land_Shoot_House_Panels_F","Land_Shoot_House_Panels_Crouch_F","Land_Shoot_House_Panels_Prone_F","Land_Shoot_House_Panels_Vault_F","Land_Shoot_House_Panels_Window_F","Land_Shoot_House_Panels_Windows_F","Land_Shoot_House_Tunnel_F","Land_Shoot_House_Tunnel_Stand_F","Land_Shoot_House_Tunnel_Crouch_F","Land_Shoot_House_Tunnel_Prone_F"],
-	["Land_PierLadder_F", "Land_Pier_Box_F","Land_nav_pier_m_F","Land_Pier_F", "Land_Pier_small_F", "Land_Pier_addon","BlockConcrete_F"],
+	["Land_PierLadder_F", "Land_Pier_Box_F","Land_nav_pier_m_F","Land_Pier_F", "Land_Pier_small_F", "Land_Pier_addon","BlockConcrete_F","Land_RampConcrete_F","Land_RampConcreteHigh_F"],
 	["Land_Bench_F","Land_CashDesk_F","Land_HeatPump_F","Land_ChairPlastic_F","Land_ChairWood_F","Land_Icebox_F","Land_Metal_rack_F","Land_Metal_rack_Tall_F","Land_Metal_wooden_rack_F","Land_Rack_F","Land_ShelvesMetal_F","Land_ShelvesWooden_F","Land_TableDesk_F"],
 	["Land_Photos_V1_F","Land_Map_unfolded_F","Land_FilePhotos_F","Land_Laptop_F", "Land_Laptop_unfolded_F","Land_MobilePhone_smart_F","Land_SatellitePhone_F","Land_Suitcase_F", "Land_BottlePlastic_V1_F","Land_Can_V1_F","Land_Can_V3_F","Land_TacticalBacon_F","Land_PensAndPencils_F","Land_DrillAku_F","Land_Grinder_F"],
 	["Land_fort_rampart_EP1","Land_fort_rampart","Hedgehog","Misc_cargo_cont_small","TK_GUE_WarfareBUAVterminal_Base_EP1","TK_GUE_WarfareBArtilleryRadar_Base_EP1","TK_GUE_WarfareBAntiAirRadar_Base_EP1","Fort_Barricade","Land_fort_artillery_nest_EP1","Land_fort_artillery_nest","Hhedgehog_concrete","Hhedgehog_concreteBig","Barrack2","PowGen_Big","Land_Misc_Cargo1E_EP1","Land_BarGate2","Land_tent_east","CampEast_EP1","Land_GuardShed","Land_Antenna","Land_A_Villa_EP1","Land_Mil_Barracks_i_EP1"]
 ];
-
-
+// багаж
+// ["","","","",""];
 
 zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index;
 
@@ -401,33 +481,7 @@ zlt_objs_wth_markers = ["Land_CncWall4_F","Land_CncWall4_F","Land_HBarrierBig_F"
 "Land_BagBunker_Small_F","Land_BagBunker_Large_F"] ;
 
 
-if (isNil "zlt_eh_keydown") then {
-	diag_log ["new.sqf",1];
-	waitUntil { (!isNull (findDisplay 46) || !(alive player))}; 
-	diag_log ["new.sqf",2];
-	(findDisplay 46) displayRemoveAllEventHandlers "KeyDown";
-	zlt_eh_keydown = (findDisplay 46) displayAddEventHandler ["KeyDown", "_aaa=(_this call zlt_new_keydown)"];	
 
-	
-	zlt_cur_class = zlt_obj_list select 0;	
-	if (isnil "zlt_new_blocks") then { zlt_new_blocks = [];};
-	zlt_newlb = objNull;
-	zlt_new_vectorup = true;
-
-	// композиции
-	zlt_is_comp = false;
-	zlt_comp_curr = [];
-
-	// режим установки 
-	zlt_new_is_plc_mode = false;
-	// handle колбека выключения режима установки 
-	zlt_new_plc_mode_cb = nil;
-
-	addMissionEventHandler ["Draw3D", "call zlt_onEachFrame"];
-
-	
-
-};
 
 
 zlt_new_moveblock = {
@@ -502,10 +556,45 @@ zlt_new_keydown =
 			case (_key == KEY_LEFT && _alt && !_ctrl) : {   ["BANKUP", _angle] call zlt_new_moveblock;  };
 			
 			case (_key == KEY_RIGHT && _alt && !_ctrl) : {   ["BANKUP", -_angle] call zlt_new_moveblock;  };
-			//вставить
-			case (_key == KEY_INSERT && _alt && _ctrl) : {[_ctrl] call zlt_new_block; zlt_comp_curr = zlt_comp_curr + [zlt_newlb]; zlt_is_comp = true; "Композиция начата!" call zlt_fnc_notify; };
-			//end
-			case (_key == KEY_END && _alt && _ctrl) : {  copyToClipboard str ([] call zlt_fnc_compFromObjs); diag_log str ([] call zlt_fnc_compFromObjs); zlt_is_comp = false; zlt_comp_curr = [];"Сохронил!" call zlt_fnc_notify; };
+			// РЕДАКТИРОВАНИЕ КОМПОЗИЦИИ
+			case (_key == KEY_INSERT && _alt && _ctrl) : {
+				if (isNull zlt_newlb) exitWith {"Якорный блок не выбран!" call zlt_fnc_notify;};
+				zlt_new_blocks_bak = zlt_new_blocks;
+				zlt_new_blocks = [zlt_newlb] + (zlt_newlb getVariable ["zlt_new_childblocks", []]);
+				zlt_is_comp = true;
+				"Композиция начата!" call zlt_fnc_notify;
+			};
+			
+			// СОХРАНЕНИЕ КОМПОЗИЦИИ
+			case (_key == KEY_END && _alt && _ctrl) : {
+				if (!zlt_is_comp) exitWith {"Только для режима редактирования композиции!" call zlt_fnc_notify;};
+				_newdecl = zlt_new_blocks call zlt_fnc_compFromObjs;
+				_mainobj = zlt_new_blocks select 0;
+				zlt_newlb = _mainobj;
+				_mainobj setvariable ["zlt_new_decl", _newdecl];
+				_mainobj call zlt_new_comp_removeaux;
+				zlt_newlb = _mainobj;
+				{deleteVehicle _x} foreach (zlt_new_blocks-[_mainobj]);
+				_mainobj call zlt_new_comp_placeaux;
+				
+				copyToClipboard str (_newdecl);
+				diag_log str (_newdecl);
+				
+				zlt_is_comp = false;
+				zlt_new_blocks = zlt_new_blocks_bak;
+				zlt_new_blocks_bak = nil;
+				
+				"Композиция сохранена в буфер обмена!" call zlt_fnc_notify;
+			};
+			
+			case (_key == KEY_DELETE && _alt && !_ctrl && !_shift) : {
+				// удаление дочерних блоков
+				zlt_newlb call zlt_new_comp_removeaux;
+				zlt_newlb setVariable ["zlt_new_decl", nil];
+				zlt_newlb setVariable ["zlt_new_childblocks", nil];
+				zlt_newlb setVariable ["zlt_new_masterblock", nil];
+				"Дочерние блоки удалены!" call zlt_fnc_notify;
+			};
 
 
 			//вставить
@@ -575,7 +664,6 @@ zlt_new_keydown =
 				zlt_new_blocks = zlt_new_blocks - [zlt_newlb];
 				zlt_newlb call zlt_new_comp_removeaux; deletevehicle zlt_newlb;
 				zlt_newlb = if (count zlt_new_blocks == 0 )then {objNull;} else {zlt_new_blocks select ((count zlt_new_blocks) - 1);};
-				zlt_comp_curr = zlt_comp_curr - [_new];
 				"Удалено!" call zlt_fnc_notify;
 			};
 			
@@ -601,7 +689,7 @@ zlt_new_keydown =
 				[] call zlt_select_block; if (not (zlt_newlb in zlt_new_blocks) and not (isnull zlt_newlb)) then {zlt_new_blocks = zlt_new_blocks + [zlt_newlb];}; 
 			};
 			case (_key == KEY_DIVIDE and not _ctrl) : {
-				if ( cursorTarget in zlt_new_blocks) then { [] call zlt_select_block; }; 
+				[] call zlt_select_block; 
 			};
 			
 			// NUM 8
@@ -621,24 +709,29 @@ zlt_new_block = {
 	_class = zlt_cur_class;
 	_ctrl = [_this,0,false ] call bis_fnc_param;
 	_placemode = [_this, 1, "UP"] call bis_fnc_param;
+	PARAM(_fASL,2,true)
+
+	_new = createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"];
+	//_new = if (_class in zlt_new_globalobjs) then { createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"]; } else { _class createVehiclelocal [0,0,0]; };
 	
-	_new = if (_class in zlt_new_globalobjs) then { createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"]; } else { _class createVehiclelocal [0,0,0]; };
 	if (_class in zlt_new_disablesim) then {
 		_new enableSimulation false;
 	};
 	
 	_pos1 = player modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
-
-	if (zlt_is_comp) then {
-		zlt_comp_curr = zlt_comp_curr + [_new];
+	if (_fASL) then {
+		_pos1 = ATLtoASL _pos1;
 	};
-	
 	
 	if (not _ctrl and not isNull zlt_newlb) then {
 		_olddir = getdir zlt_newlb;
 		_new setdir _olddir;
-		//_oldpos = getposatl zlt_newlb; 
-		_oldpos = getposasl zlt_newlb; 
+		_oldpos = [0,0,0];
+		if (_fASL) then {
+			_oldpos = getposasl zlt_newlb; 
+		} else {
+			_oldpos = getposatl zlt_newlb; 
+		};
 		_bboxold = boundingboxreal zlt_newlb;
 		_bboxnew = boundingboxreal _new;
 		
@@ -691,7 +784,11 @@ zlt_new_block = {
 		diag_log format ["NEW BLOCK %1 %2 _olddir=%3 _bboxold=%4 _bboxnew=%5 _lng=%6 _oldpos=%7 _pos1=%8", zlt_newlb, _new, _olddir, _bboxold, _bboxnew, _lng, _oldpos,_pos1  ];
 		((typeof _new) + " блок установлен!") call zlt_fnc_notify;
 	};
-	_new setposasl _pos1;
+	if (_fASL) then {
+		_new setposasl _pos1;
+	} else {
+		_new setposatl _pos1;
+	};
 	zlt_newlb = _new;
 	zlt_new_blocks = zlt_new_blocks + [zlt_newlb];
 };
@@ -702,7 +799,8 @@ zlt_new_comp = {
 
 	_mainclass = _declaration select 0;
 	if ( isNull zlt_newlb ) exitWith {};
-	if ( typeof zlt_newlb != _mainclass) exitWith {};
+	if ( ! ([zlt_newlb, [_mainclass]] call zlt_fnc_cycleKindOf) ) exitWith { "Класс объекта не совпадает" call zlt_fnc_notify };
+	
 
 	diag_log ["newcomp", _mainclass, _declaration];
 	_newblocks = [];
@@ -781,7 +879,6 @@ zlt_save_comp = {
 	_objs = _this ;
 	_text = (_objs call zlt_fnc_getallcode);
 	
-	diag_log _text;
 	copytoclipboard _text;
 	
 
@@ -789,7 +886,54 @@ zlt_save_comp = {
 
 
 
+if (isNil "zlt_eh_keydown") then {
+	diag_log ["new.sqf",1];
+	waitUntil { (!isNull (findDisplay 46) || !(alive player))}; 
+	diag_log ["new.sqf",2];
+	(findDisplay 46) displayRemoveAllEventHandlers "KeyDown";
+	zlt_eh_keydown = (findDisplay 46) displayAddEventHandler ["KeyDown", "_aaa=(_this call zlt_new_keydown)"];	
 
+	
+	zlt_cur_class = zlt_obj_list select 0;	
+	if (isnil "zlt_new_blocks") then { zlt_new_blocks = [];} else {
+		{
+			_cb = _x getvariable ["zlt_cb", false];
+			if (_cb) then {
+				//zlt_new_blocks deleteAt (zlt_new_blocks find _x);
+				zlt_new_blocks = zlt_new_blocks - [_x];
+				deleteVehicle _x;
+			};
+			_decl = _x getvariable ["zlt_new_decl", []];
+			if (count (_decl) != 0 ) then {
+				_x call zlt_new_comp_placeaux;
+			};
+			
+			
+		} foreach zlt_new_blocks;
+	};
+	zlt_newlb = objNull;
+	zlt_new_vectorup = true;
+
+	// композиции
+	zlt_is_comp = false;
+	
+	// режим установки 
+	zlt_new_is_plc_mode = false;
+	// handle колбека выключения режима установки 
+	zlt_new_plc_mode_cb = nil;
+
+	addMissionEventHandler ["Draw3D", "call zlt_onEachFrame"];
+	
+	[] spawn {
+		while {true} do {
+			sleep 0.1;
+			call zlt_fnc_modeindication;
+		};
+	};
+	
+	
+	
+};
 
 
 
