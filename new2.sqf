@@ -133,21 +133,16 @@ zlt_movecam = {
 
 };
 
-zlt_camNewPos = {
-	PR(_angl) = _this select 0;
-	PR(_dist) = _this select 1;
-	PR(_dZ) = _this select 2;
-	PR(_pos) = _this select 3;
-	PR(_dir) = _this select 4;
-	PR(_newPos) = [
-		(_pos select 0) + ((sin (_dir+_angl)) * _dist),
-		(_pos select 1) + ((cos (_dir+_angl)) * _dist),
-		(_pos select 2) + _dZ
-	];
-	_newPos
+zlt_rotatecam = {
+	if (isNil "zlt_camDir") then {zlt_camDir=0;};
+	PR(_dx) = _this select 1;
+	PR(_dy) = _this select 2;
+	zlt_lastCamPos = [0,_dx,_dy];
+	zlt_camDir= (zlt_camDir - _dy*1) max -89 min 89;
+	zlt_camera setDir (getDir zlt_camera + _dx*1);
+	[ zlt_camera, zlt_camDir, 0 ] call bis_fnc_setpitchbank;
+	zlt_camera camCommitPrepared 0;
 };
-
-
 
 
 /*
@@ -426,10 +421,17 @@ zlt_fnc_modeindication = {
 	private ["_n","_b","_txt"];
 	_txt = "";
 	if (not isNil "zlt_is_comp" and {zlt_is_comp}) then {
-		_txt = _txt + "КОМП<br/>";
+		_txt = _txt + "<t color='#ff0000'>КОМП</t>";
 	} else {
-		_txt = _txt + "<br/>";
+		_txt = _txt + "<t color='#ffaa00'>--------</t>";
 	};
+	if (!zlt_new_vectorup) then {
+		_txt = _txt + "<t color='#ff0000'> НОРМ</t>";
+	} else {
+		_txt = _txt + "<t color='#ffaa00'> ВЕРТ</t>";
+	};
+	
+	_txt = _txt + "<br/>";
 	
 	// покажем текущий блок
 	if (not isnull zlt_newlb) then {
@@ -441,7 +443,7 @@ zlt_fnc_modeindication = {
 			_b = zlt_new_blocks select _n;
 		
 			_txt = _txt + "   " + str(_n) + " "+ typeOf _b + "<br/>";
-		} else { _txt=_txt + "<br/>"; };		
+		} else { _txt=_txt + "         ------------<br/>"; };		
 		
 		
 		if (_ci != -1) then {
@@ -449,19 +451,19 @@ zlt_fnc_modeindication = {
 			_b = zlt_new_blocks select _n;
 		
 			_txt = _txt + " > " + str(_n) + " "+ typeOf _b + "<br/>";
-		} else { _txt=_txt + "<br/>"; };
+		} else { _txt=_txt + "         ------------<br/>"; };
 		
 		if (_ci > 0) then {
 			_n = (_ci - 1);
 			_b = zlt_new_blocks select _n;
 			_txt = _txt + "   " + str(_n) + " "+ typeOf _b + "<br/>";
-		} else { _txt=_txt + "<br/>"; };
+		} else { _txt=_txt + "         ------------<br/>"; };
 		
 
 	};
-	//diag_log [_txt];
+	diag_log [_txt];
 	// конец показа текущего блока
-	[ format["<t size='0.5' align='left' color='#ffff00'>%1</t>",_txt], safezonex,safezoney+0.1,1,0,0,335] spawn bis_fnc_dynamicText;
+	[ format["<t size='0.4' align='left' color='#ffff00'>%1</t>",_txt], safezonex,safezoney+0.1,1,0,0,335] spawn bis_fnc_dynamicText;
 };
 
 zlt_fnc_notify = {
@@ -848,20 +850,29 @@ zlt_new_keydown =
 			
 			// home 
 			case (_key == DIK_HOME) : {
-				if (_ctrl) then { zlt_newlb call zlt_new_comp_removeaux; zlt_newlb setposatl [ getposatl zlt_newlb select 0,  getposatl zlt_newlb select 1, 0]; };
-				if ( zlt_new_vectorup) then {
+				if (!_ctrl) then { zlt_newlb call zlt_new_comp_removeaux; zlt_newlb setposatl [ getposatl zlt_newlb select 0,  getposatl zlt_newlb select 1, 0]; }
+				else {
+				
+				if ( !zlt_new_vectorup) then {
 					zlt_newlb call zlt_new_comp_removeaux;
 					zlt_newlb setvectorup ( surfaceNormal (getpos zlt_newlb) );
 					zlt_newlb call zlt_new_comp_placeaux;
 					"Нормаль" call zlt_fnc_notify;
-					zlt_new_vectorup = false;
+					//zlt_new_vectorup = false;
 				} else {
 					zlt_newlb call zlt_new_comp_removeaux;
 					[zlt_newlb, 0,0] call bis_fnc_setpitchbank;
 					zlt_newlb call zlt_new_comp_placeaux;
-					zlt_new_vectorup = true;
+					//zlt_new_vectorup = true;
 					"Вертикаль" call zlt_fnc_notify;
 				};
+				
+				};
+			};
+			
+			case (_key == DIK_F4) : {
+				if (zlt_new_vectorup) then {zlt_new_vectorup = false; "Режим вертикали" call zlt_fnc_notify;} 
+				else { zlt_new_vectorup = true; "Режим нормали" call zlt_fnc_notify;};
 			};
 			// "/"
 			case (_key == DIK_DIVIDE and _ctrl) : {
@@ -889,6 +900,7 @@ zlt_new_block = {
 	_ctrl = [_this,0,false ] call bis_fnc_param;
 	_placemode = [_this, 1, "UP"] call bis_fnc_param;
 	PARAM(_fASL,2,true)
+	PR(_pos1)=[0,0,0];
 
 	_new = createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"];
 	//_new = if (_class in zlt_new_globalobjs) then { createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"]; } else { _class createVehiclelocal [0,0,0]; };
@@ -967,6 +979,8 @@ zlt_new_block = {
 		diag_log format ["NEW BLOCK %1 %2 _olddir=%3 _bboxold=%4 _bboxnew=%5 _lng=%6 _oldpos=%7 _pos1=%8", zlt_newlb, _new, _olddir, _bboxold, _bboxnew, _lng, _oldpos,_pos1  ];
 		((typeof _new) + " блок установлен!") call zlt_fnc_notify;
 	};
+	//diag_log ["C",_pos1];
+	
 	if (_fASL) then {
 		_new setposasl _pos1;
 	} else {
