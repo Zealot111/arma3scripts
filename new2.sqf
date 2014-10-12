@@ -431,6 +431,11 @@ zlt_fnc_modeindication = {
 		_txt = _txt + "<t color='#ffaa00'> ВЕРТ</t>";
 	};
 	
+	if (zlt_new_asl) then {
+		_txt = _txt + "<t color='#ffaa00'> ASL</t>";
+	} else {
+		_txt = _txt + "<t color='#ff0000'> ATL</t>";
+	};
 	_txt = _txt + "<br/>";
 	
 	// покажем текущий блок
@@ -461,7 +466,7 @@ zlt_fnc_modeindication = {
 		
 
 	};
-	diag_log [_txt];
+	//diag_log [_txt];
 	// конец показа текущего блока
 	[ format["<t size='0.4' align='left' color='#ffff00'>%1</t>",_txt], safezonex,safezoney+0.1,1,0,0,335] spawn bis_fnc_dynamicText;
 };
@@ -602,6 +607,8 @@ zlt_new_moveblock = {
 	private ["_class", "_pos", "_dir", "_pitch", "_bank","_obj"];
 	_mode = _this select 0;
 	_val = _this select 1;
+	PARAM(_fASL, 2, zlt_new_asl)
+	
 	if ( isnil "zlt_newlb" or {isNull zlt_newlb} ) exitwith {};
 	_obj = zlt_newlb;
 	_obj call zlt_new_comp_removeaux;
@@ -611,8 +618,13 @@ zlt_new_moveblock = {
 	if (_pitch !=0 or _bank != 0) then {
 		_obj setvectorup [0,0,1];
 	};
-	_pos = getPosATL _obj;
+	if (_fASL) then {
+		_pos = getPosASL _obj;
+	} else {
+		_pos = getPosATL _obj;
+	};
 	_dir = getDir _obj;
+	_obj setdir 0;
 	_pdir = 0;
 	
 	if (zlt_cameraMode) then {
@@ -621,15 +633,28 @@ zlt_new_moveblock = {
 		_pdir = getdir player;
 	};
 
-	switch (_mode) do {
-		case ("UP") : { _obj setposatl [_pos select 0, _pos select 1, (_pos select 2) + _val]; };
-		case ("RIGHT") : { _obj setposatl [(_pos select 0) + (sin (_pdir + 90) * _val ), (_pos select 1) + (cos (_pdir + 90)* _val ), (_pos select 2)]; };
-		case ("LEFT") : { _obj setposatl [(_pos select 0) + (sin (_pdir - 90) * _val ), (_pos select 1) + (cos (_pdir - 90)* _val ), (_pos select 2)]; };
-		case ("FARER") : { _obj setposatl [(_pos select 0) + (sin _pdir * _val ), (_pos select 1) + (cos _pdir * _val ), (_pos select 2)]; };
-		case ("ROLLZ") : { _dir = _dir + _val; };
-		case ("PITCHUP") : { _pitch = _pitch + _val; };
-		case ("BANKUP") : { _bank = _bank + _val; };
-		
+	if (!_fASL) then {
+		switch (_mode) do {
+			case ("UP") : { _obj setposatl [_pos select 0, _pos select 1, (_pos select 2) + _val]; };
+			case ("RIGHT") : { _obj setposatl [(_pos select 0) + (sin (_pdir + 90) * _val ), (_pos select 1) + (cos (_pdir + 90)* _val ), (_pos select 2)]; };
+			case ("LEFT") : { _obj setposatl [(_pos select 0) + (sin (_pdir - 90) * _val ), (_pos select 1) + (cos (_pdir - 90)* _val ), (_pos select 2)]; };
+			case ("FARER") : { _obj setposatl [(_pos select 0) + (sin _pdir * _val ), (_pos select 1) + (cos _pdir * _val ), (_pos select 2)]; };
+			case ("ROLLZ") : { _dir = _dir + _val; };
+			case ("PITCHUP") : { _pitch = _pitch + _val; };
+			case ("BANKUP") : { _bank = _bank + _val; };
+			
+		};
+	} else {
+		switch (_mode) do {
+			case ("UP") : { _obj setposasl [_pos select 0, _pos select 1, (_pos select 2) + _val]; };
+			case ("RIGHT") : { _obj setposasl [(_pos select 0) + (sin (_pdir + 90) * _val ), (_pos select 1) + (cos (_pdir + 90)* _val ), (_pos select 2)]; };
+			case ("LEFT") : { _obj setposasl [(_pos select 0) + (sin (_pdir - 90) * _val ), (_pos select 1) + (cos (_pdir - 90)* _val ), (_pos select 2)]; };
+			case ("FARER") : { _obj setposasl [(_pos select 0) + (sin _pdir * _val ), (_pos select 1) + (cos _pdir * _val ), (_pos select 2)]; };
+			case ("ROLLZ") : { _dir = _dir + _val; };
+			case ("PITCHUP") : { _pitch = _pitch + _val; };
+			case ("BANKUP") : { _bank = _bank + _val; };
+			
+		};
 	};
 	_obj setdir _dir;
 	if (_pitch !=0 or _bank != 0) then {	
@@ -874,6 +899,10 @@ zlt_new_keydown =
 				if (zlt_new_vectorup) then {zlt_new_vectorup = false; "Режим вертикали" call zlt_fnc_notify;} 
 				else { zlt_new_vectorup = true; "Режим нормали" call zlt_fnc_notify;};
 			};
+			case (_key == DIK_F5) : {
+				if (zlt_new_asl) then {zlt_new_asl = false; "Режим ATL" call zlt_fnc_notify;} 
+				else { zlt_new_asl = true; "Режим ASL" call zlt_fnc_notify;};
+			};
 			// "/"
 			case (_key == DIK_DIVIDE and _ctrl) : {
 				[] call zlt_select_block; if (not (zlt_newlb in zlt_new_blocks) and not (isnull zlt_newlb)) then {zlt_new_blocks = zlt_new_blocks + [zlt_newlb];}; 
@@ -899,9 +928,9 @@ zlt_new_block = {
 	_class = zlt_cur_class;
 	_ctrl = [_this,0,false ] call bis_fnc_param;
 	_placemode = [_this, 1, "UP"] call bis_fnc_param;
-	PARAM(_fASL,2,true)
+	PARAM(_fASL,2,zlt_new_asl)
 	PR(_pos1)=[0,0,0];
-
+	
 	_new = createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"];
 	//_new = if (_class in zlt_new_globalobjs) then { createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"]; } else { _class createVehiclelocal [0,0,0]; };
 	
@@ -985,6 +1014,9 @@ zlt_new_block = {
 		_new setposasl _pos1;
 	} else {
 		_new setposatl _pos1;
+	};
+	if (!zlt_new_vectorup) then {
+		_new setvectorup ( surfaceNormal (getpos _new) );
 	};
 	zlt_newlb = _new;
 	zlt_new_blocks = zlt_new_blocks + [zlt_newlb];
@@ -1090,10 +1122,12 @@ zlt_save_comp = {
 
 
 if (isNil "zlt_eh_keydown") then {
-	diag_log ["new.sqf",1];
+	
 	waitUntil { (!isNull (findDisplay 46) || !(alive player))}; 
-	diag_log ["new.sqf",2];
-	//(findDisplay 46) displayRemoveAllEventHandlers "KeyDown";
+	
+	(findDisplay 46) displayRemoveAllEventHandlers "KeyDown";
+	(findDisplay 46) displayRemoveAllEventHandlers "KeyUp";
+	
 	zlt_eh_keydown = (findDisplay 46) displayAddEventHandler ["KeyDown", "_aaa=(_this call zlt_new_keydown)"];	
 	zlt_eh_keyup = (findDisplay 46) displayAddEventHandler ["KeyUp", "_ccc=(_this call zlt_new_keyup)"];	
 	zlt_eh_mouse = (findDisplay 46) displayAddEventHandler ["MouseMoving", "_bbb=(_this call zlt_new_mouseMoving)"];	
@@ -1118,6 +1152,7 @@ if (isNil "zlt_eh_keydown") then {
 	};
 	zlt_newlb = objNull;
 	zlt_new_vectorup = true;
+	zlt_new_asl = true;
 	
 	// камера
 	zlt_cameraMode = false;
