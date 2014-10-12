@@ -107,6 +107,10 @@ zlt_drawBox = {
 	drawLine3D [ _obj modeltoworld [_xT, _yT, _zB], _obj modeltoworld [_xT, _yT, _zT], _color];
 };
 
+// выделять - красный - текущий блок
+// синий - центр текущей композиции, зеленый - доп. эл-ты текущей композиции
+
+
 zlt_onEachFrame = {
 	
 	[zlt_newlb, [1,0,0,1]] call zlt_drawBox;
@@ -196,7 +200,7 @@ zlt_fnc_getallcode = {
 
 	} foreach _listobj;
 	_txt = _txt + "};" + _br;
-	_txt = _txt + "waituntil {time > 0};" + _br;
+//	_txt = _txt + "waituntil {time > 0};" + _br;
 	_txt = _txt + "if (isserver) then {" + _br;
 	{
 		_global = ([_x,zlt_new_globalobjs] call zlt_fnc_cycleKindOf );
@@ -206,7 +210,7 @@ zlt_fnc_getallcode = {
 	} foreach _listobj;
 	_txt = _txt + "};" + _br;
 	_txt = _txt + "if (isdedicated) exitwith {};" + _br;
-	_txt = _txt + "waituntil {time > 0};" + _br;
+//	_txt = _txt + "waituntil {time > 0};" + _br;
 	{
 		_global = ([_x,zlt_new_globalobjs] call zlt_fnc_cycleKindOf );
 		if not (_global) then {
@@ -399,14 +403,14 @@ zlt_objs_wth_markers = ["Land_CncWall4_F","Land_CncWall4_F","Land_HBarrierBig_F"
 
 if (isNil "zlt_eh_keydown") then {
 	diag_log ["new.sqf",1];
-	waitUntil {(!isNull (findDisplay 46) || !(alive player))}; 
+	waitUntil { (!isNull (findDisplay 46) || !(alive player))}; 
 	diag_log ["new.sqf",2];
 	(findDisplay 46) displayRemoveAllEventHandlers "KeyDown";
 	zlt_eh_keydown = (findDisplay 46) displayAddEventHandler ["KeyDown", "_aaa=(_this call zlt_new_keydown)"];	
 
 	
 	zlt_cur_class = zlt_obj_list select 0;	
-	if (isnil "zlt_new_blocks") then {zlt_new_blocks = [];};
+	if (isnil "zlt_new_blocks") then { zlt_new_blocks = [];};
 	zlt_newlb = objNull;
 	zlt_new_vectorup = true;
 
@@ -449,8 +453,8 @@ zlt_new_moveblock = {
 
 	switch (_mode) do {
 		case ("UP") : { _obj setposatl [_pos select 0, _pos select 1, (_pos select 2) + _val]; };
-		case ("RIGHT") : {_obj setposatl [(_pos select 0) + (sin (_pdir + 90) * _val ), (_pos select 1) + (cos (_pdir + 90)* _val ), (_pos select 2)]; };
-		case ("LEFT") : {_obj setposatl [(_pos select 0) + (sin (_pdir - 90) * _val ), (_pos select 1) + (cos (_pdir - 90)* _val ), (_pos select 2)]; };
+		case ("RIGHT") : { _obj setposatl [(_pos select 0) + (sin (_pdir + 90) * _val ), (_pos select 1) + (cos (_pdir + 90)* _val ), (_pos select 2)]; };
+		case ("LEFT") : { _obj setposatl [(_pos select 0) + (sin (_pdir - 90) * _val ), (_pos select 1) + (cos (_pdir - 90)* _val ), (_pos select 2)]; };
 		case ("FARER") : { _obj setposatl [(_pos select 0) + (sin _pdir * _val ), (_pos select 1) + (cos _pdir * _val ), (_pos select 2)]; };
 		case ("ROLLZ") : { _dir = _dir + _val; };
 		case ("PITCHUP") : { _pitch = _pitch + _val; };
@@ -621,10 +625,8 @@ zlt_new_block = {
 	_new = if (_class in zlt_new_globalobjs) then { createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"]; } else { _class createVehiclelocal [0,0,0]; };
 	if (_class in zlt_new_disablesim) then {
 		_new enableSimulation false;
-
 	};
-
-
+	
 	_pos1 = player modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
 
 	if (zlt_is_comp) then {
@@ -635,7 +637,8 @@ zlt_new_block = {
 	if (not _ctrl and not isNull zlt_newlb) then {
 		_olddir = getdir zlt_newlb;
 		_new setdir _olddir;
-		_oldpos = getposatl zlt_newlb; 
+		//_oldpos = getposatl zlt_newlb; 
+		_oldpos = getposasl zlt_newlb; 
 		_bboxold = boundingboxreal zlt_newlb;
 		_bboxnew = boundingboxreal _new;
 		
@@ -688,7 +691,7 @@ zlt_new_block = {
 		diag_log format ["NEW BLOCK %1 %2 _olddir=%3 _bboxold=%4 _bboxnew=%5 _lng=%6 _oldpos=%7 _pos1=%8", zlt_newlb, _new, _olddir, _bboxold, _bboxnew, _lng, _oldpos,_pos1  ];
 		((typeof _new) + " блок установлен!") call zlt_fnc_notify;
 	};
-	_new setposatl _pos1;
+	_new setposasl _pos1;
 	zlt_newlb = _new;
 	zlt_new_blocks = zlt_new_blocks + [zlt_newlb];
 };
