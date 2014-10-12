@@ -28,71 +28,7 @@ lineIntersectsWith
 */
 
 
-#define PR(x) private ['x']; x
-#define PARAM(X,Y,Z) private ['X']; X=[_this, Y, Z] call BIS_fnc_param;
 
-zlt_createcam = {
-	PARAM(_campos, 0, ASLToATL eyePos  player)
-	zlt_cameraMode = true;
-	zlt_camera =  "camera" camCreate _campos;
-	zlt_camera cameraEffect ["internal","top"];
-	zlt_camera setDir (getDir player);
-	zlt_camera camCommitPrepared 0;
-	showcinemaborder false;
-	
-	zlt_cam_handler = [] spawn {
-		
-	
-	
-	
-	
-	};
-	
-};
-
-zlt_removecam = {
-	player cameraEffect ["terminate","back"];
-	camDestroy zlt_camera;
-	zlt_cameraMode = false;
-	terminate zlt_cam_handler;
-	zlt_cam_handler = nil;
-};
-
-zlt_movecam = {
-	PR(_dx) = _this select 0; PR(_dy) = _this select 1; PR(_dz) = _this select 2; PR(_dl) = _this select 3;
-	PR(_pos) = getPosAsl zlt_camera;
-	PR(_dir) = (direction zlt_camera) + _dx *90.0;
-	PR(_newcampos) = [ (_pos select 0) + ((sin _dir) * _dl * _dy), (_pos select 1) + ((cos _dir) * _dl * _dy), (_pos select 2) + _dz * _dl ];
-	_newcampos set [2,(_newcampos select 2) max (getterrainheightasl _newcampos)];
-	zlt_camera camSetPos (ASLtoATL _newcampos);
-	zlt_camera camCommit 0.05;
-
-};
-
-zlt_rotatecam = {
-	if (isNil "zlt_camDir") then {zlt_camDir=0;};
-	PR(_dx) = _this select 1;
-	PR(_dy) = _this select 2;
-	zlt_lastCamPos = [0,_dx,_dy];
-	zlt_camDir= (zlt_camDir - _dy*1) max -89 min 89;
-	zlt_camera setDir (getDir zlt_camera + _dx*1);
-	[ zlt_camera, zlt_camDir, 0 ] call bis_fnc_setpitchbank;
-	zlt_camera camCommitPrepared 0;
-};
-
-zlt_camNewPos = {
-	PR(_angl) = _this select 0;
-	PR(_dist) = _this select 1;
-	PR(_dZ) = _this select 2;
-	PR(_pos) = _this select 3;
-	PR(_dir) = _this select 4;
-	PR(_newPos) = [
-		(_pos select 0) + ((sin (_dir+_angl)) * _dist),
-		(_pos select 1) + ((cos (_dir+_angl)) * _dist),
-		(_pos select 2) + _dZ
-	];
-	_newPos
-};
 
 #define KEY_UP 				200
 #define KEY_DOWN 			208
@@ -127,6 +63,64 @@ zlt_camNewPos = {
 #define KEY_F8              0x42
 #define KEY_F9              0x43
 #define KEY_F10             0x44
+
+#define PR(x) private ['x']; x
+#define PARAM(X,Y,Z) private ['X']; X=[_this, Y, Z] call BIS_fnc_param;
+
+zlt_createcam = {
+	PARAM(_campos, 0, ASLToATL eyePos  player)
+	zlt_cameraMode = true;
+	zlt_camera =  "camera" camCreate _campos;
+	zlt_camera cameraEffect ["internal","top"];
+	zlt_camera setDir (getDir player);
+	zlt_camera camCommitPrepared 0;
+	showcinemaborder false;
+	
+	zlt_cam_handler = [] spawn {
+		_coeff = 1;
+		while {zlt_cameraMode} do {
+			sleep 0.1;
+			if (zlt_camerakeys select KEY_W) then {[0,1,0,_coeff] call zlt_movecam;};
+			if (zlt_camerakeys select KEY_S) then { [0,-1,0,_coeff] call zlt_movecam;};
+			if (zlt_camerakeys select KEY_A) then { [-1,1,0,_coeff] call zlt_movecam;};
+			if (zlt_camerakeys select KEY_D) then { [1,1,0,_coeff] call zlt_movecam;};
+			if (zlt_camerakeys select KEY_Q) then { [0,0,1,_coeff] call zlt_movecam;};
+			if (zlt_camerakeys select KEY_Z) then { [0,0,-1,_coeff] call zlt_movecam;};			
+			zlt_camera camCommit 0.3;
+		};
+	};
+};
+
+zlt_removecam = {
+	player cameraEffect ["terminate","back"];
+	camDestroy zlt_camera;
+	zlt_cameraMode = false;
+};
+
+zlt_movecam = {
+	PR(_dx) = _this select 0; PR(_dy) = _this select 1; PR(_dz) = _this select 2; PR(_dl) = _this select 3;
+	PR(_pos) = getPosAsl zlt_camera;
+	PR(_dir) = (direction zlt_camera) + _dx *90.0;
+	PR(_newcampos) = [ (_pos select 0) + ((sin _dir) * _dl * _dy), (_pos select 1) + ((cos _dir) * _dl * _dy), (_pos select 2) + _dz * _dl ];
+	_newcampos set [2,(_newcampos select 2) max (getterrainheightasl _newcampos)];
+	zlt_camera camSetPos (ASLtoATL _newcampos);
+
+};
+
+zlt_camNewPos = {
+	PR(_angl) = _this select 0;
+	PR(_dist) = _this select 1;
+	PR(_dZ) = _this select 2;
+	PR(_pos) = _this select 3;
+	PR(_dir) = _this select 4;
+	PR(_newPos) = [
+		(_pos select 0) + ((sin (_dir+_angl)) * _dist),
+		(_pos select 1) + ((cos (_dir+_angl)) * _dist),
+		(_pos select 2) + _dZ
+	];
+	_newPos
+};
+
 
 
 
@@ -595,22 +589,11 @@ zlt_new_keyup = {
 	if (count _this > 1) then
 	{
 		_key  = _this select 1;
+		zlt_camerakeys set [_key,false];
 		_shift = _this select 2;
 		_ctrl = _this select 3;
 		_alt  = _this select 4;
 		_ret = true;
-	
-		switch (true) do
-			{
-				// КАМЕРА
-				case (zlt_cameraMode && _key == KEY_W) : { zlt_keyArray = zlt_keyArray - [ KEY_W ]; };
-				case (zlt_cameraMode && _key == KEY_S) : { zlt_keyArray = zlt_keyArray - [ KEY_S ]; };
-				case (zlt_cameraMode && _key == KEY_A) : { zlt_keyArray = zlt_keyArray - [ KEY_A ]; };
-				case (zlt_cameraMode && _key == KEY_D) : { zlt_keyArray = zlt_keyArray - [ KEY_D ]; };
-				case (zlt_cameraMode && _key == KEY_Q) : { zlt_keyArray = zlt_keyArray - [ KEY_Q ]; };
-				case (zlt_cameraMode && _key == KEY_Z) : { zlt_keyArray = zlt_keyArray - [ KEY_Z ]; };
-				default { _ret = false; };
-			};
 	};
 	_ret;
 };
@@ -623,6 +606,8 @@ zlt_new_keydown =
 	if (count _this > 1) then
 	{
 		_key  = _this select 1;
+		zlt_camerakeys set [_key,true];
+		
 		_shift = _this select 2;
 		_ctrl = _this select 3;
 		_alt  = _this select 4;
@@ -635,6 +620,7 @@ zlt_new_keydown =
 		_angle = 5;
 		if (_shift) then {_coeff = 0.1; _angle = 1;};
 		
+		/*
 		if (zlt_cameraMode && _key in [KEY_W,KEY_S,KEY_A,KEY_D,KEY_Q,KEY_Z]) then {
 			PR(_dist) = 0.3; PR(_distZ) = 0.3;
 			if (_shift) then {
@@ -665,7 +651,7 @@ zlt_new_keydown =
 			zlt_camera camCommitPrepared 0.1;
 			
 		};
-		
+		*/
 
 		switch (true) do
 		{
@@ -673,11 +659,7 @@ zlt_new_keydown =
 			
 			case (!zlt_cameraMode && _key == KEY_F3) : { [] spawn zlt_createcam; };
 			case (zlt_cameraMode && _key == KEY_F3) : { [] spawn zlt_removecam; };
-			
-			
-			
-
-			
+	
 			case (_key == KEY_UP && _ctrl && !_alt && !zlt_new_is_plc_mode) : {   ["UP", _coeff] call zlt_new_moveblock;  };
 			case (_key == KEY_DOWN && _ctrl && !_alt && !zlt_new_is_plc_mode) : {   ["UP", -_coeff] call zlt_new_moveblock;  };
 			case (_key == KEY_LEFT && _ctrl && !_alt) : {   ["ROLLZ", -_angle] call zlt_new_moveblock;  };
@@ -1017,15 +999,18 @@ zlt_save_comp = {
 
 };
 
+zlt_cursorTarget = {
+	if (zlt_cameraMode) then {zlt_cameraTarget} else {cursorTarget}
+};
 
 
 if (isNil "zlt_eh_keydown") then {
 	diag_log ["new.sqf",1];
 	waitUntil { (!isNull (findDisplay 46) || !(alive player))}; 
 	diag_log ["new.sqf",2];
-	(findDisplay 46) displayRemoveAllEventHandlers "KeyDown";
+	//(findDisplay 46) displayRemoveAllEventHandlers "KeyDown";
 	zlt_eh_keydown = (findDisplay 46) displayAddEventHandler ["KeyDown", "_aaa=(_this call zlt_new_keydown)"];	
-	//zlt_eh_keyup = (findDisplay 46) displayAddEventHandler ["KeyDown", "_ccc=(_this call zlt_new_keyup)"];	
+	zlt_eh_keyup = (findDisplay 46) displayAddEventHandler ["KeyUp", "_ccc=(_this call zlt_new_keyup)"];	
 	zlt_eh_mouse = (findDisplay 46) displayAddEventHandler ["MouseMoving", "_bbb=(_this call zlt_new_mouseMoving)"];	
 
 	
@@ -1051,8 +1036,14 @@ if (isNil "zlt_eh_keydown") then {
 	
 	// камера
 	zlt_cameraMode = false;
-	// x AD y WS z QZ
-	zlt_keyArray = [];
+	zlt_camerakeys = [];
+	_DIKcodes = true call bis_fnc_keyCode;
+	_DIKlast = _DIKcodes select (count _DIKcodes - 1);
+	for "_k" from 0 to (_DIKlast - 1) do {
+		zlt_camerakeys set [_k,false];
+	};
+
+	zlt_cameraTarget = objNull;
 
 	// композиции
 	zlt_is_comp = false;
