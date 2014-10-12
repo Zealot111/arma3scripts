@@ -421,14 +421,6 @@ zlt_fnc_modeindication = {
 	private ["_n","_b","_txt"];
 	_txt = "";
 	
-	
-	if (!zlt_new_micro) then {
-		_txt = _txt + "<t color='#ffaa00'> --------</t>";
-	} else {
-		_txt = _txt + "<t color='#ff0000'> MICRO</t>";
-	};
-	
-	
 	if (not isNil "zlt_is_comp" and {zlt_is_comp}) then {
 		_txt = _txt + "<t color='#ff0000'> КОМП</t>";
 	} else {
@@ -445,6 +437,13 @@ zlt_fnc_modeindication = {
 	} else {
 		_txt = _txt + "<t color='#ff0000'> ATL</t>";
 	};
+	
+	if (!zlt_new_micro) then {
+		_txt = _txt + "<t color='#ffaa00'> --------</t>";
+	} else {
+		_txt = _txt + "<t color='#ff0000'> MICRO</t>";
+	};
+	
 	_txt = _txt + "<br/>";
 	
 	// покажем текущий блок
@@ -484,28 +483,6 @@ zlt_fnc_notify = {
 	 [ format["<t size='0.75' color='#ffff00'>%1</t>",_this], 0,1,5,0,0,331] spawn bis_fnc_dynamicText;
 };
 
-zlt_fnc_notifyhintex = {
-	private ["_item","_list","_txt"];
-	_item = _this select 0;
-	_list = _this select 1;
-	_txt = "";
-	_all = [];
-	{
-		_newstr = "";
-		if (_x == _item) then {
-			_newstr = parsetext ("<t color='#ff0000' align='left'>" + "> "+ _x + "</t>");
-		} else {
-			_newstr = parsetext ("<t color='#ffff00' align='left'>" + _x + "</t>");
-		};
-		_all set [count _all, _newstr];
-		_all set [count _all, linebreak];
-		
-	} foreach _list;
-	_txt = composetext _all;
-	[ format["<t size='0.3' font='TahomaB' align='Left' color='#00ff00'>%1</t>",_txt], safeZoneW*0.62,safezoneH*0.1,10,0,0,339] spawn bis_fnc_dynamicText;
-	//hint _txt;
-};
-
 zlt_fnc_notifyhint = {
 	private ["_item","_list","_txt"];
 	_item = _this select 0;
@@ -523,7 +500,7 @@ zlt_fnc_notifyhint = {
 
 	} foreach _list;
 	
-	[ format["<t size='0.3' font='TahomaB' align='Left' color='#00ff00'>%1</t>",_txt], safeZoneW*0.62,safezoneH*0.1,10,0,0,339] call bis_fnc_dynamicText;
+	[ format["<t size='0.3' font='TahomaB' align='Left' color='#00ff00'>%1</t>",_txt], safeZoneX,safezoneY+0.5,10,0,0,339] call bis_fnc_dynamicText;
 	//hint _txt;
 };
 
@@ -532,9 +509,7 @@ zlt_obj_list_index = 0;
 zlt_obj_list_all = [
 	["Land_BagBunker_Large_F", "Land_BagBunker_Small_F", "Land_BagBunker_Tower_F","Land_BagFence_Corner_F", "Land_BagFence_End_F", "Land_BagFence_Long_F", "Land_BagFence_Round_F","Land_BagFence_Short_F"],
 	["Land_HBarrier_1_F", "Land_HBarrier_3_F", "Land_HBarrier_5_F", "Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F", "Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F","Land_Razorwire_F"], 
-	["Land_Cargo_House_V1_F","Land_Cargo_HQ_V1_F","Land_Cargo_Patrol_V1_F","Land_Cargo_Tower_V1_F"],
-	["Land_Cargo_House_V3_F","Land_Cargo_HQ_V3_F","Land_Cargo_Patrol_V3_F","Land_Cargo_Tower_V3_F"],
-	["Land_Dome_Big_F","Land_Dome_Small_F","Land_Research_house_V1_F","Land_Research_HQ_F"],
+	["Land_Cargo_House_V1_F","Land_Cargo_HQ_V1_F","Land_Cargo_Patrol_V1_F","Land_Cargo_Tower_V1_F","Land_Cargo_House_V2_F","Land_Cargo_HQ_V2_F","Land_Cargo_Patrol_V2_F","Land_Cargo_Tower_V2_F" ,"Land_Cargo_House_V3_F","Land_Cargo_HQ_V3_F","Land_Cargo_Patrol_V3_F","Land_Cargo_Tower_V3_F","Land_Dome_Big_F","Land_Dome_Small_F","Land_Research_house_V1_F","Land_Research_HQ_F"],
 	["CamoNet_BLUFOR_F","CamoNet_OPFOR_F","CamoNet_INDP_F","CamoNet_BLUFOR_open_F","CamoNet_OPFOR_open_F","CamoNet_INDP_open_F","CamoNet_BLUFOR_big_F","CamoNet_OPFOR_big_F","CamoNet_INDP_big_F"],
 	["Land_Mil_WallBig_4m_F","Land_Mil_WallBig_Corner_F","Land_Mil_WallBig_Gate_F", "Land_BarGate_F","Land_CncBarrier_F","Land_CncBarrierMedium_F","Land_CncBarrierMedium4_F","Land_CncShelter_F","Land_CncWall1_F","Land_CncWall4_F","Land_Concrete_SmallWall_4m_F","Land_Concrete_SmallWall_8m_F","Land_Mil_ConcreteWall_F","Land_Mil_WiredFence_F","Land_Mil_WiredFence_Gate_F","Land_Mil_WiredFenceD_F","Land_Net_Fence_Gate_F"],
 	["Land_Cargo20_military_green_F","Land_Shoot_House_Tunnel_Prone_F", "Land_Pallet_F", "Land_Pallet_vertical_F", "Land_Pallets_F", "Land_Pallets_stack_F", "Land_Obstacle_Ramp_F","Land_Obstacle_Bridge_F","Land_Obstacle_Saddle_F", "Land_CargoBox_V1_F"],
@@ -894,8 +869,9 @@ zlt_new_keydown =
 			case (_key == DIK_HOME) : {
 				if (!_ctrl) then { zlt_newlb call zlt_new_comp_removeaux; zlt_newlb setposatl [ getposatl zlt_newlb select 0,  getposatl zlt_newlb select 1, 0]; }
 				else {
+					
 				
-				if ( !zlt_new_vectorup) then {
+				if ( !zlt_new_vectorup || (zlt_new_vectorup && _alt) ) then {
 					zlt_newlb call zlt_new_comp_removeaux;
 					zlt_newlb setvectorup ( surfaceNormal (getpos zlt_newlb) );
 					zlt_newlb call zlt_new_comp_placeaux;
@@ -962,7 +938,8 @@ zlt_new_block = {
 	if (!zlt_cameraMode) then {
 		_pos1 = player modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
 	} else {
-		_pos1 = zlt_camera modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
+	//	_pos1 = zlt_camera modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
+		_pos1 = screentoworld [0.5,0.5];
 	};
 	if (_fASL) then {
 		_pos1 = ATLtoASL _pos1;
