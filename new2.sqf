@@ -420,10 +420,19 @@ zlt_fnc_cycleKindOf = {
 zlt_fnc_modeindication = {
 	private ["_n","_b","_txt"];
 	_txt = "";
-	if (not isNil "zlt_is_comp" and {zlt_is_comp}) then {
-		_txt = _txt + "<t color='#ff0000'>КОМП</t>";
+	
+	
+	if (!zlt_new_micro) then {
+		_txt = _txt + "<t color='#ffaa00'> --------</t>";
 	} else {
-		_txt = _txt + "<t color='#ffaa00'>--------</t>";
+		_txt = _txt + "<t color='#ff0000'> MICRO</t>";
+	};
+	
+	
+	if (not isNil "zlt_is_comp" and {zlt_is_comp}) then {
+		_txt = _txt + "<t color='#ff0000'> КОМП</t>";
+	} else {
+		_txt = _txt + "<t color='#ffaa00'> --------</t>";
 	};
 	if (!zlt_new_vectorup) then {
 		_txt = _txt + "<t color='#ff0000'> НОРМ</t>";
@@ -707,9 +716,17 @@ zlt_new_keydown =
 		_pos = getposatl zlt_newlb;
 		_dir = getdir zlt_newlb;
 		
+		
 		_coeff = 0.3;
 		_angle = 5;
+		
+		
+		
 		if (_shift) then {_coeff = 0.1; _angle = 1;};
+		if (zlt_new_micro) then {
+			_coeff = 0.05; _angle = 1;
+			if (_shift) then {_coeff = 0.01; _angle = 0.2;};
+		};
 		
 		/*
 		if (zlt_cameraMode && _key in [DIK_W,DIK_S,DIK_A,DIK_D,DIK_Q,DIK_Z]) then {
@@ -896,13 +913,17 @@ zlt_new_keydown =
 			};
 			
 			case (_key == DIK_F4) : {
-				if (zlt_new_vectorup) then {zlt_new_vectorup = false; "Режим вертикали" call zlt_fnc_notify;} 
-				else { zlt_new_vectorup = true; "Режим нормали" call zlt_fnc_notify;};
+				if (zlt_new_vectorup) then {zlt_new_vectorup = false; "Режим нормали" call zlt_fnc_notify;} 
+				else { zlt_new_vectorup = true; "Режим вертикали" call zlt_fnc_notify;};
 			};
 			case (_key == DIK_F5) : {
 				if (zlt_new_asl) then {zlt_new_asl = false; "Режим ATL" call zlt_fnc_notify;} 
 				else { zlt_new_asl = true; "Режим ASL" call zlt_fnc_notify;};
 			};
+			case (_key == DIK_F6) : {
+				if (zlt_new_micro) then {zlt_new_micro = false; "Микрорежим выключен" call zlt_fnc_notify;} 
+				else { zlt_new_micro = true; "Микрорежим" call zlt_fnc_notify;};
+			};			
 			// "/"
 			case (_key == DIK_DIVIDE and _ctrl) : {
 				[] call zlt_select_block; if (not (zlt_newlb in zlt_new_blocks) and not (isnull zlt_newlb)) then {zlt_new_blocks = zlt_new_blocks + [zlt_newlb];}; 
@@ -1153,6 +1174,7 @@ if (isNil "zlt_eh_keydown") then {
 	zlt_newlb = objNull;
 	zlt_new_vectorup = true;
 	zlt_new_asl = true;
+	zlt_new_micro = false;
 	
 	// камера
 	zlt_cameraMode = false;
