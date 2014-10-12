@@ -30,45 +30,55 @@ lineIntersectsWith
 
 
 
-#define KEY_UP 				200
-#define KEY_DOWN 			208
-#define KEY_LEFT 			203
-#define KEY_RIGHT 			205
-#define KEY_HOME 			199
-#define KEY_END				207
-#define KEY_INSERT          0xD2    /* Insert on arrow keypad */
-#define KEY_PGUP            0xC9    /* PgUp on arrow keypad */
-#define KEY_PGDN            0xD1    /* PgDn on arrow keypad */
-#define KEY_END             0xCF    /* End on arrow keypad */
-#define KEY_HOME            0xC7    /* Home on arrow keypad */
-#define KEY_DELETE          0xD3    /* Delete on arrow keypad */
-#define KEY_DIVIDE          0xB5
-#define KEY_NUM8			0x48
-#define KEY_NUM2			0x50
+#define DIK_UP 				200
+#define DIK_DOWN 			208
+#define DIK_LEFT 			203
+#define DIK_RIGHT 			205
+#define DIK_HOME 			199
+#define DIK_END				207
+#define DIK_INSERT          0xD2    /* Insert on arrow keypad */
+#define DIK_PGUP            0xC9    /* PgUp on arrow keypad */
+#define DIK_PGDN            0xD1    /* PgDn on arrow keypad */
+#define DIK_END             0xCF    /* End on arrow keypad */
+#define DIK_HOME            0xC7    /* Home on arrow keypad */
+#define DIK_DELETE          0xD3    /* Delete on arrow keypad */
+#define DIK_DIVIDE          0xB5
+#define DIK_NUM8			0x48
+#define DIK_NUM2			0x50
 
-#define KEY_W               0x11
-#define KEY_S				0x1F
-#define KEY_A				0x1E
-#define KEY_D				0x20
-#define KEY_Q				0x10
-#define KEY_Z				0x2C
+#define DIK_W               0x11
+#define DIK_S				0x1F
+#define DIK_A				0x1E
+#define DIK_D				0x20
+#define DIK_Q				0x10
+#define DIK_Z				0x2C
 
-#define KEY_F1              0x3B
-#define KEY_F2              0x3C
-#define KEY_F3              0x3D
-#define KEY_F4              0x3E
-#define KEY_F5              0x3F
-#define KEY_F6              0x40
-#define KEY_F7              0x41
-#define KEY_F8              0x42
-#define KEY_F9              0x43
-#define KEY_F10             0x44
+#define DIK_F1              0x3B
+#define DIK_F2              0x3C
+#define DIK_F3              0x3D
+#define DIK_F4              0x3E
+#define DIK_F5              0x3F
+#define DIK_F6              0x40
+#define DIK_F7              0x41
+#define DIK_F8              0x42
+#define DIK_F9              0x43
+#define DIK_F10             0x44
+
+#define DIK_RSHIFT          0x36
+#define DIK_MULTIPLY        0x37    /* * on numeric keypad */
+#define DIK_LSHIFT          0x2A
+#define DIK_LCONTROL        0x1D
+#define DIK_RCONTROL        0x9D
+#define DIK_LMENU           0x38    /* left Alt */
+#define DIK_RMENU           0xB8    /* right Alt */
+#define DIK_RALT            DIK_RMENU           /* right Alt */
+#define DIK_LALT            DIK_LMENU
 
 #define PR(x) private ['x']; x
 #define PARAM(X,Y,Z) private ['X']; X=[_this, Y, Z] call BIS_fnc_param;
 
 zlt_createcam = {
-	PARAM(_campos, 0, ASLToATL eyePos  player)
+	PARAM(_campos, 0, ASLToATL eyePos player)
 	zlt_cameraMode = true;
 	zlt_camera =  "camera" camCreate _campos;
 	zlt_camera cameraEffect ["internal","top"];
@@ -77,15 +87,29 @@ zlt_createcam = {
 	showcinemaborder false;
 	
 	zlt_cam_handler = [] spawn {
-		_coeff = 1;
 		while {zlt_cameraMode} do {
+			_coeff = 1;
+			_pos = screentoworld [0.5,0.5];
+			_intersectCam = getposasl zlt_camera;
+			_intersectTarget = [_pos select 0,_pos select 1,getterrainheightasl _pos];
+			_objects = lineIntersectswith [ _intersectCam, _intersectTarget, objnull, objnull, true	];
+			_object = objnull;
+			if (count _objects > 0) then {
+				_object = _objects select (count _objects - 1);
+				zlt_cameraTarget = _object;
+			};
+			
 			sleep 0.1;
-			if (zlt_camerakeys select KEY_W) then {[0,1,0,_coeff] call zlt_movecam;};
-			if (zlt_camerakeys select KEY_S) then { [0,-1,0,_coeff] call zlt_movecam;};
-			if (zlt_camerakeys select KEY_A) then { [-1,1,0,_coeff] call zlt_movecam;};
-			if (zlt_camerakeys select KEY_D) then { [1,1,0,_coeff] call zlt_movecam;};
-			if (zlt_camerakeys select KEY_Q) then { [0,0,1,_coeff] call zlt_movecam;};
-			if (zlt_camerakeys select KEY_Z) then { [0,0,-1,_coeff] call zlt_movecam;};			
+			_campos = getPosAsl zlt_camera;
+			if (zlt_camerakeys select DIK_LSHIFT || zlt_camerakeys select DIK_RSHIFT) then {_coeff = 0.1;};
+			if (zlt_camerakeys select DIK_LCONTROL || zlt_camerakeys select DIK_RCONTROL) then {_coeff = 10;};
+			if (zlt_camerakeys select DIK_W) then {_campos = [0,1,0,_coeff, _campos] call zlt_movecam;};
+			if (zlt_camerakeys select DIK_S) then { _campos=[0,-1,0,_coeff, _campos] call zlt_movecam;};
+			if (zlt_camerakeys select DIK_A) then { _campos=[-1,1,0,_coeff, _campos] call zlt_movecam;};
+			if (zlt_camerakeys select DIK_D) then { _campos=[1,1,0,_coeff, _campos] call zlt_movecam;};
+			if (zlt_camerakeys select DIK_Q) then { _campos=[0,0,1,_coeff, _campos] call zlt_movecam;};
+			if (zlt_camerakeys select DIK_Z) then { _campos=[0,0,-1,_coeff, _campos] call zlt_movecam;};			
+			zlt_camera camSetPos (ASLtoATL _campos);
 			zlt_camera camCommit 0.3;
 		};
 	};
@@ -99,11 +123,13 @@ zlt_removecam = {
 
 zlt_movecam = {
 	PR(_dx) = _this select 0; PR(_dy) = _this select 1; PR(_dz) = _this select 2; PR(_dl) = _this select 3;
-	PR(_pos) = getPosAsl zlt_camera;
+	//PR(_pos) = getPosAsl zlt_camera;
+	_pos = _this select 4;
 	PR(_dir) = (direction zlt_camera) + _dx *90.0;
 	PR(_newcampos) = [ (_pos select 0) + ((sin _dir) * _dl * _dy), (_pos select 1) + ((cos _dir) * _dl * _dy), (_pos select 2) + _dz * _dl ];
 	_newcampos set [2,(_newcampos select 2) max (getterrainheightasl _newcampos)];
-	zlt_camera camSetPos (ASLtoATL _newcampos);
+	//zlt_camera camSetPos (ASLtoATL _newcampos);
+	_newcampos
 
 };
 
@@ -133,6 +159,9 @@ zlt_camNewPos = {
 zlt_drawBox = {
 	PR(_obj) = _this select 0;
 	PR(_color) = _this select 1;
+	_bl = _this select 2;
+	if (_obj in _bl) exitWith {};
+	if (isNull _obj) exitWith {};
 
 	PR(_boxBot) = (boundingboxreal _obj) select 0;
 	PR(_boxTop) = (boundingboxreal _obj) select 1;
@@ -155,6 +184,8 @@ zlt_drawBox = {
 	drawLine3D [ _obj modeltoworld [_xB, _yT, _zB], _obj modeltoworld [_xB, _yT, _zT], _color];
 	drawLine3D [ _obj modeltoworld [_xT, _yB, _zB], _obj modeltoworld [_xT, _yB, _zT], _color];
 	drawLine3D [ _obj modeltoworld [_xT, _yT, _zB], _obj modeltoworld [_xT, _yT, _zT], _color];
+	
+	_bl pushback _obj;
 };
 
 // выделять - красный - текущий блок
@@ -162,34 +193,43 @@ zlt_drawBox = {
 
 
 zlt_onEachFrame = {
+	_bl = [];
+	// подсветка текущей
+	[zlt_newlb, [1,0,0,1],_bl] call zlt_drawBox;
 	
-	[zlt_newlb, [1,0,0,1]] call zlt_drawBox;
-	
+
 	if (!zlt_is_comp) then {
 		_mb = zlt_newlb getVariable ["zlt_new_masterblock", objNull];
 		if (!isnull _mb) then {
 			if (_mb != zlt_newlb) then {
-				[_mb, [0,0,1,1]] call zlt_drawBox;
+				[_mb, [0,0,1,1],_bl] call zlt_drawBox;
 			};
 		};
 		
 		_childs = zlt_newlb getVariable ["zlt_new_childblocks", []];
 		{
 			if (_x != zlt_newlb) then {
-				[_x, [0,1,0,1]] call zlt_drawBox;
+				[_x, [0,1,0,1],_bl] call zlt_drawBox;
 			};
 		} foreach _childs;
 	} else {
 		// ДЛЯ РЕЖИМА КОМПОЗИЦИИ
 		_mb = zlt_new_blocks select 0;
 		if (_mb != zlt_newlb) then {
-			[_mb, [0,0,1,1]] call zlt_drawBox;
+			[_mb, [0,0,1,1],_bl] call zlt_drawBox;
 		};
 		{
 			if (_x != zlt_newlb) then {
-				[_x, [0,1,0,1]] call zlt_drawBox;
+				[_x, [0,1,0,1],_bl] call zlt_drawBox;
 			};
 		} foreach (zlt_new_blocks-[_mb]);
+	};
+	
+	if (!zlt_cameraMode && !isNull cursorTarget) then {
+		[cursorTarget, [1,1,0,1],_bl] call zlt_drawBox;
+	};
+	if (zlt_cameraMode && !isNull zlt_cameraTarget) then {
+		[zlt_cameraTarget, [1,1,0,1],_bl] call zlt_drawBox;
 	};
 };
 
@@ -428,7 +468,7 @@ zlt_fnc_notify = {
 	 [ format["<t size='0.75' color='#ffff00'>%1</t>",_this], 0,1,5,0,0,331] spawn bis_fnc_dynamicText;
 };
 
-zlt_fnc_notifyhint = {
+zlt_fnc_notifyhintex = {
 	private ["_item","_list","_txt"];
 	_item = _this select 0;
 	_list = _this select 1;
@@ -446,10 +486,30 @@ zlt_fnc_notifyhint = {
 		
 	} foreach _list;
 	_txt = composetext _all;
-	hint _txt;
+	[ format["<t size='0.3' font='TahomaB' align='Left' color='#00ff00'>%1</t>",_txt], safeZoneW*0.62,safezoneH*0.1,10,0,0,339] spawn bis_fnc_dynamicText;
+	//hint _txt;
 };
 
+zlt_fnc_notifyhint = {
+	private ["_item","_list","_txt"];
+	_item = _this select 0;
+	_list = _this select 1;
+	_txt = "";
+	{
+		_newstr = "";
+		if (_x == _item) then {
+			_newstr =  ("<t color='#ff0000' align='left'>" + "> "+ _x + "</t><br/>");
+		} else {
+			_newstr =  ("<t color='#ffff00' align='left'>" + _x + "</t><br/>");
+		};
 
+		_txt = _txt + _newstr;
+
+	} foreach _list;
+	
+	[ format["<t size='0.3' font='TahomaB' align='Left' color='#00ff00'>%1</t>",_txt], safeZoneW*0.62,safezoneH*0.1,10,0,0,339] call bis_fnc_dynamicText;
+	//hint _txt;
+};
 
 zlt_obj_list_index = 0;
 
@@ -553,7 +613,11 @@ zlt_new_moveblock = {
 	_dir = getDir _obj;
 	_pdir = 0;
 	
-	_pdir = getdir player;
+	if (zlt_cameraMode) then {
+		_pdir = direction zlt_camera;
+	} else {
+		_pdir = getdir player;
+	};
 
 	switch (_mode) do {
 		case ("UP") : { _obj setposatl [_pos select 0, _pos select 1, (_pos select 2) + _val]; };
@@ -621,7 +685,7 @@ zlt_new_keydown =
 		if (_shift) then {_coeff = 0.1; _angle = 1;};
 		
 		/*
-		if (zlt_cameraMode && _key in [KEY_W,KEY_S,KEY_A,KEY_D,KEY_Q,KEY_Z]) then {
+		if (zlt_cameraMode && _key in [DIK_W,DIK_S,DIK_A,DIK_D,DIK_Q,DIK_Z]) then {
 			PR(_dist) = 0.3; PR(_distZ) = 0.3;
 			if (_shift) then {
 				_dist = 0.1; _distZ = 0.1;
@@ -633,12 +697,12 @@ zlt_new_keydown =
 			PR(_newPos) = getPosAsl zlt_camera;
 
 			switch(true) do {
-			case (zlt_cameraMode && _key == KEY_W) : { _newPos=[0  , _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
-			case (zlt_cameraMode && _key == KEY_S) : { _newPos=[180, _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
-			case (zlt_cameraMode && _key == KEY_A) : { _newPos=[-90, _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
-			case (zlt_cameraMode && _key == KEY_D) : { _newPos=[90 , _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
-			case (zlt_cameraMode && _key == KEY_Q) : { _newPos=[0, 0,  _distZ, _newPos, _curDir] call zlt_camNewPos; };
-			case (zlt_cameraMode && _key == KEY_Z) : { _newPos=[0, 0, -_distZ, _newPos, _curDir] call zlt_camNewPos; };
+			case (zlt_cameraMode && _key == DIK_W) : { _newPos=[0  , _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
+			case (zlt_cameraMode && _key == DIK_S) : { _newPos=[180, _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
+			case (zlt_cameraMode && _key == DIK_A) : { _newPos=[-90, _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
+			case (zlt_cameraMode && _key == DIK_D) : { _newPos=[90 , _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
+			case (zlt_cameraMode && _key == DIK_Q) : { _newPos=[0, 0,  _distZ, _newPos, _curDir] call zlt_camNewPos; };
+			case (zlt_cameraMode && _key == DIK_Z) : { _newPos=[0, 0, -_distZ, _newPos, _curDir] call zlt_camNewPos; };
 	
 			};
 			_newPos set [2,(_newPos select 2) max (getterrainheightasl _newPos)];
@@ -657,22 +721,22 @@ zlt_new_keydown =
 		{
 			// КАМЕРА
 			
-			case (!zlt_cameraMode && _key == KEY_F3) : { [] spawn zlt_createcam; };
-			case (zlt_cameraMode && _key == KEY_F3) : { [] spawn zlt_removecam; };
+			case (!zlt_cameraMode && _key == DIK_F3) : { [] spawn zlt_createcam; };
+			case (zlt_cameraMode && _key == DIK_F3) : { [] spawn zlt_removecam; };
 	
-			case (_key == KEY_UP && _ctrl && !_alt && !zlt_new_is_plc_mode) : {   ["UP", _coeff] call zlt_new_moveblock;  };
-			case (_key == KEY_DOWN && _ctrl && !_alt && !zlt_new_is_plc_mode) : {   ["UP", -_coeff] call zlt_new_moveblock;  };
-			case (_key == KEY_LEFT && _ctrl && !_alt) : {   ["ROLLZ", -_angle] call zlt_new_moveblock;  };
-			case (_key == KEY_RIGHT && _ctrl && !_alt) : {   ["ROLLZ", _angle] call zlt_new_moveblock;  };
-			case (_key == KEY_UP && _alt && !_ctrl) : {   ["PITCHUP", -_angle] call zlt_new_moveblock;  };
+			case (_key == DIK_UP && _ctrl && !_alt && !zlt_new_is_plc_mode) : {   ["UP", _coeff] call zlt_new_moveblock;  };
+			case (_key == DIK_DOWN && _ctrl && !_alt && !zlt_new_is_plc_mode) : {   ["UP", -_coeff] call zlt_new_moveblock;  };
+			case (_key == DIK_LEFT && _ctrl && !_alt) : {   ["ROLLZ", -_angle] call zlt_new_moveblock;  };
+			case (_key == DIK_RIGHT && _ctrl && !_alt) : {   ["ROLLZ", _angle] call zlt_new_moveblock;  };
+			case (_key == DIK_UP && _alt && !_ctrl) : {   ["PITCHUP", -_angle] call zlt_new_moveblock;  };
 			
-			case (_key == KEY_DOWN && _alt && !_ctrl) : {   ["PITCHUP", _angle] call zlt_new_moveblock;  };
+			case (_key == DIK_DOWN && _alt && !_ctrl) : {   ["PITCHUP", _angle] call zlt_new_moveblock;  };
 			
-			case (_key == KEY_LEFT && _alt && !_ctrl) : {   ["BANKUP", _angle] call zlt_new_moveblock;  };
+			case (_key == DIK_LEFT && _alt && !_ctrl) : {   ["BANKUP", _angle] call zlt_new_moveblock;  };
 			
-			case (_key == KEY_RIGHT && _alt && !_ctrl) : {   ["BANKUP", -_angle] call zlt_new_moveblock;  };
+			case (_key == DIK_RIGHT && _alt && !_ctrl) : {   ["BANKUP", -_angle] call zlt_new_moveblock;  };
 			// РЕДАКТИРОВАНИЕ КОМПОЗИЦИИ
-			case (_key == KEY_INSERT && _alt && _ctrl) : {
+			case (_key == DIK_INSERT && _alt && _ctrl) : {
 				if (isNull zlt_newlb) exitWith {"Якорный блок не выбран!" call zlt_fnc_notify;};
 				zlt_new_blocks_bak = zlt_new_blocks;
 				zlt_new_blocks = [zlt_newlb] + (zlt_newlb getVariable ["zlt_new_childblocks", []]);
@@ -681,7 +745,7 @@ zlt_new_keydown =
 			};
 			
 			// СОХРАНЕНИЕ КОМПОЗИЦИИ
-			case (_key == KEY_END && _alt && _ctrl) : {
+			case (_key == DIK_END && _alt && _ctrl) : {
 				if (!zlt_is_comp) exitWith {"Только для режима редактирования композиции!" call zlt_fnc_notify;};
 				_newdecl = zlt_new_blocks call zlt_fnc_compFromObjs;
 				_mainobj = zlt_new_blocks select 0;
@@ -702,7 +766,7 @@ zlt_new_keydown =
 				"Композиция сохранена в буфер обмена!" call zlt_fnc_notify;
 			};
 			
-			case (_key == KEY_DELETE && _alt && !_ctrl && !_shift) : {
+			case (_key == DIK_DELETE && _alt && !_ctrl && !_shift) : {
 				// удаление дочерних блоков
 				zlt_newlb call zlt_new_comp_removeaux;
 				zlt_newlb setVariable ["zlt_new_decl", nil];
@@ -713,28 +777,28 @@ zlt_new_keydown =
 
 
 			//вставить
-			case (_key == KEY_INSERT && _alt) : {(zlt_comp_data select zlt_curr_comp) call zlt_new_comp};
+			case (_key == DIK_INSERT && _alt) : {(zlt_comp_data select zlt_curr_comp) call zlt_new_comp};
 
 			// PD
-			case (_key == KEY_PGDN && _alt) : {_ind =  zlt_curr_comp max 0; _ind = _ind + 1; if (_ind > (count (zlt_comp_data) -1)) then {_ind = count (zlt_comp_data) -1 ;};  zlt_curr_comp = _ind;  [zlt_comp_names select zlt_curr_comp, zlt_comp_names] call zlt_fnc_notifyhint;  };
+			case (_key == DIK_PGDN && _alt) : {_ind =  zlt_curr_comp max 0; _ind = _ind + 1; if (_ind > (count (zlt_comp_data) -1)) then {_ind = count (zlt_comp_data) -1 ;};  zlt_curr_comp = _ind;  [zlt_comp_names select zlt_curr_comp, zlt_comp_names] call zlt_fnc_notifyhint;  };
 			//PU
-			case (_key == KEY_PGUP && _alt) : {_ind =  zlt_curr_comp max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_curr_comp = _ind;  [zlt_comp_names select zlt_curr_comp, zlt_comp_names] call zlt_fnc_notifyhint; };
+			case (_key == DIK_PGUP && _alt) : {_ind =  zlt_curr_comp max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_curr_comp = _ind;  [zlt_comp_names select zlt_curr_comp, zlt_comp_names] call zlt_fnc_notifyhint; };
 			
 			
 
 			//вверх
-			case (_key == KEY_UP && !zlt_new_is_plc_mode ) : {["FARER", _coeff] call zlt_new_moveblock;};
+			case (_key == DIK_UP && !zlt_new_is_plc_mode ) : {["FARER", _coeff] call zlt_new_moveblock;};
 			//вниз
-			case (_key == KEY_DOWN && !zlt_new_is_plc_mode ) : {["FARER", -_coeff] call zlt_new_moveblock;};
+			case (_key == DIK_DOWN && !zlt_new_is_plc_mode ) : {["FARER", -_coeff] call zlt_new_moveblock;};
 			//влево
-			case (_key == KEY_LEFT && !zlt_new_is_plc_mode ) : {["LEFT", _coeff] call zlt_new_moveblock;};
+			case (_key == DIK_LEFT && !zlt_new_is_plc_mode ) : {["LEFT", _coeff] call zlt_new_moveblock;};
 			//вправо
-			case (_key == KEY_RIGHT && !zlt_new_is_plc_mode ) : {["RIGHT", _coeff] call zlt_new_moveblock;};
+			case (_key == DIK_RIGHT && !zlt_new_is_plc_mode ) : {["RIGHT", _coeff] call zlt_new_moveblock;};
 			
 			// вставить
-			case (_key == KEY_INSERT && _ctrl) : {[_ctrl] call zlt_new_block};
+			case (_key == DIK_INSERT && _ctrl) : {[_ctrl] call zlt_new_block};
 
-			case (_key == KEY_INSERT) : {
+			case (_key == DIK_INSERT) : {
 				// режим установки 
 				zlt_new_is_plc_mode = true;
 				// handle колбека выключения режима установки 
@@ -747,35 +811,35 @@ zlt_new_keydown =
 				hint "Режим установки";
 			};
 			//ctrl up down
-			case (zlt_new_is_plc_mode && _key == KEY_UP && _ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [false,"UP"] call zlt_new_block; hint "Установка";};
-			case (zlt_new_is_plc_mode && _key == KEY_DOWN && _ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [false,"DOWN"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == DIK_UP && _ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [false,"UP"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == DIK_DOWN && _ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [false,"DOWN"] call zlt_new_block; hint "Установка";};
 			//up down
-			case (zlt_new_is_plc_mode && _key == KEY_DOWN && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"BACK"] call zlt_new_block; hint "Установка";};
-			case (zlt_new_is_plc_mode && _key == KEY_UP && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"FRONT"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == DIK_DOWN && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"BACK"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == DIK_UP && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"FRONT"] call zlt_new_block; hint "Установка";};
 			//left right
-			case (zlt_new_is_plc_mode && _key == KEY_LEFT && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"LEFT"] call zlt_new_block; hint "Установка";};
-			case (zlt_new_is_plc_mode && _key == KEY_RIGHT && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"RIGHT"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == DIK_LEFT && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"LEFT"] call zlt_new_block; hint "Установка";};
+			case (zlt_new_is_plc_mode && _key == DIK_RIGHT && !_ctrl && !_alt) :  { terminate zlt_new_plc_mode_cb;zlt_new_is_plc_mode=false; [_ctrl,"RIGHT"] call zlt_new_block; hint "Установка";};
 
 
 			//
 			
 			// PD + ctrl
-			case (_key == KEY_PGDN and _ctrl ) : {  if (zlt_obj_list_index < ( count (zlt_obj_list_all) - 1 ) ) then { zlt_obj_list_index = zlt_obj_list_index +1 ;}; zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index; zlt_cur_class = zlt_obj_list select 0; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
+			case (_key == DIK_PGDN and _ctrl ) : {  if (zlt_obj_list_index < ( count (zlt_obj_list_all) - 1 ) ) then { zlt_obj_list_index = zlt_obj_list_index +1 ;}; zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index; zlt_cur_class = zlt_obj_list select 0; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
 			// PU + ctrl
-			case (_key == KEY_PGUP and _ctrl ) : {  if (zlt_obj_list_index > 0 ) then { zlt_obj_list_index = zlt_obj_list_index -1 ;}; zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index; zlt_cur_class = zlt_obj_list select 0; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
+			case (_key == DIK_PGUP and _ctrl ) : {  if (zlt_obj_list_index > 0 ) then { zlt_obj_list_index = zlt_obj_list_index -1 ;}; zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index; zlt_cur_class = zlt_obj_list select 0; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
 			
 			
 			
 			// PD
-			case (_key == KEY_PGDN ) : {_ind =  (zlt_obj_list find zlt_cur_class ) max 0; _ind = _ind + 1; if (_ind > (count (zlt_obj_list) -1)) then {_ind = count (zlt_obj_list) -1 ;}; zlt_cur_class = zlt_obj_list select _ind; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
+			case (_key == DIK_PGDN ) : {_ind =  (zlt_obj_list find zlt_cur_class ) max 0; _ind = _ind + 1; if (_ind > (count (zlt_obj_list) -1)) then {_ind = count (zlt_obj_list) -1 ;}; zlt_cur_class = zlt_obj_list select _ind; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
 			//PU
-			case (_key == KEY_PGUP ) : {_ind =  (zlt_obj_list find zlt_cur_class ) max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_cur_class = zlt_obj_list select _ind; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
+			case (_key == DIK_PGUP ) : {_ind =  (zlt_obj_list find zlt_cur_class ) max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_cur_class = zlt_obj_list select _ind; [zlt_cur_class, zlt_obj_list] call zlt_fnc_notifyhint; };
 			
 			//end
-			case (_key == KEY_END ) : { zlt_new_blocks call zlt_save_comp ; "Сохронил!" call zlt_fnc_notify; };
+			case (_key == DIK_END ) : { zlt_new_blocks call zlt_save_comp ; "Сохронил!" call zlt_fnc_notify; };
 			
 			//delete
-			case (_key == KEY_DELETE) : {
+			case (_key == DIK_DELETE) : {
 				zlt_new_blocks = zlt_new_blocks - [zlt_newlb];
 				zlt_newlb call zlt_new_comp_removeaux; deletevehicle zlt_newlb;
 				zlt_newlb = if (count zlt_new_blocks == 0 )then {objNull;} else {zlt_new_blocks select ((count zlt_new_blocks) - 1);};
@@ -783,7 +847,7 @@ zlt_new_keydown =
 			};
 			
 			// home 
-			case (_key == KEY_HOME) : {
+			case (_key == DIK_HOME) : {
 				if (_ctrl) then { zlt_newlb call zlt_new_comp_removeaux; zlt_newlb setposatl [ getposatl zlt_newlb select 0,  getposatl zlt_newlb select 1, 0]; };
 				if ( zlt_new_vectorup) then {
 					zlt_newlb call zlt_new_comp_removeaux;
@@ -800,17 +864,17 @@ zlt_new_keydown =
 				};
 			};
 			// "/"
-			case (_key == KEY_DIVIDE and _ctrl) : {
+			case (_key == DIK_DIVIDE and _ctrl) : {
 				[] call zlt_select_block; if (not (zlt_newlb in zlt_new_blocks) and not (isnull zlt_newlb)) then {zlt_new_blocks = zlt_new_blocks + [zlt_newlb];}; 
 			};
-			case (_key == KEY_DIVIDE and not _ctrl) : {
+			case (_key == DIK_DIVIDE and not _ctrl) : {
 				[] call zlt_select_block; 
 			};
 			
 			// NUM 8
-			case (_key == KEY_NUM8 ) : {_ind =  (zlt_new_blocks find zlt_newlb ) max 0; _ind = _ind + 1; if (_ind > (count (zlt_new_blocks) -1)) then {_ind = count (zlt_new_blocks) -1 ;}; zlt_newlb = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_newlb, typeof zlt_newlb]) call zlt_fnc_notify;};
+			case (_key == DIK_NUM8 ) : {_ind =  (zlt_new_blocks find zlt_newlb ) max 0; _ind = _ind + 1; if (_ind > (count (zlt_new_blocks) -1)) then {_ind = count (zlt_new_blocks) -1 ;}; zlt_newlb = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_newlb, typeof zlt_newlb]) call zlt_fnc_notify;};
 			// NUM 2
-			case (_key == KEY_NUM2 ) : {_ind =  (zlt_new_blocks find zlt_newlb ) max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_newlb = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_newlb, typeof zlt_newlb]) call zlt_fnc_notify; };
+			case (_key == DIK_NUM2 ) : {_ind =  (zlt_new_blocks find zlt_newlb ) max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_newlb = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_newlb, typeof zlt_newlb]) call zlt_fnc_notify; };
 
 			
 			default {_ret = false;};
@@ -833,7 +897,11 @@ zlt_new_block = {
 		_new enableSimulation false;
 	};
 	
-	_pos1 = player modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
+	if (!zlt_cameraMode) then {
+		_pos1 = player modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
+	} else {
+		_pos1 = zlt_camera modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
+	};
 	if (_fASL) then {
 		_pos1 = ATLtoASL _pos1;
 	};
@@ -984,9 +1052,16 @@ zlt_new_comp_removeaux = {
 
 
 zlt_select_block = {
-	if not (isNull cursortarget) then {
-		_masterblock = cursortarget getVariable ["zlt_new_masterblock", cursorTarget];
-		zlt_newlb = _masterblock;
+	if (zlt_cameraMode) then {
+		if not (isNull zlt_cameraTarget ) then {
+			_masterblock = zlt_cameraTarget getVariable ["zlt_new_masterblock", zlt_cameraTarget];
+			zlt_newlb = _masterblock;
+		};
+	} else {
+		if not (isNull cursortarget) then {
+			_masterblock = cursortarget getVariable ["zlt_new_masterblock", cursorTarget];
+			zlt_newlb = _masterblock;
+		};
 	};
 };
 
@@ -997,10 +1072,6 @@ zlt_save_comp = {
 	copytoclipboard _text;
 	
 
-};
-
-zlt_cursorTarget = {
-	if (zlt_cameraMode) then {zlt_cameraTarget} else {cursorTarget}
 };
 
 
