@@ -8,7 +8,7 @@ zlt_obj_list_all = [
 	["Land_Mil_WallBig_4m_F","Land_Mil_WallBig_Corner_F","Land_Mil_WallBig_Gate_F", "Land_BarGate_F","Land_CncBarrier_F","Land_CncBarrierMedium_F","Land_CncBarrierMedium4_F","Land_CncShelter_F","Land_CncWall1_F","Land_CncWall4_F","Land_Concrete_SmallWall_4m_F","Land_Concrete_SmallWall_8m_F","Land_Mil_ConcreteWall_F","Land_Mil_WiredFence_F","Land_Mil_WiredFence_Gate_F","Land_Mil_WiredFenceD_F","Land_Net_Fence_Gate_F"],
 	["Land_Cargo20_military_green_F","Land_Shoot_House_Tunnel_Prone_F", "Land_Pallet_F", "Land_Pallet_vertical_F", "Land_Pallets_F", "Land_Pallets_stack_F", "Land_Obstacle_Ramp_F","Land_Obstacle_Bridge_F","Land_Obstacle_Saddle_F", "Land_CargoBox_V1_F"],
 	["Land_Campfire_F", "Land_Camping_Light_F","Land_CampingChair_V1_F","Land_CampingTable_F","Land_FieldToilet_F","Land_Sleeping_bag_F","Land_TentA_F","Land_TentDome_F", "MapBoard_altis_F","MapBoard_stratis_F"],
-	["Land_Wall_IndCnc_2deco_F","Land_PortableLight_single_F","Land_ConcretePipe_F", "Land_CinderBlocks_F", "Land_MetalBarrel_empty_F" , "Land_MetalBarrel_F", "Land_Sign_WarningMilitaryArea_F","RoadCone_F","RoadCone_L_F","RoadBarrier_F","RoadBarrier_small_F", "TapeSign_F","Land_Scaffolding_F"],
+	["Land_Wall_IndCnc_2deco_F","Land_PortableLight_single_F","Land_PortableLight_double_F","Land_ConcretePipe_F", "Land_CinderBlocks_F", "Land_MetalBarrel_empty_F" , "Land_MetalBarrel_F", "Land_Sign_WarningMilitaryArea_F","RoadCone_F","RoadCone_L_F","RoadBarrier_F","RoadBarrier_small_F", "TapeSign_F","Land_Scaffolding_F"],
 	["Land_WIP_F","Land_i_Barracks_V1_F","Land_Unfinished_Building_01_F","Land_Unfinished_Building_02_F","Land_u_House_Big_01_V1_F","Land_i_House_Big_01_V1_F","Land_i_House_Big_02_V1_F","Land_i_Shop_02_V1_F","Land_i_House_Small_01_V1_F","Land_i_House_Small_02_V1_F","Land_i_House_Small_03_V1_F","Land_i_Stone_HouseBig_V1_F","Land_i_Stone_HouseSmall_V1_F", "Land_cargo_addon02_V2_F"],
 	["Land_Shoot_House_Wall_F","Land_Shoot_House_Wall_Stand_F","Land_Shoot_House_Wall_Crouch_F","Land_Shoot_House_Wall_Prone_F","Land_Shoot_House_Wall_Long_F","Land_Shoot_House_Wall_Long_Stand_F","Land_Shoot_House_Wall_Long_Crouch_F","Land_Shoot_House_Wall_Long_Prone_F","Land_Shoot_House_Corner_F","Land_Shoot_House_Corner_Stand_F","Land_Shoot_House_Corner_Crouch_F","Land_Shoot_House_Corner_Prone_F","Land_Shoot_House_Panels_F","Land_Shoot_House_Panels_Crouch_F","Land_Shoot_House_Panels_Prone_F","Land_Shoot_House_Panels_Vault_F","Land_Shoot_House_Panels_Window_F","Land_Shoot_House_Panels_Windows_F","Land_Shoot_House_Tunnel_F","Land_Shoot_House_Tunnel_Stand_F","Land_Shoot_House_Tunnel_Crouch_F","Land_Shoot_House_Tunnel_Prone_F"],
 	["Land_PierLadder_F", "Land_Pier_Box_F","Land_nav_pier_m_F","Land_Pier_F", "Land_Pier_small_F", "Land_Pier_addon","BlockConcrete_F","Land_RampConcrete_F","Land_RampConcreteHigh_F"],
@@ -38,8 +38,10 @@ zlt_new_globalobjs = ["Land_Cargo_House_V1_F","Land_Cargo_HQ_V1_F","Land_Cargo_P
  "Land_Cargo20_military_green_F","House_F"
 ];
 
+zlt_new_localobjs = ["Land_CncShelter_F"];
+
 zlt_new_disablesim = ["Land_Pallet_F",
-"Land_Photos_V1_F","Land_Map_unfolded_F","Land_FilePhotos_F","Land_Laptop_F", "Land_Laptop_unfolded_F","Land_MobilePhone_smart_F","Land_SatellitePhone_F","Land_Suitcase_F", "Land_BottlePlastic_V1_F","Land_Can_V1_F","Land_Can_V3_F","Land_TacticalBacon_F","Land_PensAndPencils_F","Land_DrillAku_F","Land_Grinder_F"
+"Land_MapBoard_F","Land_Photos_V1_F","Land_Map_unfolded_F","Land_FilePhotos_F","Land_Laptop_F", "Land_Laptop_unfolded_F","Land_MobilePhone_smart_F","Land_SatellitePhone_F","Land_Suitcase_F", "Land_BottlePlastic_V1_F","Land_Can_V1_F","Land_Can_V3_F","Land_TacticalBacon_F","Land_PensAndPencils_F","Land_DrillAku_F","Land_Grinder_F"
 
 ];
 
@@ -338,6 +340,11 @@ zlt_printto = {
 	_str
 };
 
+zlt_fnc_shallglobal = {
+	if ([_this,zlt_new_localobjs] call zlt_fnc_cycleKindOf) exitWith {false};
+	[_this,zlt_new_globalobjs] call zlt_fnc_cycleKindOf
+
+};
 
 zlt_fnc_getallcode = {
 	private ["_br","_listobj","_txt","_global"];
@@ -368,7 +375,7 @@ zlt_fnc_getallcode = {
 //	_txt = _txt + "waituntil {time > 0};" + _br;
 	_txt = _txt + "if (isserver) then {" + _br;
 	{
-		_global = ([_x,zlt_new_globalobjs] call zlt_fnc_cycleKindOf );
+		_global = (_x call zlt_fnc_shallglobal );
 		if (_global) then {
 			_txt = _txt + ([_x, false] call zlt_fnc_getcode);
 		};
@@ -377,7 +384,7 @@ zlt_fnc_getallcode = {
 	_txt = _txt + "if (isdedicated) exitwith {};" + _br;
 //	_txt = _txt + "waituntil {time > 0};" + _br;
 	{
-		_global = ([_x,zlt_new_globalobjs] call zlt_fnc_cycleKindOf );
+		_global = (_x call zlt_fnc_shallglobal );
 		if not (_global) then {
 			_txt = _txt + ([_x, true] call zlt_fnc_getcode);
 		};
@@ -405,7 +412,7 @@ zlt_fnc_getcode = {
 	} else {
 		_copiedTxt = format ["_pos = %1; zlt_newlb = ""%2"" createVehiclelocal _pos; zlt_newlb setDir %3; zlt_newlb setPosATL _pos; [zlt_newlb, %4, %5] call BIS_fnc_setPitchBank; zlt_new_blocks pushback zlt_newlb; zlt_newlb allowdamage false;", _posATL, _objType, _dir, _pitch, _bank];
 	};
-	if (_objType in zlt_new_disablesim) then {
+	if ( [_objType,zlt_new_disablesim] call zlt_fnc_cycleKindOf ) then {
 		_copiedTxt = _copiedTxt + "zlt_newlb enableSimulation false;";
 	};
 	_decl = _obj getVariable ["zlt_new_decl",[]];
@@ -539,17 +546,18 @@ zlt_fnc_notifyhint = {
 	{
 		_newstr = "";
 		if (_x == _item) then {
-			_newstr =  ("<t color='#ff0000' align='left'>" + "> "+ _x + "</t><br/>");
+			_newstr =  ("<t size='0.3' font='TahomaB' color='#ff0000' align='left'>" + "> "+ _x + "<br/></t>");
 		} else {
-			_newstr =  ("<t color='#ffff00' align='left'>" + _x + "</t><br/>");
+			_newstr =  ("<t size='0.3' font='TahomaB' color='#ffff00' align='left'>" + _x + "<br/></t>");
 		};
 
 		_txt = _txt + _newstr;
 
 	} foreach _list;
 	
-	[ format["<t size='0.3' font='TahomaB' align='Left' color='#00ff00'>%1</t>",_txt], safeZoneX,safezoneY+0.5,10,0,0,339] call bis_fnc_dynamicText;
-	//hint _txt;
+	//[ format["<t size='0.3' font='TahomaB' align='Left' color='#00ff00'>%1</t>",_txt], safeZoneX,safezoneY+0.5,10,0,0,339] call bis_fnc_dynamicText;
+	[ format["%1",_txt], safeZoneX,safezoneY+0.5,10,0,0,339] spawn bis_fnc_dynamicText;
+	diag_log [_txt];
 };
 
 
@@ -793,9 +801,10 @@ zlt_new_keydown =
 			
 			//delete
 			case (_key == DIK_DELETE) : {
+				_oldid = zlt_new_blocks find zlt_newlb;
 				zlt_new_blocks = zlt_new_blocks - [zlt_newlb];
 				zlt_newlb call zlt_new_comp_removeaux; deletevehicle zlt_newlb;
-				zlt_newlb = if (count zlt_new_blocks == 0 )then {objNull;} else {zlt_new_blocks select ((count zlt_new_blocks) - 1);};
+				zlt_newlb = if (count zlt_new_blocks == 0 )then {objNull;} else {zlt_new_blocks select (_oldid - 1);};
 				"Удалено!" call zlt_fnc_notify;
 			};
 			
@@ -805,7 +814,7 @@ zlt_new_keydown =
 				else {
 					
 				
-				if ( !zlt_new_vectorup || (zlt_new_vectorup && _alt) ) then {
+				if ( (!zlt_new_vectorup && !_alt) || (zlt_new_vectorup && _alt) ) then {
 					zlt_newlb call zlt_new_comp_removeaux;
 					zlt_newlb setvectorup ( surfaceNormal (getpos zlt_newlb) );
 					zlt_newlb call zlt_new_comp_placeaux;
@@ -863,9 +872,10 @@ zlt_new_block = {
 	PR(_pos1)=[0,0,0];
 	
 	_new = createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"];
+	
 	//_new = if (_class in zlt_new_globalobjs) then { createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"]; } else { _class createVehiclelocal [0,0,0]; };
 	
-	if (_class in zlt_new_disablesim) then {
+	if ([_new,zlt_new_disablesim] call zlt_fnc_cycleKindOf ) then {
 		_new enableSimulation false;
 	};
 	
@@ -949,6 +959,8 @@ zlt_new_block = {
 	};
 	if (!zlt_new_vectorup) then {
 		_new setvectorup ( surfaceNormal (getpos _new) );
+	} else {
+		_new setVectorUp [0,0,1];
 	};
 	zlt_newlb = _new;
 	zlt_new_blocks = zlt_new_blocks + [zlt_newlb];
