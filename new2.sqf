@@ -1,31 +1,79 @@
-// кнопки 
+zlt_obj_list_index = 0;
+
+zlt_obj_list_all = [
+	["Land_BagBunker_Large_F", "Land_BagBunker_Small_F", "Land_BagBunker_Tower_F","Land_BagFence_Corner_F", "Land_BagFence_End_F", "Land_BagFence_Long_F", "Land_BagFence_Round_F","Land_BagFence_Short_F"],
+	["Land_HBarrier_1_F", "Land_HBarrier_3_F", "Land_HBarrier_5_F", "Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F", "Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F","Land_Razorwire_F"], 
+	["Land_Cargo_House_V1_F","Land_Cargo_HQ_V1_F","Land_Cargo_Patrol_V1_F","Land_Cargo_Tower_V1_F","Land_Cargo_House_V2_F","Land_Cargo_HQ_V2_F","Land_Cargo_Patrol_V2_F","Land_Cargo_Tower_V2_F" ,"Land_Cargo_House_V3_F","Land_Cargo_HQ_V3_F","Land_Cargo_Patrol_V3_F","Land_Cargo_Tower_V3_F","Land_Dome_Big_F","Land_Dome_Small_F","Land_Research_house_V1_F","Land_Research_HQ_F"],
+	["CamoNet_BLUFOR_F","CamoNet_OPFOR_F","CamoNet_INDP_F","CamoNet_BLUFOR_open_F","CamoNet_OPFOR_open_F","CamoNet_INDP_open_F","CamoNet_BLUFOR_big_F","CamoNet_OPFOR_big_F","CamoNet_INDP_big_F"],
+	["Land_Mil_WallBig_4m_F","Land_Mil_WallBig_Corner_F","Land_Mil_WallBig_Gate_F", "Land_BarGate_F","Land_CncBarrier_F","Land_CncBarrierMedium_F","Land_CncBarrierMedium4_F","Land_CncShelter_F","Land_CncWall1_F","Land_CncWall4_F","Land_Concrete_SmallWall_4m_F","Land_Concrete_SmallWall_8m_F","Land_Mil_ConcreteWall_F","Land_Mil_WiredFence_F","Land_Mil_WiredFence_Gate_F","Land_Mil_WiredFenceD_F","Land_Net_Fence_Gate_F"],
+	["Land_Cargo20_military_green_F","Land_Shoot_House_Tunnel_Prone_F", "Land_Pallet_F", "Land_Pallet_vertical_F", "Land_Pallets_F", "Land_Pallets_stack_F", "Land_Obstacle_Ramp_F","Land_Obstacle_Bridge_F","Land_Obstacle_Saddle_F", "Land_CargoBox_V1_F"],
+	["Land_Campfire_F", "Land_Camping_Light_F","Land_CampingChair_V1_F","Land_CampingTable_F","Land_FieldToilet_F","Land_Sleeping_bag_F","Land_TentA_F","Land_TentDome_F", "MapBoard_altis_F","MapBoard_stratis_F"],
+	["Land_Wall_IndCnc_2deco_F","Land_PortableLight_single_F","Land_ConcretePipe_F", "Land_CinderBlocks_F", "Land_MetalBarrel_empty_F" , "Land_MetalBarrel_F", "Land_Sign_WarningMilitaryArea_F","RoadCone_F","RoadCone_L_F","RoadBarrier_F","RoadBarrier_small_F", "TapeSign_F","Land_Scaffolding_F"],
+	["Land_WIP_F","Land_i_Barracks_V1_F","Land_Unfinished_Building_01_F","Land_Unfinished_Building_02_F","Land_u_House_Big_01_V1_F","Land_i_House_Big_01_V1_F","Land_i_House_Big_02_V1_F","Land_i_Shop_02_V1_F","Land_i_House_Small_01_V1_F","Land_i_House_Small_02_V1_F","Land_i_House_Small_03_V1_F","Land_i_Stone_HouseBig_V1_F","Land_i_Stone_HouseSmall_V1_F", "Land_cargo_addon02_V2_F"],
+	["Land_Shoot_House_Wall_F","Land_Shoot_House_Wall_Stand_F","Land_Shoot_House_Wall_Crouch_F","Land_Shoot_House_Wall_Prone_F","Land_Shoot_House_Wall_Long_F","Land_Shoot_House_Wall_Long_Stand_F","Land_Shoot_House_Wall_Long_Crouch_F","Land_Shoot_House_Wall_Long_Prone_F","Land_Shoot_House_Corner_F","Land_Shoot_House_Corner_Stand_F","Land_Shoot_House_Corner_Crouch_F","Land_Shoot_House_Corner_Prone_F","Land_Shoot_House_Panels_F","Land_Shoot_House_Panels_Crouch_F","Land_Shoot_House_Panels_Prone_F","Land_Shoot_House_Panels_Vault_F","Land_Shoot_House_Panels_Window_F","Land_Shoot_House_Panels_Windows_F","Land_Shoot_House_Tunnel_F","Land_Shoot_House_Tunnel_Stand_F","Land_Shoot_House_Tunnel_Crouch_F","Land_Shoot_House_Tunnel_Prone_F"],
+	["Land_PierLadder_F", "Land_Pier_Box_F","Land_nav_pier_m_F","Land_Pier_F", "Land_Pier_small_F", "Land_Pier_addon","BlockConcrete_F","Land_RampConcrete_F","Land_RampConcreteHigh_F"],
+	["Land_Bench_F","Land_CashDesk_F","Land_HeatPump_F","Land_ChairPlastic_F","Land_ChairWood_F","Land_Icebox_F","Land_Metal_rack_F","Land_Metal_rack_Tall_F","Land_Metal_wooden_rack_F","Land_Rack_F","Land_ShelvesMetal_F","Land_ShelvesWooden_F","Land_TableDesk_F"],
+	["Land_Photos_V1_F","Land_Map_unfolded_F","Land_FilePhotos_F","Land_Laptop_F", "Land_Laptop_unfolded_F","Land_MobilePhone_smart_F","Land_SatellitePhone_F","Land_Suitcase_F", "Land_BottlePlastic_V1_F","Land_Can_V1_F","Land_Can_V3_F","Land_TacticalBacon_F","Land_PensAndPencils_F","Land_DrillAku_F","Land_Grinder_F"],
+	["Land_fort_rampart_EP1","Land_fort_rampart","Hedgehog","Misc_cargo_cont_small","TK_GUE_WarfareBUAVterminal_Base_EP1","TK_GUE_WarfareBArtilleryRadar_Base_EP1","TK_GUE_WarfareBAntiAirRadar_Base_EP1","Fort_Barricade","Land_fort_artillery_nest_EP1","Land_fort_artillery_nest","Hhedgehog_concrete","Hhedgehog_concreteBig","Barrack2","PowGen_Big","Land_Misc_Cargo1E_EP1","Land_BarGate2","Land_tent_east","CampEast_EP1","Land_GuardShed","Land_Antenna","Land_A_Villa_EP1","Land_Mil_Barracks_i_EP1"]
+];
+// багаж
+// ["","","","",""];
+
+zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index;
+
+zlt_cur_class = zlt_obj_list select 0;	
+
+
+
+zlt_new_10cmfix = ["Land_BagBunker_Large_F", "Land_BagBunker_Small_F", "Land_BagBunker_Tower_F","Land_BagFence_Corner_F", "Land_BagFence_End_F", "Land_BagFence_Long_F", "Land_BagFence_Round_F","Land_BagFence_Short_F","Land_HBarrier_1_F", "Land_HBarrier_3_F", "Land_HBarrier_5_F", "Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F","Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F",
+"Land_CncWall1_F","Land_CncBarrierMedium4_F", "Land_CncWall4_F", "Land_Mil_WallBig_4m_F"
+];
+
+zlt_new_5cmfix = ["Land_CncShelter_F"];
+zlt_new_15cmfix = ["Land_CncBarrierMedium4_F"];
+
+zlt_new_globalobjs = ["Land_Cargo_House_V1_F","Land_Cargo_HQ_V1_F","Land_Cargo_Patrol_V1_F","Land_Cargo_Tower_V1_F",
+"Land_Cargo_House_V3_F","Land_Cargo_HQ_V3_F","Land_Cargo_Patrol_V3_F","Land_Cargo_Tower_V3_F", "Land_Dome_Big_F","Land_Dome_Small_F","Land_Research_house_V1_F","Land_Research_HQ_F",
+"Land_Mil_WiredFence_F","Land_Mil_WiredFence_Gate_F","Land_Mil_WiredFenceD_F","Land_Net_Fence_Gate_F", "Land_BarGate_F",
+ "Land_Cargo20_military_green_F","House_F"
+];
+
+zlt_new_disablesim = ["Land_Pallet_F",
+"Land_Photos_V1_F","Land_Map_unfolded_F","Land_FilePhotos_F","Land_Laptop_F", "Land_Laptop_unfolded_F","Land_MobilePhone_smart_F","Land_SatellitePhone_F","Land_Suitcase_F", "Land_BottlePlastic_V1_F","Land_Can_V1_F","Land_Can_V3_F","Land_TacticalBacon_F","Land_PensAndPencils_F","Land_DrillAku_F","Land_Grinder_F"
+
+];
+
+
+
+zlt_new_specialFixObjs = ["Land_Pallet_F"];
+
+// Local, disablesim, left/right, up/down, forw/backw fix
+zlt_new_specialFixObjsData = [[ 0.7, 0, 0.6]];
+
+
 /*
-вверх 200
-вниз 208
-влево вправо 203 205
-210 199 201 insert home pu
-211 207 209 del end pd
-
-
-69 181 55 74 78
-
-71 72 73
-75 76 77
-79 80 81
-
-82 83 156 
-
-todo ЗАДЕЙСТВОВАТЬ F1 F10
-todo Camera
-1 - esc
-
-terraintintersect
-lineIntersectsWith
+[
+"Land_Cargo_House_V1_F",
+"Land_Cargo_House_V2_F",
+"Land_Cargo_House_V3_F",
+"Land_Medevac_house_V1_F"
+]
 
 */
 
-/*
-*/
+
+zlt_comp_names = ["Тест", "Fortify Cargo Patrol"];
+zlt_comp_data = [
+["Land_HBarrier_5_F","Land_HBarrier_5_F",[0,0,0.495338],0,0,0,"Land_HBarrier_5_F",[0,0,1.73119],0,0,0],
+["Land_Cargo_Patrol_V3_F","Land_BagFence_Long_F",[3.20605,-1.4707,-0.377037],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[3.20703,1.55273,-0.370216],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[3.20703,1.55273,-1.18711],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[3.20605,-1.4707,-1.19393],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.47852,-2.71094,-0.406494],1.01228,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.54297,-2.76367,-0.400536],1.01228,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.54297,-2.76563,-1.21743],1.01227,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.47852,-2.71094,-1.22339],1.01225,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.13867,1.50195,-1.26421],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.14063,-1.51953,-1.26498],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.14063,-1.51758,-0.44809],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.13867,1.50391,-0.447319],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.5498,2.71094,-1.21457],-180.988,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.47266,2.76367,-1.20409],-180.988,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.47266,2.76563,-0.387199],-180.988,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.5498,2.71289,-0.397675],-180.988,-0.0226288,-0.0164335]
+];
+
+zlt_curr_comp = 0;
+
+
+zlt_objs_wth_markers = ["Land_CncWall4_F","Land_CncWall4_F","Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F",
+"Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F", "House_F",
+"Land_BagBunker_Small_F","Land_BagBunker_Large_F"] ;
 
 
 
@@ -504,85 +552,6 @@ zlt_fnc_notifyhint = {
 	//hint _txt;
 };
 
-zlt_obj_list_index = 0;
-
-zlt_obj_list_all = [
-	["Land_BagBunker_Large_F", "Land_BagBunker_Small_F", "Land_BagBunker_Tower_F","Land_BagFence_Corner_F", "Land_BagFence_End_F", "Land_BagFence_Long_F", "Land_BagFence_Round_F","Land_BagFence_Short_F"],
-	["Land_HBarrier_1_F", "Land_HBarrier_3_F", "Land_HBarrier_5_F", "Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F", "Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F","Land_Razorwire_F"], 
-	["Land_Cargo_House_V1_F","Land_Cargo_HQ_V1_F","Land_Cargo_Patrol_V1_F","Land_Cargo_Tower_V1_F","Land_Cargo_House_V2_F","Land_Cargo_HQ_V2_F","Land_Cargo_Patrol_V2_F","Land_Cargo_Tower_V2_F" ,"Land_Cargo_House_V3_F","Land_Cargo_HQ_V3_F","Land_Cargo_Patrol_V3_F","Land_Cargo_Tower_V3_F","Land_Dome_Big_F","Land_Dome_Small_F","Land_Research_house_V1_F","Land_Research_HQ_F"],
-	["CamoNet_BLUFOR_F","CamoNet_OPFOR_F","CamoNet_INDP_F","CamoNet_BLUFOR_open_F","CamoNet_OPFOR_open_F","CamoNet_INDP_open_F","CamoNet_BLUFOR_big_F","CamoNet_OPFOR_big_F","CamoNet_INDP_big_F"],
-	["Land_Mil_WallBig_4m_F","Land_Mil_WallBig_Corner_F","Land_Mil_WallBig_Gate_F", "Land_BarGate_F","Land_CncBarrier_F","Land_CncBarrierMedium_F","Land_CncBarrierMedium4_F","Land_CncShelter_F","Land_CncWall1_F","Land_CncWall4_F","Land_Concrete_SmallWall_4m_F","Land_Concrete_SmallWall_8m_F","Land_Mil_ConcreteWall_F","Land_Mil_WiredFence_F","Land_Mil_WiredFence_Gate_F","Land_Mil_WiredFenceD_F","Land_Net_Fence_Gate_F"],
-	["Land_Cargo20_military_green_F","Land_Shoot_House_Tunnel_Prone_F", "Land_Pallet_F", "Land_Pallet_vertical_F", "Land_Pallets_F", "Land_Pallets_stack_F", "Land_Obstacle_Ramp_F","Land_Obstacle_Bridge_F","Land_Obstacle_Saddle_F", "Land_CargoBox_V1_F"],
-	["Land_Campfire_F", "Land_Camping_Light_F","Land_CampingChair_V1_F","Land_CampingTable_F","Land_FieldToilet_F","Land_Sleeping_bag_F","Land_TentA_F","Land_TentDome_F", "MapBoard_altis_F","MapBoard_stratis_F"],
-	["Land_Wall_IndCnc_2deco_F","Land_PortableLight_single_F","Land_ConcretePipe_F", "Land_CinderBlocks_F", "Land_MetalBarrel_empty_F" , "Land_MetalBarrel_F", "Land_Sign_WarningMilitaryArea_F","RoadCone_F","RoadCone_L_F","RoadBarrier_F","RoadBarrier_small_F", "TapeSign_F","Land_Scaffolding_F"],
-	["Land_WIP_F","Land_i_Barracks_V1_F","Land_Unfinished_Building_01_F","Land_Unfinished_Building_02_F","Land_u_House_Big_01_V1_F","Land_i_House_Big_01_V1_F","Land_i_House_Big_02_V1_F","Land_i_Shop_02_V1_F","Land_i_House_Small_01_V1_F","Land_i_House_Small_02_V1_F","Land_i_House_Small_03_V1_F","Land_i_Stone_HouseBig_V1_F","Land_i_Stone_HouseSmall_V1_F", "Land_cargo_addon02_V2_F"],
-	["Land_Shoot_House_Wall_F","Land_Shoot_House_Wall_Stand_F","Land_Shoot_House_Wall_Crouch_F","Land_Shoot_House_Wall_Prone_F","Land_Shoot_House_Wall_Long_F","Land_Shoot_House_Wall_Long_Stand_F","Land_Shoot_House_Wall_Long_Crouch_F","Land_Shoot_House_Wall_Long_Prone_F","Land_Shoot_House_Corner_F","Land_Shoot_House_Corner_Stand_F","Land_Shoot_House_Corner_Crouch_F","Land_Shoot_House_Corner_Prone_F","Land_Shoot_House_Panels_F","Land_Shoot_House_Panels_Crouch_F","Land_Shoot_House_Panels_Prone_F","Land_Shoot_House_Panels_Vault_F","Land_Shoot_House_Panels_Window_F","Land_Shoot_House_Panels_Windows_F","Land_Shoot_House_Tunnel_F","Land_Shoot_House_Tunnel_Stand_F","Land_Shoot_House_Tunnel_Crouch_F","Land_Shoot_House_Tunnel_Prone_F"],
-	["Land_PierLadder_F", "Land_Pier_Box_F","Land_nav_pier_m_F","Land_Pier_F", "Land_Pier_small_F", "Land_Pier_addon","BlockConcrete_F","Land_RampConcrete_F","Land_RampConcreteHigh_F"],
-	["Land_Bench_F","Land_CashDesk_F","Land_HeatPump_F","Land_ChairPlastic_F","Land_ChairWood_F","Land_Icebox_F","Land_Metal_rack_F","Land_Metal_rack_Tall_F","Land_Metal_wooden_rack_F","Land_Rack_F","Land_ShelvesMetal_F","Land_ShelvesWooden_F","Land_TableDesk_F"],
-	["Land_Photos_V1_F","Land_Map_unfolded_F","Land_FilePhotos_F","Land_Laptop_F", "Land_Laptop_unfolded_F","Land_MobilePhone_smart_F","Land_SatellitePhone_F","Land_Suitcase_F", "Land_BottlePlastic_V1_F","Land_Can_V1_F","Land_Can_V3_F","Land_TacticalBacon_F","Land_PensAndPencils_F","Land_DrillAku_F","Land_Grinder_F"],
-	["Land_fort_rampart_EP1","Land_fort_rampart","Hedgehog","Misc_cargo_cont_small","TK_GUE_WarfareBUAVterminal_Base_EP1","TK_GUE_WarfareBArtilleryRadar_Base_EP1","TK_GUE_WarfareBAntiAirRadar_Base_EP1","Fort_Barricade","Land_fort_artillery_nest_EP1","Land_fort_artillery_nest","Hhedgehog_concrete","Hhedgehog_concreteBig","Barrack2","PowGen_Big","Land_Misc_Cargo1E_EP1","Land_BarGate2","Land_tent_east","CampEast_EP1","Land_GuardShed","Land_Antenna","Land_A_Villa_EP1","Land_Mil_Barracks_i_EP1"]
-];
-// багаж
-// ["","","","",""];
-
-zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index;
-
-zlt_cur_class = zlt_obj_list select 0;	
-
-
-
-zlt_new_10cmfix = ["Land_BagBunker_Large_F", "Land_BagBunker_Small_F", "Land_BagBunker_Tower_F","Land_BagFence_Corner_F", "Land_BagFence_End_F", "Land_BagFence_Long_F", "Land_BagFence_Round_F","Land_BagFence_Short_F","Land_HBarrier_1_F", "Land_HBarrier_3_F", "Land_HBarrier_5_F", "Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F","Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F",
-"Land_CncWall1_F","Land_CncBarrierMedium4_F", "Land_CncWall4_F", "Land_Mil_WallBig_4m_F"
-];
-
-zlt_new_5cmfix = ["Land_CncShelter_F"];
-zlt_new_15cmfix = ["Land_CncBarrierMedium4_F"];
-
-zlt_new_globalobjs = ["Land_Cargo_House_V1_F","Land_Cargo_HQ_V1_F","Land_Cargo_Patrol_V1_F","Land_Cargo_Tower_V1_F",
-"Land_Cargo_House_V3_F","Land_Cargo_HQ_V3_F","Land_Cargo_Patrol_V3_F","Land_Cargo_Tower_V3_F", "Land_Dome_Big_F","Land_Dome_Small_F","Land_Research_house_V1_F","Land_Research_HQ_F",
-"Land_Mil_WiredFence_F","Land_Mil_WiredFence_Gate_F","Land_Mil_WiredFenceD_F","Land_Net_Fence_Gate_F", "Land_BarGate_F",
- "Land_Cargo20_military_green_F","House_F"
-];
-
-zlt_new_disablesim = ["Land_Pallet_F",
-"Land_Photos_V1_F","Land_Map_unfolded_F","Land_FilePhotos_F","Land_Laptop_F", "Land_Laptop_unfolded_F","Land_MobilePhone_smart_F","Land_SatellitePhone_F","Land_Suitcase_F", "Land_BottlePlastic_V1_F","Land_Can_V1_F","Land_Can_V3_F","Land_TacticalBacon_F","Land_PensAndPencils_F","Land_DrillAku_F","Land_Grinder_F"
-
-];
-
-
-
-zlt_new_specialFixObjs = ["Land_Pallet_F"];
-
-// Local, disablesim, left/right, up/down, forw/backw fix
-zlt_new_specialFixObjsData = [[ 0.7, 0, 0.6]];
-
-
-/*
-[
-"Land_Cargo_House_V1_F",
-"Land_Cargo_House_V2_F",
-"Land_Cargo_House_V3_F",
-"Land_Medevac_house_V1_F"
-]
-
-*/
-
-
-zlt_comp_names = ["Тест", "Fortify Cargo Patrol"];
-zlt_comp_data = [
-["Land_HBarrier_5_F","Land_HBarrier_5_F",[0,0,0.495338],0,0,0,"Land_HBarrier_5_F",[0,0,1.73119],0,0,0],
-["Land_Cargo_Patrol_V3_F","Land_BagFence_Long_F",[3.20605,-1.4707,-0.377037],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[3.20703,1.55273,-0.370216],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[3.20703,1.55273,-1.18711],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[3.20605,-1.4707,-1.19393],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.47852,-2.71094,-0.406494],1.01228,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.54297,-2.76367,-0.400536],1.01228,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.54297,-2.76563,-1.21743],1.01227,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.47852,-2.71094,-1.22339],1.01225,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.13867,1.50195,-1.26421],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.14063,-1.51953,-1.26498],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.14063,-1.51758,-0.44809],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.13867,1.50391,-0.447319],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.5498,2.71094,-1.21457],-180.988,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.47266,2.76367,-1.20409],-180.988,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.47266,2.76563,-0.387199],-180.988,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.5498,2.71289,-0.397675],-180.988,-0.0226288,-0.0164335]
-];
-
-zlt_curr_comp = 0;
-
-
-zlt_objs_wth_markers = ["Land_CncWall4_F","Land_CncWall4_F","Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F",
-"Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F", "House_F",
-"Land_BagBunker_Small_F","Land_BagBunker_Large_F"] ;
-
-
-
 
 
 zlt_new_moveblock = {
@@ -694,48 +663,13 @@ zlt_new_keydown =
 		
 		_coeff = 0.3;
 		_angle = 5;
-		
-		
-		
+	
 		if (_shift) then {_coeff = 0.1; _angle = 1;};
 		if (zlt_new_micro) then {
 			_coeff = 0.05; _angle = 1;
 			if (_shift) then {_coeff = 0.01; _angle = 0.2;};
 		};
 		
-		/*
-		if (zlt_cameraMode && _key in [DIK_W,DIK_S,DIK_A,DIK_D,DIK_Q,DIK_Z]) then {
-			PR(_dist) = 0.3; PR(_distZ) = 0.3;
-			if (_shift) then {
-				_dist = 0.1; _distZ = 0.1;
-			};
-			if (_ctrl) then {
-				_dist = 1; _distZ = 1;
-			};
-			PR(_curDir) = direction zlt_camera;
-			PR(_newPos) = getPosAsl zlt_camera;
-
-			switch(true) do {
-			case (zlt_cameraMode && _key == DIK_W) : { _newPos=[0  , _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
-			case (zlt_cameraMode && _key == DIK_S) : { _newPos=[180, _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
-			case (zlt_cameraMode && _key == DIK_A) : { _newPos=[-90, _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
-			case (zlt_cameraMode && _key == DIK_D) : { _newPos=[90 , _dist, 0, _newPos, _curDir] call zlt_camNewPos; };
-			case (zlt_cameraMode && _key == DIK_Q) : { _newPos=[0, 0,  _distZ, _newPos, _curDir] call zlt_camNewPos; };
-			case (zlt_cameraMode && _key == DIK_Z) : { _newPos=[0, 0, -_distZ, _newPos, _curDir] call zlt_camNewPos; };
-	
-			};
-			_newPos set [2,(_newPos select 2) max (getterrainheightasl _newPos)];
-
-			if(surfaceIsWater _newPos)then{
-				zlt_camera camSetPos _newPos;
-			}else{
-				zlt_camera camSetPos (ASLtoATL _newPos);
-			};
-			zlt_camera camCommitPrepared 0.1;
-			
-		};
-		*/
-
 		switch (true) do
 		{
 			// КАМЕРА
@@ -938,8 +872,8 @@ zlt_new_block = {
 	if (!zlt_cameraMode) then {
 		_pos1 = player modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
 	} else {
-	//	_pos1 = zlt_camera modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
-		_pos1 = screentoworld [0.5,0.5];
+		_pos1 = zlt_camera modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
+	//	_pos1 = screentoworld [0.5,0.5];
 	};
 	if (_fASL) then {
 		_pos1 = ATLtoASL _pos1;
@@ -1180,9 +1114,7 @@ if (isNil "zlt_eh_keydown") then {
 			call zlt_fnc_modeindication;
 		};
 	};
-	
-	
-	
+
 };
 
 
