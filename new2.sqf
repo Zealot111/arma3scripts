@@ -18,25 +18,20 @@ zlt_filter = {
 
 zlt_obj_list_index = 0;
 zlt_obj_list_all = [
-	["Land_BagBunker_Large_F", "Land_BagBunker_Small_F", "Land_BagBunker_Tower_F","Land_BagFence_Corner_F", "Land_BagFence_End_F", "Land_BagFence_Long_F", "Land_BagFence_Round_F","Land_BagFence_Short_F"],
-	["Land_HBarrier_1_F", "Land_HBarrier_3_F", "Land_HBarrier_5_F", "Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F", "Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F","Land_Razorwire_F"], 
-	["A3_Structures_F_Mil_Cargo" call zlt_units, { not (["ruins", _x] call bis_fnc_instring) }] call zlt_filter,
-//	["Land_Cargo_House_V1_F","Land_Cargo_HQ_V1_F","Land_Cargo_Patrol_V1_F","Land_Cargo_Tower_V1_F","Land_Cargo_House_V2_F","Land_Cargo_HQ_V2_F","Land_Cargo_Patrol_V2_F","Land_Cargo_Tower_V2_F" ,"Land_Cargo_House_V3_F","Land_Cargo_HQ_V3_F","Land_Cargo_Patrol_V3_F","Land_Cargo_Tower_V3_F","Land_Dome_Big_F","Land_Dome_Small_F","Land_Research_house_V1_F","Land_Research_HQ_F"],
-	["CamoNet_BLUFOR_F","CamoNet_OPFOR_F","CamoNet_INDP_F","CamoNet_BLUFOR_open_F","CamoNet_OPFOR_open_F","CamoNet_INDP_open_F","CamoNet_BLUFOR_big_F","CamoNet_OPFOR_big_F","CamoNet_INDP_big_F"],
-	["Land_Mil_WallBig_4m_F","Land_Mil_WallBig_Corner_F","Land_Mil_WallBig_Gate_F", "Land_BarGate_F","Land_CncBarrier_F","Land_CncBarrierMedium_F","Land_CncBarrierMedium4_F","Land_CncShelter_F","Land_CncWall1_F","Land_CncWall4_F","Land_Concrete_SmallWall_4m_F","Land_Concrete_SmallWall_8m_F","Land_Mil_ConcreteWall_F","Land_Mil_WiredFence_F","Land_Mil_WiredFence_Gate_F","Land_Mil_WiredFenceD_F","Land_Net_Fence_Gate_F"],
-	["A3_Structures_F_Training" call zlt_units, { (["shoot_house", _x] call bis_fnc_instring) or (["obstacle", _x] call bis_fnc_instring) or (["concrete", _x] call bis_fnc_instring) }] call zlt_filter,
-	//["Land_Cargo20_military_green_F","Land_Shoot_House_Tunnel_Prone_F", "Land_Pallet_F", "Land_Pallet_vertical_F", "Land_Pallets_F", "Land_Pallets_stack_F", "Land_Obstacle_Ramp_F","Land_Obstacle_Bridge_F","Land_Obstacle_Saddle_F", "Land_CargoBox_V1_F"],
-	//["Land_Campfire_F", "Land_Camping_Light_F","Land_CampingChair_V1_F","Land_CampingTable_F","Land_FieldToilet_F","Land_Sleeping_bag_F","Land_TentA_F","Land_TentDome_F", "MapBoard_altis_F","MapBoard_stratis_F"],
-	"A3_Structures_F_Civ_Camping" call zlt_units,
-	["Land_Wall_IndCnc_2deco_F","Land_PortableLight_single_F","Land_PortableLight_double_F","Land_ConcretePipe_F", "Land_CinderBlocks_F", "Land_MetalBarrel_empty_F" , "Land_MetalBarrel_F", "Land_Sign_WarningMilitaryArea_F","RoadCone_F","RoadCone_L_F","RoadBarrier_F","RoadBarrier_small_F", "TapeSign_F","Land_Scaffolding_F"],
-	[["A3_Structures_F_Households_Addons","A3_Structures_F_Households_House_Big01",'A3_Structures_F_Households_House_Big02','A3_Structures_F_Households_House_Shop01','A3_Structures_F_Households_House_Shop02', 'A3_Structures_F_Households_House_Small01', 'A3_Structures_F_Households_House_Small02', 'A3_Structures_F_Households_House_Small03', 'A3_Structures_F_Households_Slum', 'A3_Structures_F_Households_Stone_Big', 'A3_Structures_F_Households_Stone_Shed', 'A3_Structures_F_Households_Stone_Small', 'A3_Structures_F_Households_WIP','A3_Structures_F_Ind_AirPort' ] call zlt_units,{ not (["ruins", _x] call bis_fnc_instring)  and not (["_dam_", _x] call bis_fnc_instring) and not (["_d_", _x] call bis_fnc_instring) } ] call zlt_filter,
-	//["Land_WIP_F","Land_i_Barracks_V1_F","Land_Unfinished_Building_01_F","Land_Unfinished_Building_02_F","Land_u_House_Big_01_V1_F","Land_i_House_Big_01_V1_F","Land_i_House_Big_02_V1_F","Land_i_Shop_02_V1_F","Land_i_House_Small_01_V1_F","Land_i_House_Small_02_V1_F","Land_i_House_Small_03_V1_F","Land_i_Stone_HouseBig_V1_F","Land_i_Stone_HouseSmall_V1_F", "Land_cargo_addon02_V2_F"],
-//	["Land_Shoot_House_Wall_F","Land_Shoot_House_Wall_Stand_F","Land_Shoot_House_Wall_Crouch_F","Land_Shoot_House_Wall_Prone_F","Land_Shoot_House_Wall_Long_F","Land_Shoot_House_Wall_Long_Stand_F","Land_Shoot_House_Wall_Long_Crouch_F","Land_Shoot_House_Wall_Long_Prone_F","Land_Shoot_House_Corner_F","Land_Shoot_House_Corner_Stand_F","Land_Shoot_House_Corner_Crouch_F","Land_Shoot_House_Corner_Prone_F","Land_Shoot_House_Panels_F","Land_Shoot_House_Panels_Crouch_F","Land_Shoot_House_Panels_Prone_F","Land_Shoot_House_Panels_Vault_F","Land_Shoot_House_Panels_Window_F","Land_Shoot_House_Panels_Windows_F","Land_Shoot_House_Tunnel_F","Land_Shoot_House_Tunnel_Stand_F","Land_Shoot_House_Tunnel_Crouch_F","Land_Shoot_House_Tunnel_Prone_F"],
-	["Land_PierLadder_F", "Land_Pier_Box_F","Land_nav_pier_m_F","Land_Pier_F", "Land_Pier_small_F", "Land_Pier_addon","BlockConcrete_F","Land_RampConcrete_F","Land_RampConcreteHigh_F"],
-	["Land_Bench_F","Land_CashDesk_F","Land_HeatPump_F","Land_ChairPlastic_F","Land_ChairWood_F","Land_Icebox_F","Land_Metal_rack_F","Land_Metal_rack_Tall_F","Land_Metal_wooden_rack_F","Land_Rack_F","Land_ShelvesMetal_F","Land_ShelvesWooden_F","Land_TableDesk_F"],
-	["Land_Photos_V1_F","Land_Map_unfolded_F","Land_FilePhotos_F","Land_Laptop_F", "Land_Laptop_unfolded_F","Land_MobilePhone_smart_F","Land_SatellitePhone_F","Land_Suitcase_F", "Land_BottlePlastic_V1_F","Land_Can_V1_F","Land_Can_V3_F","Land_TacticalBacon_F","Land_PensAndPencils_F","Land_DrillAku_F","Land_Grinder_F"],
-	["Land_fort_rampart_EP1","Land_fort_rampart","Hedgehog","Misc_cargo_cont_small","TK_GUE_WarfareBUAVterminal_Base_EP1","TK_GUE_WarfareBArtilleryRadar_Base_EP1","TK_GUE_WarfareBAntiAirRadar_Base_EP1","Fort_Barricade","Land_fort_artillery_nest_EP1","Land_fort_artillery_nest","Hhedgehog_concrete","Hhedgehog_concreteBig","Barrack2","PowGen_Big","Land_Misc_Cargo1E_EP1","Land_BarGate2","Land_tent_east","CampEast_EP1","Land_GuardShed","Land_Antenna","Land_A_Villa_EP1","Land_Mil_Barracks_i_EP1"],
-	("A3_Structures_F_Dominants_Hospital" call zlt_units) + ("A3_Structures_F_EPC_Dominants_GhostHotel" call zlt_units)
+	['A3_Structures_F_Mil_Fortification','A3_Structures_F_Mil_BagBunker','A3_Structures_F_Mil_BagFence',"A3_Structures_F_Mil_Shelters"] call zlt_units
+	,[["A3_Structures_F_Mil_Cargo","A3_Structures_F_Mil_Radar","A3_Structures_F_Mil_Offices","A3_Structures_F_Mil_Barracks","A3_Structures_F_Mil_Bunker","A3_Structures_F_Mil_TentHangar","A3_Structures_F_Research"] call zlt_units, { not (["ruins", _x] call bis_fnc_instring) }] call zlt_filter
+	,["A3_Structures_F_Walls"] call zlt_units
+	,["A3_Structures_F_Training" call zlt_units, { (["shoot_house", _x] call bis_fnc_instring) or (["obstacle", _x] call bis_fnc_instring) or (["concrete", _x] call bis_fnc_instring) }] call zlt_filter
+	,["A3_Structures_F_Civ_Constructions","A3_Structures_F_EPA_Civ_Constructions","A3_Structures_F_Civ_Camping"] call zlt_units
+	,(["A3_Structures_F_Items_Documents","A3_Structures_F_Items_Electronics","A3_Structures_F_Items_Cans","A3_Structures_F_Items_Gadgets","A3_Structures_F_Items_Luggage","A3_Structures_F_Items_Stationery","A3_Structures_F_Items_Tools","A3_Structures_F_Items_Valuables","A3_Structures_F_EPA_Items_Electronics","A3_Structures_F_EPA_Items_Food","A3_Structures_F_EPA_Items_Medical","A3_Structures_F_EPA_Items_Tools","A3_Structures_F_EPA_Items_Vessels","A3_Structures_F_EPC_Items_Documents","A3_Structures_F_EPC_Items_Electronics"] call zlt_units)
+	,[["A3_Structures_F_Households_Addons","A3_Structures_F_Households_House_Big01",'A3_Structures_F_Households_House_Big02','A3_Structures_F_Households_House_Shop01','A3_Structures_F_Households_House_Shop02', 'A3_Structures_F_Households_House_Small01', 'A3_Structures_F_Households_House_Small02', 'A3_Structures_F_Households_House_Small03', 'A3_Structures_F_Households_Slum', 'A3_Structures_F_Households_Stone_Big', 'A3_Structures_F_Households_Stone_Shed', 'A3_Structures_F_Households_Stone_Small', 'A3_Structures_F_Households_WIP','A3_Structures_F_Ind_AirPort' ] call zlt_units,{ not (["ruins", _x] call bis_fnc_instring)  and not (["_dam_", _x] call bis_fnc_instring) and not (["_d_", _x] call bis_fnc_instring) } ] call zlt_filter
+	,(["A3_Structures_F_Naval_Piers","A3_Structures_F_Naval_RowBoats"] call zlt_units)
+	,["Land_Bench_F","Land_CashDesk_F","Land_HeatPump_F","Land_ChairPlastic_F","Land_ChairWood_F","Land_Icebox_F","Land_Metal_rack_F","Land_Metal_rack_Tall_F","Land_Metal_wooden_rack_F","Land_Rack_F","Land_ShelvesMetal_F","Land_ShelvesWooden_F","Land_TableDesk_F"]
+	,["A3_Structures_F_EPB_Furniture","A3_Structures_F_Furniture","A3_Structures_F_Items_Vessels", "A3_Structures_F_EPA_Civ_Camping","A3_Structures_F_EPB_Items_Vessels"] call zlt_units
+	,["A3_Structures_F_Civ_InfoBoards","A3_Structures_F_EPC_Civ_InfoBoards","A3_Signs_F","A3_Signs_F_AD","A3_Structures_F_EPB_Civ_Accessories","A3_Structures_F_EPC_Civ_Accessories"] call zlt_units
+	,["Land_fort_rampart_EP1","Land_fort_rampart","Hedgehog","Misc_cargo_cont_small","TK_GUE_WarfareBUAVterminal_Base_EP1","TK_GUE_WarfareBArtilleryRadar_Base_EP1","TK_GUE_WarfareBAntiAirRadar_Base_EP1","Fort_Barricade","Land_fort_artillery_nest_EP1","Land_fort_artillery_nest","Hhedgehog_concrete","Hhedgehog_concreteBig","Barrack2","PowGen_Big","Land_Misc_Cargo1E_EP1","Land_BarGate2","Land_tent_east","CampEast_EP1","Land_GuardShed","Land_Antenna","Land_A_Villa_EP1","Land_Mil_Barracks_i_EP1"]
+	,["A3_Structures_F_Dominants_Hospital", "A3_Structures_F_EPC_Dominants_GhostHotel"] call zlt_units
+	,(["A3_Structures_F_Civ_Garbage","A3_Structures_F_EPA_Mil_Scrapyard","A3_Structures_F_Wrecks","A3_Structures_F_EPB_Civ_Garbage"] call zlt_units)+["Submarine_01_F"]
 ];
 
 zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index;
@@ -50,24 +45,36 @@ zlt_new_10cmfix = ["Land_BagBunker_Large_F", "Land_BagBunker_Small_F", "Land_Bag
 zlt_new_5cmfix = ["Land_CncShelter_F"];
 zlt_new_15cmfix = ["Land_CncBarrierMedium4_F"];
 
-zlt_new_globalobjs = ["Land_Cargo_House_V1_F","Land_Cargo_HQ_V1_F","Land_Cargo_Patrol_V1_F","Land_Cargo_Tower_V1_F",
-"Land_Cargo_House_V3_F","Land_Cargo_HQ_V3_F","Land_Cargo_Patrol_V3_F","Land_Cargo_Tower_V3_F", "Land_Dome_Big_F","Land_Dome_Small_F","Land_Research_house_V1_F","Land_Research_HQ_F",
-"Land_Mil_WiredFence_F","Land_Mil_WiredFence_Gate_F","Land_Mil_WiredFenceD_F","Land_Net_Fence_Gate_F", "Land_BarGate_F",
- "Land_Cargo20_military_green_F","House_F", "Land_PortableLight_single_F",
- "Land_Mil_WallBig_4m_F","Land_Mil_WallBig_Corner_F","Land_Mil_WallBig_Gate_F","Land_Mil_WiredFence_F","Land_Mil_WiredFence_Gate_F","Land_Mil_WiredFenceD_F"
+// -------------------------------------------------- НОВОЕ -----------------------------------------------------------------------------------
+// лок объекты + отключены повреждения
+zlt_localObjectsClasses = 
+	([['A3_Structures_F_Mil_Fortification','A3_Structures_F_Mil_BagBunker','A3_Structures_F_Mil_BagFence'] call zlt_units, { not (["razor", _x] call bis_fnc_instring) }] call zlt_filter)
+	+(["A3_Structures_F_Civ_Garbage","A3_Structures_F_EPA_Mil_Scrapyard","A3_Structures_F_Wrecks"] call zlt_units)
+	+(['A3_Structures_F_Mil_Fortification','A3_Structures_F_Mil_BagBunker','A3_Structures_F_Mil_BagFence'] call zlt_units)
+	+(["A3_Structures_F_Training" call zlt_units, { (["shoot_house", _x] call bis_fnc_instring) or (["obstacle", _x] call bis_fnc_instring) or (["concrete", _x] call bis_fnc_instring) }] call zlt_filter)
+	+(["A3_Structures_F_Civ_Constructions","A3_Structures_F_EPA_Civ_Constructions"] call zlt_units)
+	+['Land_CncWall1_F','Land_CncWall4_F',"Land_CncShelter_F"]
+;
 
+// лок. объекты + отключены повр., выключена симуляция
+zlt_disableSimClasses = 
+	(["A3_Structures_F_Civ_Camping" call zlt_units, { not (["toilet", _x] call bis_fnc_instring) }] call zlt_filter)
+	+(["A3_Structures_F_Items_Documents","A3_Structures_F_Items_Electronics","A3_Structures_F_Items_Cans","A3_Structures_F_Items_Gadgets","A3_Structures_F_Items_Luggage","A3_Structures_F_Items_Stationery","A3_Structures_F_Items_Tools","A3_Structures_F_Items_Valuables","A3_Structures_F_EPA_Items_Electronics","A3_Structures_F_EPA_Items_Food","A3_Structures_F_EPA_Items_Medical","A3_Structures_F_EPA_Items_Tools","A3_Structures_F_EPA_Items_Vessels","A3_Structures_F_EPC_Items_Documents","A3_Structures_F_EPC_Items_Electronics"] call zlt_units)
+	+(["A3_Structures_F_EPB_Furniture","A3_Structures_F_Furniture","A3_Structures_F_Items_Vessels", "A3_Structures_F_EPA_Civ_Camping","A3_Structures_F_EPB_Items_Vessels"] call zlt_units)
+	-["Land_MetalBarrel_empty_F","MetalBarrel_burning_F"]
+	+["Land_Pallet_F", "Land_Pallet_vertical_F","Land_Obstacle_Ramp_F"]
+;
+
+// нужны маркера для объекта
+zlt_objectsWithMarkers = 
+	("A3_Structures_F_Mil_BagBunker" call zlt_units) + ["Land_CncWall4_F","Land_CncWall4_F","Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F",
+"Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F", "House_F"]
+;
+
+// игнорировать этот тип объекта
+zlt_objectsIgnorePlacement = [
+"Helper_Base_F"
 ];
-
-zlt_new_localobjs = ["Land_CncShelter_F"];
-
-// симуляцию можно выключать только локальным объектам и всем локальным объектам ее нужно выключать?
-// 
-
-zlt_new_disablesim = ["Land_Pallet_F", "Land_Pallet_vertical_F","Land_Obstacle_Ramp_F",
-"Land_MapBoard_F","Land_Photos_V1_F","Land_Map_unfolded_F","Land_FilePhotos_F","Land_Laptop_F", "Land_Laptop_unfolded_F","Land_MobilePhone_smart_F","Land_SatellitePhone_F","Land_Suitcase_F", "Land_BottlePlastic_V1_F","Land_Can_V1_F","Land_Can_V3_F","Land_TacticalBacon_F","Land_PensAndPencils_F","Land_DrillAku_F","Land_Grinder_F"
-
-];
-
 
 
 zlt_new_specialFixObjs = ["Land_Pallet_F","Land_HBarrierBig_F", "Land_HBarrier_Big_F"];
@@ -75,17 +82,7 @@ zlt_new_specialFixObjs = ["Land_Pallet_F","Land_HBarrierBig_F", "Land_HBarrier_B
 // Local, disablesim, left/right, up/down, forw/backw fix
 zlt_new_specialFixObjsData = [[ 0.72, 0, 0.61],[0.5,0.5,0.5],[0.5,0.5,0.5]];
 
-
-/*
-[
-"Land_Cargo_House_V1_F",
-"Land_Cargo_House_V2_F",
-"Land_Cargo_House_V3_F",
-"Land_Medevac_house_V1_F"
-]
-
-*/
-
+// ----------------------------------------------        КОМПОЗИЦИИ -----------------------------------------------------------------------------
 
 zlt_comp_names = ["Тест", "Fortify Cargo Patrol","Мешки сверху HBarrier"];
 zlt_comp_data = [
@@ -96,12 +93,6 @@ zlt_comp_data = [
 
 zlt_curr_comp = 0;
 
-
-zlt_objs_wth_markers = ["Land_CncWall4_F","Land_CncWall4_F","Land_HBarrierBig_F", "Land_HBarrier_Big_F", "Land_HBarrierTower_F",
-"Land_HBarrierWall_corner_F", "Land_HBarrierWall_corridor_F", "Land_HBarrierWall4_F", "Land_HBarrierWall6_F", "House_F",
-"Land_BagBunker_Small_F","Land_BagBunker_Large_F","Land_BagBunker_Tower_F"] ;
-
-zlt_objs_ignore = ["Helper_Base_F"];
 
 
 #define DIK_UP 				200
@@ -155,8 +146,30 @@ zlt_objs_ignore = ["Helper_Base_F"];
 #define PR(x) private ['x']; x
 #define PARAM(X,Y,Z) private ['X']; X=[_this, Y, Z] call BIS_fnc_param;
 
+
+
+#define P_LOCAL_OBJ 0
+#define P_SIM_DISABLE 1
+#define P_DAMAGE_DISABLE 2
+#define P_HAS_MARKER 3
+#define P_IGNORE_PLACEMENT 4
+
+zlt_objGetStdParams = {
+	private ["_class","_islocal","_simdisable","_damdisable","_hasmarker","_ignoreplacement"];
+	_class = _this;
+	_islocal = false; _simdisable = false; _damdisable = false; _hasmarker = false; _ignoreplacement = false;	
+
+	if ( [_class,zlt_localObjectsClasses] call zlt_fnc_cycleKindOf ) then {_islocal = true; _damdisable = true;};
+	if ( [_class,zlt_disableSimClasses] call zlt_fnc_cycleKindOf ) then {_islocal = true; _damdisable = true; _simdisable = true; };
+	if ( [_class,zlt_objectsWithMarkers] call zlt_fnc_cycleKindOf ) then { _hasmarker = true; };
+	if ( [_class,zlt_objectsIgnorePlacement] call zlt_fnc_cycleKindOf ) then {_ignoreplacement = true; };	
+	[_islocal, _simdisable, _damdisable, _hasmarker,  _ignoreplacement ]	
+};
+
+//ASLToATL ASLtoATL
+
 zlt_createcam = {
-	PARAM(_campos, 0, ASLToATL eyePos player)
+	PARAM(_campos, 0,  asltoatl eyePos player)
 	zlt_cameraMode = true;
 	zlt_camera =  "camera" camCreate _campos;
 	zlt_camera cameraEffect ["internal","top"];
@@ -187,8 +200,14 @@ zlt_createcam = {
 			if (zlt_camerakeys select DIK_D) then { _campos=[1,1,0,_coeff, _campos] call zlt_movecam;};
 			if (zlt_camerakeys select DIK_Q) then { _campos=[0,0,1,_coeff, _campos] call zlt_movecam;};
 			if (zlt_camerakeys select DIK_Z) then { _campos=[0,0,-1,_coeff, _campos] call zlt_movecam;};			
-			zlt_camera camSetPos (ASLtoATL _campos);
+			if (surfaceIsWater _campos) then {
+				zlt_camera camSetPos _campos; } else {
+				zlt_camera camSetPos ( ASLtoATL _campos);
+			};
+
 			zlt_camera camCommit 0.3;
+			comment "13";
+
 		};
 	};
 };
@@ -197,9 +216,11 @@ zlt_removecam = {
 	player cameraEffect ["terminate","back"];
 	camDestroy zlt_camera;
 	zlt_cameraMode = false;
+	terminate zlt_cam_handler;
 };
 
 zlt_movecam = {
+	//diag_log ["zlt_movecam",_this];
 	PR(_dx) = _this select 0; PR(_dy) = _this select 1; PR(_dz) = _this select 2; PR(_dl) = _this select 3;
 	//PR(_pos) = getPosAsl zlt_camera;
 	_pos = _this select 4;
@@ -207,6 +228,7 @@ zlt_movecam = {
 	PR(_newcampos) = [ (_pos select 0) + ((sin _dir) * _dl * _dy), (_pos select 1) + ((cos _dir) * _dl * _dy), (_pos select 2) + _dz * _dl ];
 	_newcampos set [2,(_newcampos select 2) max (getterrainheightasl _newcampos)];
 	//zlt_camera camSetPos (ASLtoATL _newcampos);
+	//diag_log ["zlt_movecam",_newcampos];
 	_newcampos
 
 };
@@ -306,76 +328,8 @@ zlt_onEachFrame = {
 	};
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-zlt_fnc_getObjParam = {
-	PR(_obj) = _this;
-	PR(_pitchBank) = _obj call BIS_fnc_getPitchBank;
-	_obj setvectorup [0,0,1];
-	PR(_posATL) = getPosATL _obj;
-	PR(_posASL) = getPosASL _obj;
-	PR(_dir) = getDir _obj;
-	PR(_pitch) = _pitchBank select 0;
-	PR(_bank) = _pitchBank select 1;
-	[_obj, _pitch, _bank] call BIS_fnc_setPitchBank;
-	[typeof _obj, _posATL, _dir, _pitch, _bank];
-};
-
-zlt_fnc_genPseudoCodeFromObjects1 = {
-	PARAM(_objs, 0, [])
-	PARAM(_parentObj, 1, objNull)
-	PARAM(_parentObjParams, 2, [])
-	PR(_paramArr) = [];
-	PR(_resultArr) = [1];
-	PR(_childblocks) = [];
-	{
-		_paramArr = _x call zlt_fnc_getObjParam;
-		if (not isNull _parentObj) then {
-			_paramArr set [1, _parentObj modelToWorld (_paramArr select 1)];
-			_paramArr set [2, (_paramArr select 2) - (_parentObjParams select 2)];
-			_paramArr set [3, (_paramArr select 3) - (_parentObjParams select 3)];
-			_paramArr set [4, (_paramArr select 4) - (_parentObjParams select 4)];
-		};
-	
-		_paramArr pushback ([_x, zlt_new_globalobjs] call zlt_fnc_cycleKindOf); // глобальный
-		_paramArr pushback ([_x, zlt_new_disablesim] call zlt_fnc_cycleKindOf); // выключена симуляция
-		_paramArr pushback (not ([_x, zlt_new_globalobjs] call zlt_fnc_cycleKindOf)); //выключены повреждения
-		_paramArr pushback (if ([_x, zlt_objs_wth_markers] call zlt_fnc_cycleKindOf) then {[(boundingBoxReal _x),direction _x, position _x]} else {[]}); // нужна метка
-		_resultArr pushback _paramArr;
-		_childblocks = _x getVariable ["zlt_new_childblocks",[]];
-		if (count _childblocks != 0) then {
-			_resultArr pushback ([_childblocks, _x, _paramArr] call zlt_fnc_genPseudoCodeFromObjects1);
-		};
-	} foreach _objs;
-	_resultArr;
-};
-
-// [версия, класс, позиция, направление, питч, банк, глоб, симул. выкл., выкл. повр., парам. метки, дочеррние объекты ]
-//   -1         0       1          2        3     4     5      6              7           8                 9 (опц)
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-zlt_printto = {
-	PARAM(_str, 0, "")
-	PARAM(_txt, 1, "")
-	PARAM(_endl, 2, false)
-	_str = _str + _txt;
-	if (_endl) then {
-		_str = _str + toString [13, 10];
-		diag_log _str;
-	};
-	_str
-};
-
-zlt_fnc_shallglobal = {
-	if ([_this,zlt_new_localobjs] call zlt_fnc_cycleKindOf) exitWith {false};
-	[_this,zlt_new_globalobjs] call zlt_fnc_cycleKindOf
-
-};
-
 zlt_fnc_getallcode = {
-	private ["_br","_listobj","_txt","_global"];
+	private ["_br","_listobj","_txt","_global","_stdparm","_local","_ignore","_simdisable","_listobj2","_hasmarker"];
 	_br = toString [13, 10];
 	_listobj = +(_this);
 	
@@ -392,7 +346,9 @@ zlt_fnc_getallcode = {
 	_listobj2 = +(_listobj);
 	_listobj = [];
 	{
-		if ( !( [_x,zlt_objs_ignore] call zlt_fnc_cycleKindOf ) ) then {
+		_stdparm = (_x call zlt_objGetStdParams);
+		_ignore = _stdparm select P_IGNORE_PLACEMENT;
+		if ( !_ignore ) then {
 			_listobj pushBack _x;
 		};
 	} foreach _listobj2;
@@ -403,7 +359,9 @@ zlt_fnc_getallcode = {
 	_txt = _txt + "zlt_fnc_boundingbox = " + str(zlt_fnc_boundingbox) +";"+ _br;
 	_txt = _txt + "if(not isDedicated) then {" + _br;
 	{
-		if ( [_x,zlt_objs_wth_markers] call zlt_fnc_cycleKindOf ) then {
+		_stdparm = (_x call zlt_objGetStdParams);
+		_hasmarker = ( _stdparm select P_HAS_MARKER );
+		if ( _hasmarker ) then {
 			_txt = _txt +"    "+format["[%1,%2,%3] call zlt_fnc_boundingbox;",str(boundingBoxReal _x),direction _x, position _x]+_br;
 		};
 	} foreach _listobj;
@@ -413,9 +371,11 @@ zlt_fnc_getallcode = {
 //	_txt = _txt + "waituntil {time > 0};" + _br;
 	_txt = _txt + "if (isserver) then {" + _br;
 	{
-		_global = (_x call zlt_fnc_shallglobal );
-		if (_global) then {
-			_txt = _txt + ([_x, false] call zlt_fnc_getcode);
+		_stdparm = (_x call zlt_objGetStdParams);
+		_local = ( _stdparm select P_LOCAL_OBJ );
+		_simdisable = ( _stdparm select P_SIM_DISABLE );
+		if (!_local) then {
+			_txt = _txt + ([_x, _local, _simdisable] call zlt_fnc_getcode);
 		};
 	} foreach _listobj;
 	
@@ -424,9 +384,11 @@ zlt_fnc_getallcode = {
 	
 //	_txt = _txt + "waituntil {time > 0};" + _br;
 	{
-		_global = (_x call zlt_fnc_shallglobal );
-		if not (_global) then {
-			_txt = _txt + ([_x, true] call zlt_fnc_getcode);
+		_stdparm = (_x call zlt_objGetStdParams);
+		_local = ( _stdparm select P_LOCAL_OBJ );
+		_simdisable = ( _stdparm select P_SIM_DISABLE );
+		if not (!_local) then {
+			_txt = _txt + ([_x, _local, _simdisable] call zlt_fnc_getcode);
 		};
 	} foreach _listobj;
 	diag_log ["zlt_fnc_getallcode", _txt];
@@ -436,6 +398,8 @@ zlt_fnc_getallcode = {
 zlt_fnc_getcode = {		
 	_obj = _this select 0;
 	_local = _this select 1;
+	_simdisable = _this select 2;
+
 	_objType = typeOf _obj;
 	_spawnType = "CAN_COLLIDE";
 	_pitchBank = _obj call BIS_fnc_getPitchBank;
@@ -460,7 +424,7 @@ zlt_fnc_getcode = {
 		_txt2 = format ["zlt_newlb setDir %1; zlt_newlb setPosWorld _pos; [zlt_newlb, %2, %3] call BIS_fnc_setPitchBank; zlt_new_blocks pushback zlt_newlb; zlt_newlb allowdamage false;", _dir,  _pitch, _bank];
 	};
 	_copiedTxt = _copiedTxt + _txt1;
-	if ( [_objType,zlt_new_disablesim] call zlt_fnc_cycleKindOf ) then {
+	if ( _simdisable ) then {
 		_copiedTxt = _copiedTxt + "zlt_newlb enableSimulation false;";
 	};
 	_copiedTxt = _copiedTxt + _txt2;
@@ -508,10 +472,7 @@ zlt_fnc_boundingbox = { private ["_dir","_pos","_color","_alpha","_bbox","_b1","
 zlt_fnc_cycleKindOf = {
 	_ret = false;
 	{
-		if ( (_this select 0) isKindOf _x ) exitWith {
-			_ret = true;
-		};
-
+		if ( (_this select 0) isKindOf _x ) exitWith {_ret = true; };
 	} foreach (_this select 1);
 	_ret
 };
@@ -1002,7 +963,10 @@ zlt_new_block = {
 	
 	//_new = if (_class in zlt_new_globalobjs) then { createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"]; } else { _class createVehiclelocal [0,0,0]; };
 	
-	if ([_new,zlt_new_disablesim] call zlt_fnc_cycleKindOf ) then {
+
+
+
+	if ( (_new call zlt_objGetStdParams) select P_SIM_DISABLE ) then {
 		_new enableSimulation false;
 	};
 	
