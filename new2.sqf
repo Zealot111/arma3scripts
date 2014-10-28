@@ -142,6 +142,8 @@ zlt_curr_comp = 0;
 #define DIK_MULTIPLY        0x37    /* * on numeric keypad */
 #define DIK_NUMPADSTAR      DIK_MULTIPLY 
 #define DIK_SUBTRACT        0x4A    /* - on numeric keypad */
+#define DIK_SPACE           0x39
+#define DIK_ADD             0x4E    /* + on numeric keypad */
 
 #define PR(x) private ['x']; x
 #define PARAM(X,Y,Z) private ['X']; X=[_this, Y, Z] call BIS_fnc_param;
@@ -919,6 +921,32 @@ zlt_new_keydown =
 				else { zlt_new_posmode = true; "Режим позиций" call zlt_fnc_notify;};
 			};			
 */
+
+			case (_key == DIK_SPACE) : {
+				if (_alt) then {
+					if ( [zlt_newlb,["Helper_Base_F"]] call zlt_fnc_cycleKindOf ) then {
+						zlt_new_blocks = zlt_new_blocks - [zlt_newlb];
+						zlt_newlb = zlt_new_blocks select (count (zlt_new_blocks)  - 1);
+						call zlt_exportPos;	
+					};
+				} else {
+					PR(_arr) = call compile copyFromClipboard;
+
+					if (not isNil "_arr" and { not isNull _arr} and {typename _arr == typeName []}) then {
+						{
+							_o = ["Sign_Arrow_Direction_F"] createVehicle _x;
+							zlt_new_blocks pushBack _x;
+							zlt_newlb = _x;
+						} foreach _arr;
+						"Позиции загружены" call zlt_fnc_notify;
+						copyToClipboard "";
+					} else {
+						call zlt_placepos;
+						call zlt_exportPos;
+					};
+				};
+			};
+
 			// "/"
 			case (_key == DIK_DIVIDE and _ctrl) : {
 				[] call zlt_select_block; if (not (zlt_newlb in zlt_new_blocks) and not (isnull zlt_newlb)) then {zlt_new_blocks = zlt_new_blocks + [zlt_newlb];}; 
@@ -937,6 +965,9 @@ zlt_new_keydown =
 				};
 
 			};
+			case (_key == DIK_ADD) : {
+				if (zlt_cameraMode) then {zlt_camera camSetPos (getpos zlt_newlb); zlt_camera camCommit 0;};
+			};
 			
 			// NUM 8
 			case (_key == DIK_NUM8 ) : {_ind =  (zlt_new_blocks find zlt_newlb ) max 0; _ind = _ind + 1; if (_ind > (count (zlt_new_blocks) -1)) then {_ind = count (zlt_new_blocks) -1 ;}; zlt_newlb = zlt_new_blocks select _ind; ("Selected: "+ str [zlt_newlb, typeof zlt_newlb]) call zlt_fnc_notify;};
@@ -949,6 +980,18 @@ zlt_new_keydown =
 	};
 	_ret;
 };
+
+zlt_exportPos = {
+	PR(_pos) = [];
+	{
+		if ( [_x,["Helper_Base_F"]] call zlt_fnc_cycleKindOf ) then {
+			_pos pushBack (getpos _x);
+		};
+	} foreach zlt_new_blocks;
+	diag_log ["zlt_exportPos",_pos];
+	copyToClipboard str (_pos);
+};
+
 	
 // 	[-1.56135,-0.255241,-0.458448],[1.56135,0.255241,0.458448]]
 zlt_new_block = {
@@ -1189,14 +1232,6 @@ zlt_placepos = {
 	//zlt_positions pushBack _new;
 	zlt_new_blocks pushBack _new;
 	zlt_newlb = _new;
-};
-
-
-zlt_removepos = {
-	
-
-
-
 };
 
 
