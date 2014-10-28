@@ -555,77 +555,31 @@ zlt_fnc_notify = {
 	 [ format["<t size='0.75' color='#ffff00'>%1</t>",_this], 0,1,5,0,0,331] spawn bis_fnc_dynamicText;
 };
 
-zlt_fnc_notifyhintex = {
-	private ["_item","_list","_txt","_k","_n"];
-	_item = _this select 0;
-	_list = _this select 1;
-	_txt = "";
-	_k = (_list find _item) max 0;
-
-	for "_n" from (_k - 10) to (_k + 10) step 1 do {
-		_newstr = "";
-
-		switch (true) do {
-		/*
-			case (_n < 0) : {
-				_newstr = "<t size='0.35'  color='#ffff00' align='left'>...<br/></t>";
-			};*/
-			case (_k == _n) : {
-				_newstr =  ("<t size='0.35'  color='#ff0000' align='left'>" + "> "+ (_list select _n) + "<br/></t>"); 
-			};
-			case (_n >=0 and _n < (count _list-1)) : {
-				_newstr =  ("<t size='0.35'  color='#ffff00' align='left'>" + (_list select _n) + "<br/></t>");
-			};
-
-		};
-		_txt = _txt + _newstr;		
-
-	};
-
-/*	
-	{
-		_newstr = "";
-		if (_x == _item) then {
-			_newstr =  ("<t size='0.35'  color='#ff0000' align='left'>" + "> "+ _x + "<br/></t>"); //font='TahomaB'
-		} else {
-			_newstr =  ("<t size='0.35'  color='#ffff00' align='left'>" + _x + "<br/></t>");
-		};
-
-
-
-	} foreach _list;
-*/	
-	//[ format["<t size='0.3' font='TahomaB' align='Left' color='#00ff00'>%1</t>",_txt], safeZoneX,safezoneY+0.5,10,0,0,339] call bis_fnc_dynamicText;
-	[ format["%1",_txt], safeZoneX,safezoneY+0.5,10,0,0,339] spawn bis_fnc_dynamicText;
-	diag_log [_txt];
-};
-
 zlt_fnc_notifyhint = {
 	private ["_item","_list","_txt","_k","_n"];
+	disableSerialization;
 	_item = _this select 0;
 	_list = _this select 1;
 	_k = (_list find _item) max 0;
-	diag_log ['zlt_fnc_notifyhint',_k,_item,_list];
-
-	if ((zlt_new_objects_lb lbText _k) == _item) then {
+	//diag_log ['zlt_fnc_notifyhint',_k,_item,_list];
+	if (((uiNamespace getVariable "zlt_new_objects_lb") lbText _k) == _item) then {
 		
 	} else {
-		lbClear zlt_new_objects_lb;
+		lbClear (uiNamespace getVariable "zlt_new_objects_lb");
 
 		{
-			zlt_new_objects_lb lbAdd _x;
+			(uiNamespace getVariable "zlt_new_objects_lb") lbAdd _x;
 		} foreach _list;
 
 	};
-	zlt_new_objects_lb lbSetCurSel _k;
-
-	zlt_new_objects_lb ctrlShow true;
-	zlt_new_objects_lb ctrlCommit 0;
+	(uiNamespace getVariable "zlt_new_objects_lb") lbSetCurSel _k;
+	(uiNamespace getVariable "zlt_new_objects_lb") ctrlShow true;
+	(uiNamespace getVariable "zlt_new_objects_lb") ctrlCommit 0;
 	terminate zlt_new_objects_lb_cb;
 	zlt_new_objects_lb_cb = [] spawn {
 		uiSleep 10;
-		zlt_new_objects_lb ctrlShow false;
-		zlt_new_objects_lb ctrlCommit 0;
+		(uiNamespace getVariable "zlt_new_objects_lb") ctrlShow false;
+		(uiNamespace getVariable "zlt_new_objects_lb") ctrlCommit 0;
 	};
 };
 
@@ -995,6 +949,7 @@ zlt_exportPos = {
 	
 // 	[-1.56135,-0.255241,-0.458448],[1.56135,0.255241,0.458448]]
 zlt_new_block = {
+	comment "v.1";
 	_class = zlt_cur_class;
 	_ctrl = [_this,0,false ] call bis_fnc_param;
 	_placemode = [_this, 1, "UP"] call bis_fnc_param;
@@ -1003,12 +958,7 @@ zlt_new_block = {
 	
 	_new = createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"];
 
-	
 	//_new = if (_class in zlt_new_globalobjs) then { createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"]; } else { _class createVehiclelocal [0,0,0]; };
-	
-
-
-
 	if ( (_new call zlt_objGetStdParams) select P_SIM_DISABLE ) then {
 		_new enableSimulation false;
 	};
@@ -1096,15 +1046,16 @@ zlt_new_block = {
 	} else {
 		_new setVectorUp [0,0,1];
 	};
-
+	
 	PR(_closestBlocks) = [zlt_new_blocks,[_new],{_input0 distanceSqr _x},"ASCEND"] call BIS_fnc_sortBy;	
-	if ((_closestBlocks select 0) distance _new < 0.05 ) then {
+	if ((count zlt_new_blocks > 0) and {(_closestBlocks select 0) distance _new < 0.05} ) then {
 		"Ошибка, слишком близко к другому блоку!" call zlt_fnc_notify;
 		deleteVehicle _new;
 	} else {
 		zlt_newlb = _new;
 		zlt_new_blocks = zlt_new_blocks + [zlt_newlb];
 	};
+
 };
 
 zlt_new_comp = {
@@ -1253,8 +1204,24 @@ KK_fnc_positionToString = {
 };
 
 
-if (isNil "zlt_eh_keydown") then {
+zlt_fnc_initUI = {
+	disableSerialization;
+	uiNamespace setVariable ["zlt_new_objects_lb", findDisplay 46 ctrlCreate ["RscListBox", -1]];
+	(uiNamespace getVariable "zlt_new_objects_lb") ctrlSetPosition [safeZoneX,safezoneY+0.5,0.3,0.5];
+	(uiNamespace getVariable "zlt_new_objects_lb") ctrlSetFade 0.25;
+	(uiNamespace getVariable "zlt_new_objects_lb") ctrlSetFontHeight 0.03;
+	(uiNamespace getVariable "zlt_new_objects_lb") ctrlCommit 0;
 	
+	zlt_new_objects_lb_cb = [] spawn {
+		uiSleep 5;
+		(uiNamespace getVariable "zlt_new_objects_lb") ctrlShow false;
+		(uiNamespace getVariable "zlt_new_objects_lb") ctrlCommit 0;
+	};
+};
+
+
+if (isNil "zlt_eh_keydown") then {
+
 	waitUntil { (!isNull (findDisplay 46) || !(alive player))}; 
 	
 	(findDisplay 46) displayRemoveAllEventHandlers "KeyDown";
@@ -1265,19 +1232,8 @@ if (isNil "zlt_eh_keydown") then {
 	zlt_eh_mouse = (findDisplay 46) displayAddEventHandler ["MouseMoving", "_bbb=(_this call zlt_new_mouseMoving)"];	
 
 	// ВИДЖЕТ СПИСКА
-	zlt_new_objects_lb = findDisplay 46 ctrlCreate ["RscListBox", -1];
-	zlt_new_objects_lb ctrlSetPosition [safeZoneX,safezoneY+0.5,0.3,0.5];
-	zlt_new_objects_lb ctrlSetFade 0.25;
-	zlt_new_objects_lb ctrlSetFontHeight 0.03;
-	zlt_new_objects_lb ctrlCommit 0;
+	call zlt_fnc_initUI;
 
-	zlt_new_objects_lb_cb = [] spawn {
-		uiSleep 5;
-		zlt_new_objects_lb ctrlShow false;
-		zlt_new_objects_lb ctrlCommit 0;
-	};
-
-	
 	zlt_cur_class = zlt_obj_list select 0;	
 	if (isnil "zlt_new_blocks") then { zlt_new_blocks = [];} else {
 		{
