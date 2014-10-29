@@ -1,0 +1,102 @@
+
+zlt_telemarkers = [_this, 0, [] ] call bis_fnc_param;
+zlt_uarray = [_this, 1, [units group player] ] call bis_fnc_param;
+
+zlt_tlFormat = "<t color='#ff0000' size='2' shadow='1' shadowColor='#000000' align='center'>%1</t>";
+// время после начала игры, по истечении которого нельзя будет ничего установить
+zlt_tlMaxTime = 300;
+
+if (time > zlt_tlMaxTime ) exitWith {
+	hint parseText format [zlt_tlFormat,"Время перемещений прошло!"];
+};
+
+zlt_fnc_findposRoad = {
+	private['_pos','_size','_res','_roads','_next','_nearStuff','_road'];
+	_pos = _this select 0;
+	_size = _this select 1;
+	_res = _pos;
+	_roads = _pos nearRoads 100;
+	_roads = [_roads,[_pos],{_input0 distanceSqr _x},"ASCEND"] call BIS_fnc_sortBy;	
+	_next = 0;
+	_nearStuff = ['dummy'];
+	while {count _nearStuff !=0 && _next < count _roads} do {
+		_road = _roads select _next;
+		_nearStuff = nearestObjects [getpos _road, ["LandVehicle","Air","Ship","Man"], _size+1];
+		if (count _nearStuff == 0) then {_res = getpos _road;};
+		_next = _next + 1;
+	};
+	_res
+};
+
+// массив [юниты, техника, [массив техники]]
+zlt_fnc_teleport = {
+	private ["_pos","_objs","_dir","_posx","_marker","_txt"];
+	_pos = _this select 0;
+	_dir = _this select 1;
+	_objs = _this select 2;
+	_marker = _this select 3;
+	_pos = [_pos, 5] call zlt_fnc_findposRoad;
+	{
+		switch true do {
+			case (typeName _x == typeName []) : {
+				_posx = _pos;
+				_txt = format [zlt_tlFormat, format ["Вы были перенесены на точку %1 командиром отряда!", markerText _marker]];
+				{
+					[[ [_x,_posx, _txt] ,{
+						if (!isDedicated) then {wmt_freeze_startpos = (_this select 1);"PlayerFreeze" setMarkerPosLocal (_this select 1); hint parseText (_this select 2);};
+						(_this select 0) setpos (_this select 1);
+					}],"bis_fnc_spawn",_x] call bis_fnc_mp;
+					_posx = [ (_pos select 0) +  floor (_foreachindex / 3) * 1, (_pos select 1) + (_foreachindex % 3)*1, _pos select 2];
+				} foreach _x;
+			};
+			case (typename _x == typename objNull) : {
+				[[ [_x,_pos,_dir] ,{(_this select 0) setpos (_this select 1); (_this select 0) setDir (_this select 2);}],"bis_fnc_spawn",_x] call bis_fnc_mp;
+			};
+		};
+		_pos = [_pos, 15, _dir] call BIS_fnc_relPos;
+	} foreach _objs;
+};
+
+zlt_fnc_tel = {
+	sleep 0.5;
+	zlt_mutexAction = true;
+	hint parseText format [zlt_tlFormat,"Выберите позицию:"];
+	sleep 0.05;
+	openMap true;
+	sleep 0.05;
+	onMapSingleClick {
+		private ["_closestPoints", "_point","_dir","_pos"];
+		_closestPoints = [zlt_telemarkers,[_pos],{_input0 distanceSqr (getMarkerPos _x)},"ASCEND"] call BIS_fnc_sortBy;
+		_point = _closestPoints select 0;
+
+		_pos = markerPos _point;
+		_dir = markerDir _point;
+		onMapSingleClick {};
+//		hint parseText format [zlt_tlFormat,"Позиция выбрана"];
+		[_pos, _dir, zlt_uarray, _point] call zlt_fnc_teleport;
+		zlt_mutexAction = false;	
+		openMap false;
+		true
+	};
+	waitUntil {not visibleMap};
+	if (zlt_mutexAction) then {
+		hintSilent "";
+		sleep 0.05;
+		hint parseText format [zlt_tlFormat,"Установка отменена!"];
+		onMapSingleClick {};
+
+	};
+};
+
+zlt_teleMenuId = player addAction ["ВЫБРАТЬ ТОЧКУ СТАРТА", {[] spawn zlt_fnc_tel}, [], -1, false, true, "", '!zlt_mutexAction'];
+
+waitUntil {time > zlt_tlMaxTime && WMT_pub_frzState >=3};
+player removeAction zlt_teleMenuId;
+zlt_teleMenuId = nil;
+zlt_telemarkers = nil;
+zlt_uarray = nil;
+zlt_tlFormat = nil;
+zlt_tlMaxTime = nil;
+zlt_fnc_findposRoad = nil;
+zlt_fnc_teleport = nil;
+zlt_fnc_tel = nil;
