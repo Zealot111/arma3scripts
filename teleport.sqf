@@ -1,3 +1,4 @@
+//by [STELS]Zealot
 zlt_telemarkers = [_this, 0, [] ] call bis_fnc_param;
 zlt_uarray = [_this, 1, [units group player] ] call bis_fnc_param;
 
