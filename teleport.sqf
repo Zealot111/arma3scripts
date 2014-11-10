@@ -68,12 +68,13 @@ zlt_fnc_teleport = {
 			};
 		};
 		_pos = [_pos, 25, _dir] call BIS_fnc_relPos;
+		sleep 0.3;
 	} foreach _objs;
 };
 
 zlt_fnc_tel = {
-	sleep 0.5;
 	zlt_mutexAction = true;
+	sleep 0.5;
 	hint parseText format [zlt_tlFormat,"Выберите позицию:"];
 	sleep 0.05;
 	openMap true;

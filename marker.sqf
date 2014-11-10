@@ -7,21 +7,7 @@
 zlt_mrk_objs = _this;
 
 
-zlt_fnc_createMrkr = {
-	_mrkr = _this select 0;
-	_txt = _this select 1;
-	createMarkerLocal [_mrkr, [0,0]];
-	//zlt_marker setMarkerPosLocal (getPos zlt_mrk_obj);
-	_mrkr setMarkerShapeLocal "ICON";
-	_mrkr setMarkerTypeLocal 	"mil_dot";
-	_mrkr setMarkerTextLocal 	_txt;
-	_mrkr setMarkerColorLocal "ColorOrange";
-	_mrkr setMarkerDirLocal 0; // 	(getDir _x);
-	_mrkr setMarkerBrushlocal "Solid";
-	_mrkr setMarkerSizelocal 	[1,1];
-	_mrkr setMarkerAlphaLocal 0;
-	_mrkr
-};
+zlt_fnc_createMrkr = { private ["_mrkr","_txt"]; _mrkr = _this select 0;_txt = _this select 1;createMarkerLocal [_mrkr, [0,0]]; /*zlt_marker setMarkerPosLocal (getPos zlt_mrk_obj);*/ _mrkr setMarkerShapeLocal "ICON";_mrkr setMarkerTypeLocal 	"mil_dot";_mrkr setMarkerTextLocal 	_txt;_mrkr setMarkerColorLocal "ColorOrange";_mrkr setMarkerDirLocal 0; /*(getDir _x);*/	_mrkr setMarkerBrushlocal "Solid";_mrkr setMarkerSizelocal[1,1];_mrkr setMarkerAlphaLocal 0;	_mrkr};
 
 {
 	_mn = "zlt_mrkr!" + str(_foreachindex);

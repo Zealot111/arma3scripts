@@ -377,7 +377,9 @@ zlt_fnc_getallcode = {
 		_local = ( _stdparm select P_LOCAL_OBJ );
 		_simdisable = ( _stdparm select P_SIM_DISABLE );
 		if (!_local) then {
+			_txt = _txt + "_script = [] spawn {";
 			_txt = _txt + ([_x, _local, _simdisable] call zlt_fnc_getcode);
+			_txt = _txt + "}; waitUntil {scriptDone _script};";
 		};
 	} foreach _listobj;
 	
