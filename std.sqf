@@ -14,7 +14,6 @@ switch true do {
 			_this addMagazineCargoGlobal ["SmokeShell",8];
 			_this addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell",5];
 			_this addMagazineCargoGlobal ["1Rnd_Smoke_Grenade_shell",8];				
-			_this addItemCargoGlobal ["tf_anprc152",2];
 			_this addBackpackCargoGlobal ["tf_rt1523g",1];
 
 	};
@@ -25,7 +24,6 @@ switch true do {
 			_this addMagazineCargoGlobal ["SmokeShell",8];
 			_this addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell",5];
 			_this addMagazineCargoGlobal ["1Rnd_Smoke_Grenade_shell",8];
-			_this addItemCargoGlobal ["tf_fadak",2];
 			_this addBackpackCargoGlobal ["tf_mr3000",1];			
 
 
@@ -47,7 +45,6 @@ switch true do {
 			_this addMagazineCargoGlobal ["SmokeShell",16];
 			_this addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell",10];
 			_this addMagazineCargoGlobal ["1Rnd_Smoke_Grenade_shell",16];				
-			_this addItemCargoGlobal ["tf_anprc152",2];
 			_this addBackpackCargoGlobal ["tf_rt1523g",1];
 			_this addItemCargoGlobal ["ItemGPS",1];
 
@@ -59,7 +56,6 @@ switch true do {
 			_this addMagazineCargoGlobal ["SmokeShell",16];
 			_this addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell",10];
 			_this addMagazineCargoGlobal ["1Rnd_Smoke_Grenade_shell",16];				
-			_this addItemCargoGlobal ["tf_fadak",2];
 			_this addBackpackCargoGlobal ["tf_mr3000",1];			
 			_this addItemCargoGlobal ["ItemGPS",1];
 
@@ -81,7 +77,6 @@ switch true do {
 			_this addMagazineCargoGlobal ["SmokeShell",16];
 			_this addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell",10];
 			_this addMagazineCargoGlobal ["1Rnd_Smoke_Grenade_shell",16];				
-			_this addItemCargoGlobal ["tf_anprc152",2];
 			_this addBackpackCargoGlobal ["tf_rt1523g",1];
 			_this addItemCargoGlobal ["ItemGPS",1];
 
@@ -93,7 +88,6 @@ switch true do {
 			_this addMagazineCargoGlobal ["SmokeShell",16];
 			_this addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell",10];
 			_this addMagazineCargoGlobal ["1Rnd_Smoke_Grenade_shell",16];				
-			_this addItemCargoGlobal ["tf_fadak",2];
 			_this addBackpackCargoGlobal ["tf_mr3000",1];			
 			_this addItemCargoGlobal ["ItemGPS",1];
 
@@ -116,7 +110,6 @@ switch true do {
 			_this addMagazineCargoGlobal ["SmokeShell",16];
 			_this addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell",10];
 			_this addMagazineCargoGlobal ["1Rnd_Smoke_Grenade_shell",16];				
-			_this addItemCargoGlobal ["tf_fadak",2];
 			_this addBackpackCargoGlobal ["tf_mr3000",1];			
 
 	};	
@@ -127,7 +120,6 @@ switch true do {
 			_this addMagazineCargoGlobal ["SmokeShell",16];
 			_this addMagazineCargoGlobal ["1Rnd_HE_Grenade_shell",12];
 			_this addMagazineCargoGlobal ["1Rnd_Smoke_Grenade_shell",16];				
-			_this addItemCargoGlobal ["tf_anprc152",2];
 			_this addBackpackCargoGlobal ["tf_rt1523g",1];
 	};	
 
