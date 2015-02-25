@@ -1,4 +1,4 @@
-// FIX над водой камера поднимается
+hint "Загрузка началась...";
 
 zlt_units = {
 	private "_res"; _res = [];
@@ -289,6 +289,24 @@ zlt_drawBox = {
 // синий - центр текущей композиции, зеленый - доп. эл-ты текущей композиции
 
 
+zlt_fnc_help = {
+	_HELP_TXT1 = ("<t size='0.5' color='#ffff00' align='left'>" +
+	"F1 - СПРАВКА<br/>" + "F3 - РЕЖИМ КАМЕРЫ<br/>" + "F3 - РЕЖИМ КАМЕРЫ<br/>" + "F4 - РЕЖИМ НОРМАЛИ К ЗЕМЛЕ<br/>" + "F5 - ATL/ASL<br/>" + "F6 - MICRO РЕЖИМ<br/>" +
+	"CTRL+INS - УСТАНОВИТЬ ОБЪЕКТ<br/>" + "CTRL+PAGE UP/PAGE DOWN - ПЕРЕЛИСТЫВАНИЕ СТРАНИЦ ОБЪЕКТОВ<br/>" +
+	"CTRL+HOME - ВЫРАВНИВАНИЕ ОБЪЕКТА ПО ВЕРТИКАЛИ И ПО ЛАНДШАФТУ<br/>" + "HOME - ВЫРАВНИВАНИЕ ОБЪЕКТА ПО ВЕРТИКАЛИ<br/>" + "END - СОХРАНЕНИЕ ПОЗИЦИЙ ОБЪЕКТОВ В БУФЕР<br/>" +
+	"Delete - Удаляет выделенный объект<br/>" + "/ - Выделяет объект, наведя на него перекрестием<br/>"  +
+	"Стрелки Up/Down/Right/Left - перемещение выделенного объекта<br/>" + "Page Up/Page Down - выбор объекта по списку<br/>" +
+	"Alt+Right/Left - прокрутка объекта по вертикали<br/>" + "Ctrl+Right/Left - прокрутка объекта по горизонтали<br/>" +
+	"Зажав Shift - медленное перемещение выделенного объекта<br/>" +
+	"</t>");
+
+	[ _help_txt1, -0.5,0,5,0,0,331] spawn bis_fnc_dynamicText;
+
+
+
+};
+
+
 zlt_onEachFrame = {
 	_bl = [];
 	// подсветка текущей
@@ -543,8 +561,15 @@ zlt_fnc_modeindication = {
 
 	};
 
+
+	_classTxt = "";
+	if (isClass (configFile >> "CfgVehicles" >> zlt_cur_class)) then {
+		_classTxt = getText (configFile >> "CfgVehicles" >> zlt_cur_class >> "displayName");
+
+	};
+
 	if (not isNil "zlt_cur_class") then {
-		_txt=_txt+"<br/>КЛАСС: "+zlt_cur_class +"<br/>"+"НАЗВАНИЕ: "+ getText (configFile >> "CfgVehicles" >> zlt_cur_class >> "displayName") + "<br/>";
+		_txt=_txt+"<br/>КЛАСС: "+zlt_cur_class +"<br/>"+"НАЗВАНИЕ: "+ _classTxt + "<br/>";
 
 	};
 
@@ -584,7 +609,6 @@ zlt_fnc_notifyhint = {
 		(uiNamespace getVariable "zlt_new_objects_lb") ctrlCommit 0;
 	};
 };
-
 
 
 zlt_new_moveblock = {
@@ -858,6 +882,10 @@ zlt_new_keydown =
 				
 				};
 			};
+
+			case (_key == DIK_F1) : {
+				[] call zlt_fnc_help;
+			};
 			
 			case (_key == DIK_F4) : {
 				if (zlt_new_vectorup) then {zlt_new_vectorup = false; "Режим нормали" call zlt_fnc_notify;} 
@@ -953,6 +981,9 @@ zlt_exportPos = {
 zlt_new_block = {
 	comment "v.1";
 	_class = zlt_cur_class;
+
+	if (!isClass (configFile >> "CfgVehicles" >> zlt_cur_class)) exitWith { "Такого класса нет в данной сборке!" call zlt_fnc_notify};
+
 	_ctrl = [_this,0,false ] call bis_fnc_param;
 	_placemode = [_this, 1, "UP"] call bis_fnc_param;
 	PARAM(_fASL,2,zlt_new_asl)
@@ -1222,16 +1253,46 @@ zlt_fnc_initUI = {
 };
 
 
+
+// zlt_new_blocks
+zlt_fnc_ZeusSync = {
+	if ( count allCurators == 0 ) exitWith {};
+	private ['_curator','_curObjs'];
+	_curator = allCurators select 0;
+	_curObjs = curatorEditableObjects _curator;
+	{
+		if !(_x in zlt_new_blocks) then {zlt_new_blocks pushBack _x};
+	} foreach (_curObjs);
+	{
+		if !(_x in _curObjs) then { _curator addCuratorEditableObjects [[_x],false]; };
+	} foreach zlt_new_blocks;
+};
+
+
+
 if (isNil "zlt_eh_keydown") then {
 
 	waitUntil { (!isNull (findDisplay 46) || !(alive player))}; 
-	
+	zlt_backDisplayCheck = [] spawn {
+		while {true} do {
+
+			zlt_eh_keydown = (findDisplay 46) displayAddEventHandler ["KeyDown", "_aaa=(_this call zlt_new_keydown)"];	
+			zlt_eh_keyup = (findDisplay 46) displayAddEventHandler ["KeyUp", "_ccc=(_this call zlt_new_keyup)"];	
+			zlt_eh_mouse = (findDisplay 46) displayAddEventHandler ["MouseMoving", "_bbb=(_this call zlt_new_mouseMoving)"];	
+			waitUntil { !isNull(findDisplay 312) }; // сработает после запуска Zeus
+			[] spawn zlt_fnc_ZeusSync;
+			waitUntil { isNull(findDisplay 312) };
+			[] spawn zlt_fnc_ZeusSync;
+			(findDisplay 46) displayRemoveEventHandler ["KeyDown", zlt_eh_keydown];
+			(findDisplay 46) displayRemoveEventHandler ["KeyUp", zlt_eh_keyup];
+			(findDisplay 46) displayRemoveEventHandler ["MouseMoving", zlt_eh_mouse];			
+		};
+	};
+
+/*
 	(findDisplay 46) displayRemoveAllEventHandlers "KeyDown";
-	(findDisplay 46) displayRemoveAllEventHandlers "KeyUp";
+	(findDisplay 46) displayRemoveAllEventHandlers "KeyUp"; */
 	
-	zlt_eh_keydown = (findDisplay 46) displayAddEventHandler ["KeyDown", "_aaa=(_this call zlt_new_keydown)"];	
-	zlt_eh_keyup = (findDisplay 46) displayAddEventHandler ["KeyUp", "_ccc=(_this call zlt_new_keyup)"];	
-	zlt_eh_mouse = (findDisplay 46) displayAddEventHandler ["MouseMoving", "_bbb=(_this call zlt_new_mouseMoving)"];	
 
 	// ВИДЖЕТ СПИСКА
 	call zlt_fnc_initUI;
@@ -1293,6 +1354,6 @@ if (isNil "zlt_eh_keydown") then {
 
 };
 
-
+hint "Загрузка завершена";
 
  
