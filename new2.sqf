@@ -1,5 +1,10 @@
 hint "Загрузка началась...";
 
+
+// A3_Bush A3_Plants A3_Stones A3_Trees RSPN_Assets
+// ["Ficus_Bush_2","Ficus_Bush_1","Cane2","Cane1","Ficus_Bush_3","Oleander1","Oleander2"."Oleander_White","Thistle_Thorn_Green_Bush"] + ["BluntRock_Apart", "BluntRock_Monolith","BluntRock_Spike","BluntRock_WallH","BluntRock_WallV","BluntStone1","BluntStone1_LC","BluntStone2","BluntStone2_LC","BluntStone3","BluntStone3_LC","BluntStone_Erosion"] + ["Paper_Mulberry","Ficus_1","Ficus_2","Fraxinus","Olive_1","Olive_2","Palm_1","Palm_2","Pine_1","Pine_2","Pine_3","Pine_4","Poplar_Dead","Poplar","Oak","Fallen_Branch1","Fallen_Branch2","Fallen_Branch3","Branch_Big"]
+// ["CS_End01","CB_End01","CS_End02","CB_End02","CS_Long","CB_Long","CS_Short","CB_Short","CS_Entrance01","CB_Entrance01","CS_Entrance02","CB_Entrance02","CS_Intersect01","CB_Intersect01","Cover_Sharprock","Cover_Bluntstone","Cover_Sand_Inset","Cover_Dirt_Inset","Cover_Grass_Inset","CS_H45","CB_H45","CS_H90","CB_H90","CS_Intersect02","CB_Intersect02"]
+
 zlt_units = {
 	private "_res"; _res = [];
 	if (typeName _this == typeName "") then {_res = getArray (configfile >> "cfgPatches" >> _this >> "Units")} else {
@@ -32,6 +37,8 @@ zlt_obj_list_all = [
 	,["Land_fort_rampart_EP1","Land_fort_rampart","Hedgehog","Misc_cargo_cont_small","TK_GUE_WarfareBUAVterminal_Base_EP1","TK_GUE_WarfareBArtilleryRadar_Base_EP1","TK_GUE_WarfareBAntiAirRadar_Base_EP1","Fort_Barricade","Land_fort_artillery_nest_EP1","Land_fort_artillery_nest","Hhedgehog_concrete","Hhedgehog_concreteBig","Barrack2","PowGen_Big","Land_Misc_Cargo1E_EP1","Land_BarGate2","Land_tent_east","CampEast_EP1","Land_GuardShed","Land_Antenna","Land_A_Villa_EP1","Land_Mil_Barracks_i_EP1"]
 	,["A3_Structures_F_Dominants_Hospital", "A3_Structures_F_EPC_Dominants_GhostHotel"] call zlt_units
 	,(["A3_Structures_F_Civ_Garbage","A3_Structures_F_EPA_Mil_Scrapyard","A3_Structures_F_Wrecks","A3_Structures_F_EPB_Civ_Garbage"] call zlt_units)+["Submarine_01_F"]
+	,["Ficus_Bush_2","Ficus_Bush_1","Cane2","Cane1","Ficus_Bush_3","Oleander1","Oleander2","Oleander_White","Thistle_Thorn_Green_Bush"] + ["BluntRock_Apart", "BluntRock_Monolith","BluntRock_Spike","BluntRock_WallH","BluntRock_WallV","BluntStone1","BluntStone1_LC","BluntStone2","BluntStone2_LC","BluntStone3","BluntStone3_LC","BluntStone_Erosion"] + ["Paper_Mulberry","Ficus_1","Ficus_2","Fraxinus","Olive_1","Olive_2","Palm_1","Palm_2","Pine_1","Pine_2","Pine_3","Pine_4","Poplar_Dead","Poplar","Oak","Fallen_Branch1","Fallen_Branch2","Fallen_Branch3","Branch_Big"]
+	,["CS_End01","CB_End01","CS_End02","CB_End02","CS_Long","CB_Long","CS_Short","CB_Short","CS_Entrance01","CB_Entrance01","CS_Entrance02","CB_Entrance02","CS_Intersect01","CB_Intersect01","Cover_Sharprock","Cover_Bluntstone","Cover_Sand_Inset","Cover_Dirt_Inset","Cover_Grass_Inset","CS_H45","CB_H45","CS_H90","CB_H90","CS_Intersect02","CB_Intersect02"]
 ];
 
 zlt_obj_list = zlt_obj_list_all select zlt_obj_list_index;
@@ -54,6 +61,7 @@ zlt_localObjectsClasses =
 	+(["A3_Structures_F_Training" call zlt_units, { (["shoot_house", _x] call bis_fnc_instring) or (["obstacle", _x] call bis_fnc_instring) or (["concrete", _x] call bis_fnc_instring) }] call zlt_filter)
 	+(["A3_Structures_F_Civ_Constructions","A3_Structures_F_EPA_Civ_Constructions"] call zlt_units)
 	+['Land_CncWall1_F','Land_CncWall4_F',"Land_CncShelter_F"]
+	+["CS_End01","CB_End01","CS_End02","CB_End02","CS_Long","CB_Long","CS_Short","CB_Short","CS_Entrance01","CB_Entrance01","CS_Entrance02","CB_Entrance02","CS_Intersect01","CB_Intersect01","Cover_Sharprock","Cover_Bluntstone","Cover_Sand_Inset","Cover_Dirt_Inset","Cover_Grass_Inset","CS_H45","CB_H45","CS_H90","CB_H90","CS_Intersect02","CB_Intersect02"]
 ;
 
 // лок. объекты + отключены повр., выключена симуляция
@@ -63,6 +71,7 @@ zlt_disableSimClasses =
 	+(["A3_Structures_F_EPB_Furniture","A3_Structures_F_Furniture","A3_Structures_F_Items_Vessels", "A3_Structures_F_EPA_Civ_Camping","A3_Structures_F_EPB_Items_Vessels"] call zlt_units)
 	-["Land_MetalBarrel_empty_F","MetalBarrel_burning_F"]
 	+["Land_Pallet_F", "Land_Pallet_vertical_F","Land_Obstacle_Ramp_F"]
+	
 ;
 
 // нужны маркера для объекта
@@ -300,7 +309,7 @@ zlt_fnc_help = {
 	"Зажав Shift - медленное перемещение выделенного объекта<br/>" +
 	"</t>");
 
-	[ _help_txt1, -0.5,0,5,0,0,331] spawn bis_fnc_dynamicText;
+	[ _help_txt1, 0,0,5,0,0,331] spawn bis_fnc_dynamicText;
 
 
 
@@ -1275,7 +1284,7 @@ if (isNil "zlt_eh_keydown") then {
 	waitUntil { (!isNull (findDisplay 46) || !(alive player))}; 
 	zlt_backDisplayCheck = [] spawn {
 		while {true} do {
-
+			[] spawn zlt_fnc_ZeusSync;
 			zlt_eh_keydown = (findDisplay 46) displayAddEventHandler ["KeyDown", "_aaa=(_this call zlt_new_keydown)"];	
 			zlt_eh_keyup = (findDisplay 46) displayAddEventHandler ["KeyUp", "_ccc=(_this call zlt_new_keyup)"];	
 			zlt_eh_mouse = (findDisplay 46) displayAddEventHandler ["MouseMoving", "_bbb=(_this call zlt_new_mouseMoving)"];	
