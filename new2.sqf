@@ -19,6 +19,11 @@ zlt_filter = {
 	_res
 };
 
+zltMap = {
+	private ["_res","_txt","_fr"]; _res = []; _code = _this select 1;
+	{_fr = _x call _code; if (!isNil _fr) then {_res pushBack _fr;};} foreach (_this select 0);
+};
+
 // https://community.bistudio.com/wiki/Arma_3_CfgPatches_CfgVehicles
 
 zlt_obj_list_index = 0;
@@ -39,11 +44,11 @@ zlt_obj_list_all = [
 	,(["A3_Structures_F_Civ_Garbage","A3_Structures_F_EPA_Mil_Scrapyard","A3_Structures_F_Wrecks","A3_Structures_F_EPB_Civ_Garbage"] call zlt_units)+["Submarine_01_F"]
 	,["Ficus_Bush_2","Ficus_Bush_1","Cane2","Cane1","Ficus_Bush_3","Oleander1","Oleander2","Oleander_White","Thistle_Thorn_Green_Bush"] + ["BluntRock_Apart", "BluntRock_Monolith","BluntRock_Spike","BluntRock_WallH","BluntRock_WallV","BluntStone1","BluntStone1_LC","BluntStone2","BluntStone2_LC","BluntStone3","BluntStone3_LC","BluntStone_Erosion"] + ["Paper_Mulberry","Ficus_1","Ficus_2","Fraxinus","Olive_1","Olive_2","Palm_1","Palm_2","Pine_1","Pine_2","Pine_3","Pine_4","Poplar_Dead","Poplar","Oak","Fallen_Branch1","Fallen_Branch2","Fallen_Branch3","Branch_Big"]
 	,["CS_End01","CB_End01","CS_End02","CB_End02","CS_Long","CB_Long","CS_Short","CB_Short","CS_Entrance01","CB_Entrance01","CS_Entrance02","CB_Entrance02","CS_Intersect01","CB_Intersect01","Cover_Sharprock","Cover_Bluntstone","Cover_Sand_Inset","Cover_Dirt_Inset","Cover_Grass_Inset","CS_H45","CB_H45","CS_H90","CB_H90","CS_Intersect02","CB_Intersect02"]
-	,["xCam_Metal"] call zlt_units
+	,(["xCam_Metal" call zlt_units, {!(["_base", _x] call bis_fnc_instring) }] call zlt_filter)
 	,["xcam_objects"] call zlt_units
-	,["xcam_pipe"] call zlt_units
+	,(["xcam_pipe" call zlt_units, {!(["_base", _x] call bis_fnc_instring) }] call zlt_filter)
 	,["xcam_wood"] call zlt_units
-	,["xcam_woodworks"] call zlt_units
+	,(["xcam_woodworks" call zlt_units, {!(["_base", _x] call bis_fnc_instring) }] call zlt_filter)
 	,["Rbc_praa_objects"] call zlt_units
 ];
 
@@ -69,6 +74,12 @@ zlt_localObjectsClasses =
 	+['Land_CncWall1_F','Land_CncWall4_F',"Land_CncShelter_F"]
 	+["CS_End01","CB_End01","CS_End02","CB_End02","CS_Long","CB_Long","CS_Short","CB_Short","CS_Entrance01","CB_Entrance01","CS_Entrance02","CB_Entrance02","CS_Intersect01","CB_Intersect01","Cover_Sharprock","Cover_Bluntstone","Cover_Sand_Inset","Cover_Dirt_Inset","Cover_Grass_Inset","CS_H45","CB_H45","CS_H90","CB_H90","CS_Intersect02","CB_Intersect02"]
 	+["Hhedgehog_concreteBig","Land_Pier_small_F","Hedgehog","Hhedgehog_concrete","Land_PierLadder_F","Land_PierLadder_F","Land_fort_artillery_nest_EP1","Land_fort_rampart_EP1","Land_Bunker_F","Land_Slums02_4m"]
+	,(["xCam_Metal" call zlt_units, {!(["_base", _x] call bis_fnc_instring) }] call zlt_filter)
+	,(["xcam_objects" call zlt_units, {(["_cnc", _x] call bis_fnc_instring) || (["_wood", _x] call bis_fnc_instring)}] call zlt_filter)
+	,(["xcam_pipe" call zlt_units, {!(["bunker", _x] call bis_fnc_instring) }] call zlt_filter)
+	,["xcam_wood"] call zlt_units
+	,["xcam_woodworks"] call zlt_units
+	,(["Rbc_praa_objects" call zlt_units, {!(["qalat", _x] call bis_fnc_instring) && !(["qfort", _x] call bis_fnc_instring) && !(["cone", _x] call bis_fnc_instring)}] call zlt_filter)
 ;
 
 // лок. объекты + отключены повр., выключена симуляция
