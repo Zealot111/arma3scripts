@@ -68,6 +68,7 @@ zlt_localObjectsClasses =
 	+(["A3_Structures_F_Civ_Constructions","A3_Structures_F_EPA_Civ_Constructions"] call zlt_units)
 	+['Land_CncWall1_F','Land_CncWall4_F',"Land_CncShelter_F"]
 	+["CS_End01","CB_End01","CS_End02","CB_End02","CS_Long","CB_Long","CS_Short","CB_Short","CS_Entrance01","CB_Entrance01","CS_Entrance02","CB_Entrance02","CS_Intersect01","CB_Intersect01","Cover_Sharprock","Cover_Bluntstone","Cover_Sand_Inset","Cover_Dirt_Inset","Cover_Grass_Inset","CS_H45","CB_H45","CS_H90","CB_H90","CS_Intersect02","CB_Intersect02"]
+	+["Hhedgehog_concreteBig","Land_Pier_small_F","Hedgehog","Hhedgehog_concrete","Land_PierLadder_F","Land_PierLadder_F","Land_fort_artillery_nest_EP1","Land_fort_rampart_EP1","Land_Bunker_F","Land_Slums02_4m"]
 ;
 
 // лок. объекты + отключены повр., выключена симуляция
