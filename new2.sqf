@@ -32,7 +32,7 @@ zlt_obj_list_all = [
 	,[["A3_Structures_F_Mil_Cargo","A3_Structures_F_Mil_Radar","A3_Structures_F_Mil_Offices","A3_Structures_F_Mil_Barracks","A3_Structures_F_Mil_Bunker","A3_Structures_F_Mil_TentHangar","A3_Structures_F_Research"] call zlt_units, { not (["ruins", _x] call bis_fnc_instring) }] call zlt_filter
 	,["A3_Structures_F_Walls"] call zlt_units
 	,["A3_Structures_F_Training" call zlt_units, { (["shoot_house", _x] call bis_fnc_instring) or (["obstacle", _x] call bis_fnc_instring) or (["concrete", _x] call bis_fnc_instring) }] call zlt_filter
-	,["A3_Structures_F_Civ_Constructions","A3_Structures_F_EPA_Civ_Constructions","A3_Structures_F_Civ_Camping"] call zlt_units
+	,["Land_Pallet_static_F","Land_Pallet_vertical_static_F","A3_Structures_F_Civ_Constructions","A3_Structures_F_EPA_Civ_Constructions","A3_Structures_F_Civ_Camping"] call zlt_units
 	,(["A3_Structures_F_Items_Documents","A3_Structures_F_Items_Electronics","A3_Structures_F_Items_Cans","A3_Structures_F_Items_Gadgets","A3_Structures_F_Items_Luggage","A3_Structures_F_Items_Stationery","A3_Structures_F_Items_Tools","A3_Structures_F_Items_Valuables","A3_Structures_F_EPA_Items_Electronics","A3_Structures_F_EPA_Items_Food","A3_Structures_F_EPA_Items_Medical","A3_Structures_F_EPA_Items_Tools","A3_Structures_F_EPA_Items_Vessels","A3_Structures_F_EPC_Items_Documents","A3_Structures_F_EPC_Items_Electronics"] call zlt_units)
 	,[["A3_Structures_F_Households_Addons","A3_Structures_F_Households_House_Big01",'A3_Structures_F_Households_House_Big02','A3_Structures_F_Households_House_Shop01','A3_Structures_F_Households_House_Shop02', 'A3_Structures_F_Households_House_Small01', 'A3_Structures_F_Households_House_Small02', 'A3_Structures_F_Households_House_Small03', 'A3_Structures_F_Households_Slum', 'A3_Structures_F_Households_Stone_Big', 'A3_Structures_F_Households_Stone_Shed', 'A3_Structures_F_Households_Stone_Small', 'A3_Structures_F_Households_WIP','A3_Structures_F_Ind_AirPort' ] call zlt_units,{ not (["ruins", _x] call bis_fnc_instring)  and not (["_dam_", _x] call bis_fnc_instring) and not (["_d_", _x] call bis_fnc_instring) } ] call zlt_filter
 	,(["A3_Structures_F_Naval_Piers","A3_Structures_F_Naval_RowBoats"] call zlt_units)
@@ -50,6 +50,7 @@ zlt_obj_list_all = [
 	,["xcam_wood"] call zlt_units
 	,(["xcam_woodworks" call zlt_units, {!(["_base", _x] call bis_fnc_instring) }] call zlt_filter)
 	,["Rbc_praa_objects"] call zlt_units
+	,["Land_Dam_Conc_20","Land_Dam_ConcP_20","Land_Dam_Barrier_40","land_mbg_apartments_big_04","land_mbg_brickhouse_01","land_mbg_brickhouse_02","land_mbg_brickhouse_03","mbg_apartments_big_04_EO","mbg_brickhouse_01_EO","mbg_brickhouse_02_EO","mbg_brickhouse_03_EO","Fortress1","Fortress2","Shed","ShedSmall","ShedBig","Camp","CampEast","ACamp","MASH","Land_Molo_beton","Land_Molo_drevo","Land_Molo_drevo_bs","Land_Molo_drevo_end","Land_Molo_krychle","Land_Molo_krychle2","Land_Cihlovej_dum","Land_Cihlovej_Dum_in","Land_Cihlovej_Dum_mini","Land_Deutshe_mini","Land_Dulni_bs","Land_Dum_zboreny","Land_Hospoda_mesto","Land_House_y","Land_Hut_old02","Land_Podesta_1_cube","Land_Podesta_1_cube_long","Land_Podesta_1_cornl","Land_Podesta_1_cornp","Land_Podesta_1_mid_cornl","Land_Podesta_1_mid_cornp","Land_Podesta_1_mid","Land_Podesta_1_stairs","Land_Podesta_1_stairs2","Land_Podesta_1_stairs3","Land_Podesta_1_stairs4","Land_Podesta_5","Land_Podesta_10","Land_Podesta_s5","Land_Podesta_s10","Land_Ryb_domek","Land_Stodola_old_open","Land_Army_hut3_long_int","Land_Army_hut3_long","Land_Army_hut2_int","Land_Army_hut2","Land_Army_hut_int","Land_Army_hut_storrage","Land_Bouda2_vnitrek","Land_Garaz_s_tankem","Land_Hruzdum","Land_Dum_rasovna","Land_Hlaska","Land_Panelak","Land_Sara_Domek_sedy","Land_Posed","Land_Leseni4x","Land_Leseni2x","Land_Sara_domek_zluty","Land_Watertower1","Land_Sara_zluty_statek_in","Land_Panelak2","Land_Panelak3","Land_Hotel","Land_Dum_mesto2","Land_Trafostanica_mala","Land_Dum_olezlina","Land_Dum_mesto_in","Land_Hangar_2","Land_Garaz_mala","Land_Garaz_long_open","Land_Budova2","Land_Budova3","Land_Dum_olez_istan2_maly","Land_Dum_olez_istan2","Land_Dum_olez_istan2_open2","Land_Dum_olez_istan2_open_dam","Land_Dum_olez_istan2_open2_dam","Land_Dum_olez_istan1","Land_Dum_olez_istan1_open2","Land_panelak_one_floor","Land_panelak_top_floor_rooms","Land_R_Minaret","Land_jezekbeton","Barrels","Camera1","Computer","TVStudio","M113Wreck","BlackhawkWreck","Vec03","FenceWood","FenceWoodPalet","Wire","Heli_H_civil","Heli_H_rescue","Land_water_tank","Land_ladder","Land_ladder_half","snowman","snow","SeaFox_EP1","Land_A_CraneCon","Land_Barn_W_01","Land_Barn_W_02","Land_A_Castle_Stairs_A","Land_A_Office01_ruins","Land_A_Office01","Land_A_Hospital","ladder","LadderLong","Land_A_Office02","Land_a_stationhouse","Land_Shed_Ind02","Land_Vysilac_budova","Land_vodni_vez","Land_pristresek_camo","Land_MBG_GER_HUS_1","Land_MBG_GER_HUS_2","Land_MBG_GER_HUS_3","Land_MBG_GER_HUS_4","Land_MBG_GER_RHUS_1","Land_MBG_GER_RHUS_2","Land_MBG_GER_RHUS_3","Land_MBG_GER_RHUS_4","Land_MBG_GER_RHUS_5","Land_MBG_GER_ESTATE_1","Land_MBG_GER_ESTATE_2","Land_MBG_Beach_Chair_1","Land_MBG_Beach_Chair_2","Land_MBG_Beach_Chair_3","Land_MBG_GER_SUPERMARKET_1","Land_MBG_GER_SUPERMARKET_2","Land_MBG_GER_SUPERMARKET_3","Land_MBG_GER_SUPERMARKET_4","Land_MBG_GER_PUB_1","Land_MBG_GER_PUB_2","Land_MBG_HeavyShelter","Land_MBG_ATC_Segment","Land_MBG_ATC_Tower","Land_MBG_ATC_Base","Land_A_GeneralStore_01","Land_A_Pub_01","Land_Misc_Cargo1Ao","Land_Misc_Cargo1Bo","Land_Misc_Cargo1B","Misc_Cargo1B_military","Misc_Cargo1Bo_civil","Land_Misc_Cargo1C","Land_Misc_Cargo1D","Land_Misc_Cargo1E","Land_Misc_Cargo1F","Land_Misc_Cargo1G","Land_Misc_Cargo2B","Land_Misc_Cargo2C","Land_Misc_Cargo2D","Land_Misc_Cargo2E","Land_HBarrier_large","Land_HBarrier1","Land_HBarrier3","Land_HBarrier5","Land_fort_bagfence_corner","Land_fort_bagfence_long","Land_fort_bagfence_round","Land_BagFenceCorner","Land_BagFenceEnd","Land_BagFenceLong","Land_BagFenceRound","Land_BagFenceShort","Land_fort_artillery_nest","Land_fort_rampart","Fort_RazorWire","Fort_Crate_wood","WarfareBCamp","Fort_CAmp","Land_fortified_nest_small","Fort_Nest","Land_Fort_Watchtower","Fort_Barracks_USMC","Hedgehog","Hhedgehog_concrete","Hhedgehog_concreteBig","Fort_EnvelopeSmall","Fort_EnvelopeBig","Fort_Barricade","Land_Ind_Timbers","Land_Ind_BoardsPack1","Land_Ind_BoardsPack2","Haystack","Land_seno_balik","Misc_palletsfoiled_heap","Misc_palletsfoiled","Land_A_tent","Land_tent_east","Land_GuardShed","Land_Antenna","Land_CamoNet_NATO","Land_CamoNetVar_NATO","Land_CamoNetB_NATO","Land_CamoNet_EAST","Land_CamoNetVar_EAST","Land_CamoNetB_EAST","76n6ClamShell","PowGen_Big","Land_BarGate2","Land_Barrack2","Misc_cargo_cont_small","Misc_cargo_cont_small2","Misc_cargo_cont_tiny","Misc_cargo_cont_net1","Misc_cargo_cont_net2","Misc_cargo_cont_net3","Land_obstacle_get_over","Land_obstacle_prone","Land_obstacle_run_duck","Land_WoodenRamp","Land_ConcreteRamp","Land_ConcreteBlock","Land_Dirthump01","Land_Dirthump02","Land_Dirthump03","BRDMWreck","UralWreck","BMP2Wreck","HMMWVWreck","T72Wreck","WarfareBDepot","Base_WarfareBBarracks","USMC_WarfareBBarracks","RU_WarfareBBarracks","CDF_WarfareBBarracks","Ins_WarfareBBarracks","Gue_WarfareBBarracks","Base_WarfareBContructionSite","USMC_WarfareBContructionSite","USMC_WarfareBContructionSite1","RU_WarfareBContructionSite","RU_WarfareBContructionSite1","CDF_WarfareBContructionSite","CDF_WarfareBContructionSite1","Ins_WarfareBContructionSite","USMC_WarfareBLightFactory","RU_WarfareBLightFactory","USMC_WarfareBHeavyFactory","RU_WarfareBHeavyFactory","CDF_WarfareBHeavyFactory","USMC_WarfareBAircraftFactory","RU_WarfareBAircraftFactory","USMC_WarfareBFieldhHospital","RU_WarfareBFieldhHospital","CDF_WarfareBFieldhHospital","GUE_WarfareBFieldhHospital","USMC_WarfareBAntiAirRadar","RU_WarfareBAntiAirRadar","CDF_WarfareBAntiAirRadar","INS_WarfareBAntiAirRadar","GUE_WarfareBAntiAirRadar","USMC_WarfareBArtilleryRadar","RU_WarfareBArtilleryRadar","CDF_WarfareBArtilleryRadar","Ins_WarfareBArtilleryRadar","Gue_WarfareBArtilleryRadar","USMC_WarfareBUAVterminal","RU_WarfareBUAVterminal","CDF_WarfareBUAVterminal","INS_WarfareBUAVterminal","GUE_WarfareBUAVterminal","USMC_WarfareBVehicleServicePoint","RU_WarfareBVehicleServicePoint","Base_WarfareBBarrier5x","Base_WarfareBBarrier10x","Base_WarfareBBarrier10xTall","BRDM2_HQ_Gue_unfolded","BTR90_HQ_unfolded","LAV25_HQ_unfolded","BMP2_HQ_INS_unfolded","BMP2_HQ_CDF_unfolded","WarfareBunkerSign","C130J_wreck_EP1","Land_Wreck_C130J_EP1_ruins","Land_fort_artillery_nest_EP1","Land_fort_rampart_EP1","Land_fortified_nest_big_EP1","Land_fortified_nest_small_EP1","Land_Fort_Watchtower_EP1","Hedgehog_EP1","Fort_EnvelopeSmall_EP1","Fort_EnvelopeBig_EP1","Fort_Barricade_EP1","Land_CamoNet_NATO_EP1","Land_CamoNetVar_NATO_EP1","Land_CamoNetB_NATO_EP1","Land_CamoNet_EAST_EP1","Land_CamoNetVar_EAST_EP1","Land_CamoNetB_EAST_EP1","76n6ClamShell_EP1","PowGen_Big_EP1","Land_PowGen_Big_ruins_EP1","Land_Barrack2_EP1","Misc_cargo_cont_small_EP1","AmmoCrates_NoInteractive_Large","Camp_EP1","CampEast_EP1","C130J_static_EP1","Land_ladderEP1","Land_ladder_half_EP1","Land_Dirthump01_EP1","Land_Dirthump02_EP1","Land_Dirthump03_EP1","Land_Fuel_tank_stairs_ep1","Land_Misc_Cargo1Ao_EP1","Land_Misc_Cargo1Bo_EP1","Land_Misc_Cargo1Eo_EP1","Land_Misc_Cargo1E_EP1","Land_Misc_Cargo1A_EP1","Land_Misc_Cargo1B_EP1","Land_Misc_Cargo1C_EP1","Land_Misc_Cargo1D_EP1","Land_Misc_Cargo2A_EP1","Land_Misc_Cargo2B_EP1","Land_Misc_Cargo2C_EP1","Land_Misc_Cargo2D_EP1","Land_Misc_CargoMarket1a_EP1","Land_Misc_Cargo2E_EP1","Dirtmount_EP1","US_WarfareBBarracks_Base_EP1","TK_WarfareBBarracks_Base_EP1","US_WarfareBBarracks_EP1","TK_WarfareBBarracks_EP1","US_WarfareBLightFactory_base_EP1","TK_WarfareBLightFactory_base_EP1","TK_GUE_WarfareBLightFactory_base_EP1","US_WarfareBLightFactory_EP1","TK_WarfareBLightFactory_EP1","TK_GUE_WarfareBLightFactory_EP1","US_WarfareBHeavyFactory_Base_EP1","TK_WarfareBHeavyFactory_Base_EP1","TK_GUE_WarfareBHeavyFactory_Base_EP1","US_WarfareBHeavyFactory_EP1","TK_WarfareBHeavyFactory_EP1","TK_GUE_WarfareBHeavyFactory_EP1","US_WarfareBAircraftFactory_Base_EP1","TK_WarfareBAircraftFactory_Base_EP1","TK_GUE_WarfareBAircraftFactory_Base_EP1","US_WarfareBAircraftFactory_EP1","TK_WarfareBAircraftFactory_EP1","TK_GUE_WarfareBAircraftFactory_EP1","US_WarfareBFieldhHospital_Base_EP1","TK_WarfareBFieldhHospital_Base_EP1","TK_GUE_WarfareBFieldhHospital_Base_EP1","US_WarfareBFieldhHospital_EP1","TK_WarfareBFieldhHospital_EP1","TK_GUE_WarfareBFieldhHospital_EP1","US_WarfareBAntiAirRadar_Base_EP1","TK_WarfareBAntiAirRadar_Base_EP1","TK_GUE_WarfareBAntiAirRadar_Base_EP1","US_WarfareBAntiAirRadar_EP1","TK_WarfareBAntiAirRadar_EP1","TK_GUE_WarfareBAntiAirRadar_EP1","US_WarfareBArtilleryRadar_Base_EP1","TK_WarfareBArtilleryRadar_Base_EP1","TK_GUE_WarfareBArtilleryRadar_Base_EP1","US_WarfareBArtilleryRadar_EP1","TK_WarfareBArtilleryRadar_EP1","TK_GUE_WarfareBArtilleryRadar_EP1","US_WarfareBUAVterminal_Base_EP1","TK_WarfareBUAVterminal_Base_EP1","TK_GUE_WarfareBUAVterminal_Base_EP1","US_WarfareBUAVterminal_EP1","TK_WarfareBUAVterminal_EP1","TK_GUE_WarfareBUAVterminal_EP1","US_WarfareBVehicleServicePoint_Base_EP1","TK_WarfareBVehicleServicePoint_Base_EP1","TK_GUE_WarfareBVehicleServicePoint_Base_EP1","US_WarfareBVehicleServicePoint_EP1","TK_WarfareBVehicleServicePoint_EP1","TK_GUE_WarfareBVehicleServicePoint_EP1","US_WarfareBBarrier5x_EP1","US_WarfareBBarrier10x_EP1","US_WarfareBBarrier10xTall_EP1","BRDM2_HQ_TK_GUE_unfolded_Base_EP1","BRDM2_HQ_TK_GUE_unfolded_EP1","M1130_HQ_unfolded_Base_EP1","BMP2_HQ_TK_unfolded_Base_EP1","Land_A_TVTower_Base","Land_A_TVTower_Mid","Land_A_TVTower_Top","Land_A_Minaret_Porto_EP1","Land_A_Villa_EP1","Land_Misc_Coltan_Heap_EP1","Land_mbg_observation_tower","Land_mbg_companybuilding_1","FootBridge_0_ACR","FootBridge_30_ACR","Land_Device_assembled_F","Land_Device_disassembled_F","Hotze_lavicka_1","Hotze_Place_1","Hotze_Place_2","Hotze_Place_3","Hotze_Place_4","Hotze_Place_6","Hotze_SwalkA_B1","Hotze_SwalkA_B2","Hotze_SwalkA_B3","Hotze_Panelak1","Hotze_Panelak2","Hotze_Panelak3","Land_Hotze_HBridge_A","Land_ibr_most_stred30","Land_ibr_most_bez_lamp","Land_ibr_Kamenny_most30","Land_GymBench_01_F","Land_GymRack_01_F","Land_GymRack_02_F","Land_GymRack_03_F","rhs_Flag_Russia_F"]
 ];
 
 zltNewObjListAllCurIndSel = []; zltNewObjListAllCurIndSel resize (count zlt_obj_list_all);
@@ -110,18 +111,6 @@ zlt_new_specialFixObjs = ["Land_Pallet_F","Land_HBarrierBig_F", "Land_HBarrier_B
 
 // Local, disablesim, left/right, up/down, forw/backw fix
 zlt_new_specialFixObjsData = [[ 0.72, 0, 0.61],[0.5,0.5,0.5],[0.5,0.5,0.5]];
-
-// ----------------------------------------------        КОМПОЗИЦИИ -----------------------------------------------------------------------------
-
-zlt_comp_names = ["Тест", "Fortify Cargo Patrol","Мешки сверху HBarrier"];
-zlt_comp_data = [
-["Land_HBarrier_5_F","Land_HBarrier_5_F",[0,0,0.495338],0,0,0,"Land_HBarrier_5_F",[0,0,1.73119],0,0,0],
-["Land_Cargo_Patrol_V3_F","Land_BagFence_Long_F",[3.20605,-1.4707,-0.377037],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[3.20703,1.55273,-0.370216],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[3.20703,1.55273,-1.18711],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[3.20605,-1.4707,-1.19393],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.47852,-2.71094,-0.406494],1.01228,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.54297,-2.76367,-0.400536],1.01228,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.54297,-2.76563,-1.21743],1.01227,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.47852,-2.71094,-1.22339],1.01225,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.13867,1.50195,-1.26421],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.14063,-1.51953,-1.26498],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.14063,-1.51758,-0.44809],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-3.13867,1.50391,-0.447319],90.0121,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.5498,2.71094,-1.21457],-180.988,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.47266,2.76367,-1.20409],-180.988,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[1.47266,2.76563,-0.387199],-180.988,-0.0226288,-0.0164335,"Land_BagFence_Long_F",[-1.5498,2.71289,-0.397675],-180.988,-0.0226288,-0.0164335],
-["Land_HBarrier_Big_F","Land_BagFence_Long_F",[-0.00488281,0.0859375,0.981003],-2.99998,0,0,"Land_BagFence_End_F",[-1.9082,-0.015625,0.981003],182,0,0,"Land_BagFence_End_F",[1.89746,0.183594,0.981003],-2.99998,0,0]
-];
-
-zlt_curr_comp = 0;
-
 
 
 #define DIK_UP 				200
@@ -353,7 +342,7 @@ zlt_fnc_help = {
 	["Ctrl+PgUp,PgDn","Переключение страниц библиотеки объектов"],["Ctrl+Home","Выравнивание текущего объекта по вертикали и ландшафту"],["Home","Выравнивание текущего объекта по вертикали"],
 	["End","Сохрание позиций построенных объектов в буфер обмена"],["Delete","Удаление текущего объекта"],["/","Делает объект текущим"],["Up Down Left Right","Пермещение текущего объекта"],
 	["Ctrl+Up,Down,Left,Right","Вращение текущего объекта и пермещение его по вертикали"],["PgUp,PgDn","Выбор объекта на текущей странице библиотеки объектов"],
-	["Alt+Up,Down,Left,Right","Наклон текущего объекта"],["Shift+клавиши перемещения объекта","Выполнение действия с меньшим шагом"],["Ins","Установить объект рядом с текущим(ждет нажатия клавиши Up,Dn,Left, Right)"],
+	["Alt+Up,Down,Left,Right","Наклон текущего объекта(может вызвать баги)"],["Shift+клавиши перемещения объекта","Выполнение действия с меньшим шагом"],["Ins","Установить объект рядом с текущим(ждет нажатия клавиши Up,Dn,Left, Right)"],
 	["Space","Выделить объект под курсором"],["Ctrl+Space","Снять выделение с группы"],["Alt+Space","Добавить в выделение текущий объект"]
 	];
 	_help_txt2="<t size='0.5' color='#ffff00' align='left'>";
@@ -367,35 +356,6 @@ zlt_onEachFrame = {
 	_bl = [];
 	// подсветка текущей
 	[zlt_newlb, [1,0,0,1],_bl] call zlt_drawBox;
-	
-
-	if (!zlt_is_comp) then {
-		_mb = zlt_newlb getVariable ["zlt_new_masterblock", objNull];
-		if (!isnull _mb) then {
-			if (_mb != zlt_newlb) then {
-				[_mb, [0,0,1,1],_bl] call zlt_drawBox;
-			};
-		};
-		
-		_childs = zlt_newlb getVariable ["zlt_new_childblocks", []];
-		{
-			if (_x != zlt_newlb) then {
-				[_x, [0,1,0,1],_bl] call zlt_drawBox;
-			};
-		} foreach _childs;
-	} else {
-		// ДЛЯ РЕЖИМА КОМПОЗИЦИИ
-		_mb = zlt_new_blocks select 0;
-		if (_mb != zlt_newlb) then {
-			[_mb, [0,0,1,1],_bl] call zlt_drawBox;
-		};
-		{
-			if (_x != zlt_newlb) then {
-				[_x, [0,1,0,1],_bl] call zlt_drawBox;
-			};
-		} foreach (zlt_new_blocks-[_mb]);
-	};
-	// подсветка множественного выделения
 
 	if (!zlt_cameraMode && !isNull cursorTarget) then {
 		[cursorTarget, [1,1,0,1],_bl] call zlt_drawBox;
@@ -411,15 +371,6 @@ zlt_fnc_getallcode = {
 	private ["_br","_listobj","_txt","_global","_stdparm","_local","_ignore","_simdisable","_listobj2","_hasmarker"];
 	_br = toString [13, 10];
 	_listobj = +(_this);
-	
-	{
-		_childs = _x getVariable ["zlt_new_childblocks",[]];
-		{
-			_x setvariable ["zlt_cb", true];
-			_listobj pushback _x;
-			
-		} foreach _childs;
-	} foreach _this;
 
 
 	_listobj2 = +(_listobj);
@@ -521,28 +472,6 @@ zlt_fnc_getcode = {
 	_copiedTxt;
 };
 
-zlt_fnc_compFromObjs = {
-	_list = _this;
-	_res = [];
-	_mainobj = _list select 0;
-	_dir = getDir _mainobj;
-	_pitchbank = (_mainobj call BIS_fnc_getPitchBank);
-	_pitch = _pitchBank select 0;
-	_bank = _pitchBank select 1;
-	_res = [typeof _mainobj];
-	{
-		_res = _res + [typeof _x];
-		_res = _res + [_mainobj worldToModel getposatl _x];
-		_res = _res + [ getDir _x - _dir];
-		_pitchbank2 = _x call BIS_fnc_getPitchBank;
-		_pitch2 = _pitchBank2 select 0;
-		_bank2 = _pitchBank2 select 1;
-		_res = _res + [ _pitch2 - _pitch];
-		_res = _res + [ _bank2 - _bank];
-	} foreach (_list - [_mainobj]);
-	_res;
-};
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -595,7 +524,7 @@ zlt_fnc_modeindication = {
 	};
 	
 	// покажем текущий блок
-	if (not isnull zlt_newlb) then {
+	if (!isNil "zlt_newlb" && {!isnull zlt_newlb}) then {
 		// previous
 		_ci = zlt_new_blocks find zlt_newlb;
 		
@@ -776,7 +705,6 @@ zlt_new_moveblock = {
 
 
 	_obj = zlt_newlb;
-	_obj call zlt_new_comp_removeaux;
 	//получить координаты
 	_dir = getdir _obj;
 	_pitchBank = _obj call BIS_fnc_getPitchBank; _pitch = _pitchBank select 0; 	_bank = _pitchBank select 1;
@@ -829,7 +757,6 @@ zlt_new_moveblock = {
 
 	[zlt_newlb, zltNewCurSel] call ZltNewUseGroupParam;
 	//конец обработки текущего выделения
-	_obj call zlt_new_comp_placeaux;
 };
 
 
@@ -909,56 +836,7 @@ zlt_new_keydown =
 			case (_key == DIK_LEFT && _alt && !_ctrl) : {   ["BANKUP", _angle] call zlt_new_moveblock;  };
 			
 			case (_key == DIK_RIGHT && _alt && !_ctrl) : {   ["BANKUP", -_angle] call zlt_new_moveblock;  };
-			// РЕДАКТИРОВАНИЕ КОМПОЗИЦИИ
-			case (_key == DIK_INSERT && _alt && _ctrl) : {
-				if (isNull zlt_newlb) exitWith {"Якорный блок не выбран!" call zlt_fnc_notify;};
-				zlt_new_blocks_bak = zlt_new_blocks;
-				zlt_new_blocks = [zlt_newlb] + (zlt_newlb getVariable ["zlt_new_childblocks", []]);
-				zlt_is_comp = true;
-				"Композиция начата!" call zlt_fnc_notify;
-			};
-			
-			// СОХРАНЕНИЕ КОМПОЗИЦИИ
-			case (_key == DIK_END && _alt && _ctrl) : {
-				if (!zlt_is_comp) exitWith {"Только для режима редактирования композиции!" call zlt_fnc_notify;};
-				_newdecl = zlt_new_blocks call zlt_fnc_compFromObjs;
-				_mainobj = zlt_new_blocks select 0;
-				zlt_newlb = _mainobj;
-				_mainobj setvariable ["zlt_new_decl", _newdecl];
-				_mainobj call zlt_new_comp_removeaux;
-				zlt_newlb = _mainobj;
-				{deleteVehicle _x} foreach (zlt_new_blocks-[_mainobj]);
-				_mainobj call zlt_new_comp_placeaux;
-				
-				copyToClipboard str (_newdecl);
-				diag_log str (_newdecl);
-				
-				zlt_is_comp = false;
-				zlt_new_blocks = zlt_new_blocks_bak;
-				zlt_new_blocks_bak = nil;
-				
-				"Композиция сохранена в буфер обмена!" call zlt_fnc_notify;
-			};
-			
-			case (_key == DIK_DELETE && _alt && !_ctrl && !_shift) : {
-				// удаление дочерних блоков
-				zlt_newlb call zlt_new_comp_removeaux;
-				zlt_newlb setVariable ["zlt_new_decl", nil];
-				zlt_newlb setVariable ["zlt_new_childblocks", nil];
-				zlt_newlb setVariable ["zlt_new_masterblock", nil];
-				"Дочерние блоки удалены!" call zlt_fnc_notify;
-			};
 
-
-			//вставить
-			case (_key == DIK_INSERT && _alt) : {(zlt_comp_data select zlt_curr_comp) call zlt_new_comp};
-
-			// PD
-			case (_key == DIK_PGDN && _alt) : {_ind =  zlt_curr_comp max 0; _ind = _ind + 1; if (_ind > (count (zlt_comp_data) -1)) then {_ind = count (zlt_comp_data) -1 ;};  zlt_curr_comp = _ind;  [zlt_comp_names select zlt_curr_comp, zlt_comp_names] call zlt_fnc_notifyhint;  };
-			//PU
-			case (_key == DIK_PGUP && _alt) : {_ind =  zlt_curr_comp max 0; _ind = _ind - 1; if (_ind < 0) then {_ind = 0 ;}; zlt_curr_comp = _ind;  [zlt_comp_names select zlt_curr_comp, zlt_comp_names] call zlt_fnc_notifyhint; };
-			
-			
 
 			//вверх
 			case (_key == DIK_UP && !zlt_new_is_plc_mode ) : {["FARER", _coeff] call zlt_new_moveblock;};
@@ -1036,8 +914,8 @@ zlt_new_keydown =
 				_oldid = zlt_new_blocks find zlt_newlb;
 				zlt_new_blocks = zlt_new_blocks - [zlt_newlb];
 				if (zlt_newlb in zltNewCurSel) then {zltNewCurSel=zltNewCurSel-[zlt_newlb];};
-				zlt_newlb call zlt_new_comp_removeaux; deletevehicle zlt_newlb;
-				zlt_newlb = if (count zlt_new_blocks == 0 )then {objNull} else {zlt_new_blocks select (_oldid - 1);};
+				deletevehicle zlt_newlb;
+				zlt_newlb = if (count zlt_new_blocks == 0 )then {objNull} else {if(_oldid > 0) then{ zlt_new_blocks select (_oldid - 1)} else {zlt_new_blocks select 0}};
 
 				"Удалено!" call zlt_fnc_notify;
 			};
@@ -1046,22 +924,18 @@ zlt_new_keydown =
 			case (_key == DIK_HOME) : {
 				if (!_ctrl) then {
 					[zlt_newlb, zltNewCurSel] call ZltNewSaveGroupParam;
-					zlt_newlb call zlt_new_comp_removeaux; zlt_newlb setposatl [ getposatl zlt_newlb select 0,  getposatl zlt_newlb select 1, 0]; 
+					zlt_newlb setposatl [ getposatl zlt_newlb select 0,  getposatl zlt_newlb select 1, 0]; 
 					[zlt_newlb, zltNewCurSel] call ZltNewUseGroupParam;
 				}else {
 					if ( (!zlt_new_vectorup && !_alt) || (zlt_new_vectorup && _alt) ) then {
 						[zlt_newlb, zltNewCurSel] call ZltNewSaveGroupParam;
-						zlt_newlb call zlt_new_comp_removeaux;
 						zlt_newlb setvectorup ( surfaceNormal (getpos zlt_newlb) );
-						zlt_newlb call zlt_new_comp_placeaux;
 						[zlt_newlb, zltNewCurSel] call ZltNewUseGroupParam;
 						"Нормаль" call zlt_fnc_notify;
 						//zlt_new_vectorup = false;
 					} else {
 						[zlt_newlb, zltNewCurSel] call ZltNewSaveGroupParam;
-						zlt_newlb call zlt_new_comp_removeaux;
 						[zlt_newlb, 0,0] call bis_fnc_setpitchbank;
-						zlt_newlb call zlt_new_comp_placeaux;
 						[zlt_newlb, zltNewCurSel] call ZltNewUseGroupParam;
 						//zlt_new_vectorup = true;
 						"Вертикаль" call zlt_fnc_notify;
@@ -1095,7 +969,7 @@ zlt_new_keydown =
 
 
 
-			case (_ctrl && _key >= 0x02 && _key <= 0x0B ) : { zltNewCurrentFastObjects set [_key-0x02,zlt_cur_class];};
+			case (_ctrl && _key >= 0x02 && _key <= 0x0B ) : { zltNewCurrentFastObjects set [_key-0x02,zlt_cur_class]; profilenamespace setvariable ["zltNewCurrentFastObjects",zltNewCurrentFastObjects];        };
 			case (!_ctrl && _key >= 0x02 && _key <= 0x0B ) : {private "_co"; _co = zltNewCurrentFastObjects select (_key-0x02); if !(isNil "_co") then {zlt_cur_class=_co;}else{"Быстрая клавиша не назначена" call zlt_fnc_notify};};
 			case (_ctrl && _key==DIK_C) : {
 				[zltNewCurSel, false] call ZltNewSaveGroupToClipboard;
@@ -1285,79 +1159,11 @@ zlt_new_block = {
 
 };
 
-zlt_new_comp = {
-	private "_declaration";
-	_declaration = +(_this);
-
-	_mainclass = _declaration select 0;
-	if ( isNull zlt_newlb ) exitWith {};
-	if ( ! ([zlt_newlb, [_mainclass]] call zlt_fnc_cycleKindOf) ) exitWith { "Класс объекта не совпадает" call zlt_fnc_notify };
-	
-
-	diag_log ["newcomp", _mainclass, _declaration];
-	_newblocks = [];
-
-	_first = zlt_newlb;
-	_first setVariable ["zlt_new_masterblock", _first];
-	_first setVariable ["zlt_new_decl", _declaration];
-
-	_first call zlt_new_comp_placeaux;
-	zlt_newlb = _first;
-
+zlt_save_comp = {
+	_objs = _this ;
+	_text = (_objs call zlt_fnc_getallcode);
+	copytoclipboard _text;
 };
-
-
-zlt_new_comp_placeaux = {
-	private "_first";
-	_first = _this;
-	_declaration = _first getVariable ["zlt_new_decl", []];
-	
-	_dir = getDir _first;
-	_pitchbank = _first call BIS_fnc_getPitchBank;
-	_pitch = _pitchBank select 0;
-	_bank = _pitchBank select 1;
-	_newblocks = [];
-
-	{
-		diag_log ["placeaux", _x, _declaration, _foreachindex];
-		if ((_foreachindex-1) mod 5 == 0) then {
-
-			_new = _x createVehiclelocal [0,0,0];
-			_dir2 = _declaration select  (_foreachindex + 2);
-			_pitch2 = _declaration select (_foreachindex + 3);
-			_bank2 = _declaration select (_foreachindex + 4);
-			
-			_new setposatl (_first modelToWorld (_declaration select (_foreachindex + 1)));
-			
-			_new setDir (_dir2 + _dir);
-			[_new, _pitch2 + _pitch, _bank2 + _bank2] call bis_fnc_setpitchbank;
-//			zlt_new_blocks = zlt_new_blocks + [_new];
-			_newblocks = _newblocks + [_new];
-			_new setVariable ["zlt_new_masterblock", _first];
-
-		};
-
-	} foreach _declaration;
-	_first setVariable ["zlt_new_childblocks", _newblocks ];
-
-};
-
-zlt_new_comp_removeaux = {
-	private "_first";
-
-	_first = _this;
-	_blocks = _first getVariable ["zlt_new_childblocks",[]];
-	diag_log ["Remove aux blocks:", _blocks];
-	{
-		deleteVehicle _x;
-		diag_log ["Remove block:", _x];
-
-	} foreach _blocks;
-	_first setVariable ["zlt_new_childblocks", []];
-
-};
-
-
 
 zlt_force_selBlock = {
 	PR(_closestBlocks)=[];
@@ -1375,26 +1181,14 @@ zlt_force_selBlock = {
 zlt_select_block = {
 	if (zlt_cameraMode) then {
 		if not (isNull zlt_cameraTarget ) then {
-			_masterblock = zlt_cameraTarget getVariable ["zlt_new_masterblock", zlt_cameraTarget];
-			zlt_newlb = _masterblock;
+			zlt_newlb = zlt_cameraTarget;
 		};
 	} else {
 		if not (isNull cursortarget) then {
-			_masterblock = cursortarget getVariable ["zlt_new_masterblock", cursorTarget];
-			zlt_newlb = _masterblock;
+			zlt_newlb = cursortarget;
 		};
 	};
 };
-
-zlt_save_comp = {
-	_objs = _this ;
-	_text = (_objs call zlt_fnc_getallcode);
-	
-	copytoclipboard _text;
-	
-
-};
-
 
 
 zlt_placepos = {
@@ -1499,29 +1293,17 @@ if (isNil "zlt_eh_keydown") then {
 	call zlt_fnc_initUI;
 
 	zlt_cur_class = zlt_obj_list select 0;	
-	if (isnil "zlt_new_blocks") then { zlt_new_blocks = [];} else {
-		{
-			_cb = _x getvariable ["zlt_cb", false];
-			if (_cb) then {
-				//zlt_new_blocks deleteAt (zlt_new_blocks find _x);
-				zlt_new_blocks = zlt_new_blocks - [_x];
-				deleteVehicle _x;
-			};
-			_decl = _x getvariable ["zlt_new_decl", []];
-			if (count (_decl) != 0 ) then {
-				_x call zlt_new_comp_placeaux;
-			};
-			
-			
-		} foreach zlt_new_blocks;
-	};
+	if (isnil "zlt_new_blocks") then { zlt_new_blocks = [];};
 	zlt_newlb = objNull;
 	zlt_new_vectorup = true;
 	zlt_new_asl = true;
 	zlt_new_micro = false;
 
 	zltNewCurSel=[]; //текущее выделение через пробел
+
+
 	zltNewCurrentFastObjects=[]; zltNewCurrentFastObjects resize 10;
+	zltNewCurrentFastObjects=profilenamespace getvariable ["zltNewCurrentFastObjects",zltNewCurrentFastObjects];
 	
 	// камера
 	zlt_cameraMode = false;
@@ -1534,14 +1316,6 @@ if (isNil "zlt_eh_keydown") then {
 
 	zlt_cameraTarget = objNull;
 
-	// композиции
-	zlt_is_comp = false;
-
-
-	// позиции 
-	zlt_positions = [];
-	zlt_new_posmode = false;
-	
 	// режим установки 
 	zlt_new_is_plc_mode = false;
 	// handle колбека выключения режима установки 
