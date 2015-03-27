@@ -10,7 +10,7 @@ if (not isDedicated) then {
 };*/
 
 
-#define MAX_TIME_OUT 15
+#define MAX_TIME_OUT 20
 if (isDedicated) exitWith {};
 
 // триггеры в которых должен находиться человек
@@ -55,8 +55,8 @@ while {alive player} do {
 		};
 
 	} else {
-		_timeOutZone = _timeOutZone + 1;
-		format ["У вас %1 сек на возвращение назад в безопасную зону!", 0 max (MAX_TIME_OUT - _timeOutZone)] call zlt_fnc_notify3;
+		_timeOutZone = _timeOutZone + 1.64;
+		format ["У вас %1 сек на возвращение назад в безопасную зону!",[0 max (MAX_TIME_OUT - _timeOutZone),"MM:SS"] call BIS_fnc_secondsToString] call zlt_fnc_notify3;
 		if (_timeOutZone > MAX_TIME_OUT) then {
 			hint "Вас расстрелял боевой вертолет врага!";
 			sleep 1.;
@@ -67,7 +67,7 @@ while {alive player} do {
 	};
 
 
-	sleep 0.64;
+	sleep 1.64;
 
 };
 
