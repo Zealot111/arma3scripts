@@ -21,6 +21,8 @@ zlt_ra_allowed =  _this select 0;
 zlt_ra_restricted =  _this select 1;
 // 3 - true если разрешенные зоны имеют больший приоритет
 zlt_ra_priority =  _this select 2;
+// 4 - true если нужно проверять для воздушной техники тоже
+zlt_ra_air = _this select 3;
 
 
 zlt_fnc_notify3 = {
@@ -30,6 +32,7 @@ zlt_fnc_notify3 = {
 // возвращает True в безопасной зоне
 zlt_check_cond = {
 	_ret = true;
+	if (!zlt_ra_air && {!(isTouchingGround (vehicle player))}) exitWith {_ret};
 	private ["_zones","_return"];
 	if (zlt_ra_priority) then {_zones = [zlt_ra_restricted,zlt_ra_allowed]; _return = [false,true]; } else {_zones = [zlt_ra_allowed, zlt_ra_restricted]; _return = [true, false];};
 	{
