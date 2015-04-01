@@ -5,7 +5,7 @@
 if (not isDedicated) then {
 	waitUntil {not isNull player};
 	if (playerSide == west) then {
-		[[trigger1],[trigger2,trigger3], true] execVM "rearea.sqf";
+		[[trigger1],[trigger2,trigger3], true, false] execVM "rearea.sqf";
 	};
 };*/
 
@@ -16,13 +16,14 @@ if (isDedicated) exitWith {};
 // триггеры в которых должен находиться человек
 
 // 1 - триггеры разрешенной зоны
-zlt_ra_allowed =  _this select 0;
+zlt_ra_allowed =  [_this,0,true,[],[[]]] call bis_fnc_param;
 // 2 - триггеры запрещенной зоны
-zlt_ra_restricted =  _this select 1;
+zlt_ra_restricted =  [_this,1,true,[],[[]]] call bis_fnc_param;
 // 3 - true если разрешенные зоны имеют больший приоритет
-zlt_ra_priority =  _this select 2;
+zlt_ra_priority =  [_this,2,true,[false]] call bis_fnc_param;
 // 4 - true если нужно проверять для воздушной техники тоже
-zlt_ra_air = _this select 3;
+zlt_ra_air = [_this,3,false,[false]] call bis_fnc_param;
+
 
 
 zlt_fnc_notify3 = {
