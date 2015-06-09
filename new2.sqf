@@ -1064,27 +1064,25 @@ zlt_exportPos = {
 zlt_new_block = {
     comment "v.1";
     _class = zlt_cur_class;
-
     if (!isClass (configFile >> "CfgVehicles" >> zlt_cur_class)) exitWith { "Такого класса нет в данной сборке!" call zlt_fnc_notify};
 
     _ctrl = [_this,0,false ] call bis_fnc_param;
     _placemode = [_this, 1, "UP"] call bis_fnc_param;
     PARAM(_fASL,2,zlt_new_asl)
     PR(_pos1)=[0,0,0];
-
     _new = createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"];
 
     //_new = if (_class in zlt_new_globalobjs) then { createVehicle [_class, [0,0,0], [], 0, "CAN_COLLIDE"]; } else { _class createVehiclelocal [0,0,0]; };
     if ( (_new call zlt_objGetStdParams) select P_SIM_DISABLE ) then {
         _new enableSimulation false;
     };
-
     if (!zlt_cameraMode) then {
         _pos1 = player modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
     } else {
         _pos1 = zlt_camera modeltoworld [0, ((boundingboxreal _new select 1 select 0) max (boundingboxreal _new select 1 select 1) ) +1 ,0];
     //  _pos1 = screentoworld [0.5,0.5];
     };
+
     if (_fASL) then {
         _pos1 = ATLtoASL _pos1;
     };
@@ -1103,12 +1101,10 @@ zlt_new_block = {
 
         _lng = 0;
         _cangle = 90;
-
         _specialFix = 0;
         if (_class in zlt_new_specialFixObjs) then {
             _ind2 = zlt_new_specialFixObjs find _class;
             _data = zlt_new_specialFixObjsData select _ind2;
-
             switch (_placemode) do {
                 case ("RIGHT") : { _specialFix = _data select 0; };
                 case ("LEFT") : { _specialFix = _data select 0; };
@@ -1120,7 +1116,6 @@ zlt_new_block = {
 
         };
 
-
         switch (_placemode) do {
             case ("RIGHT") : { _lng = abs(_bboxold select 1 select 0 ) + abs (_bboxnew select 0 select 0) - _specialFix; _cangle = 90;};
             case ("LEFT") : { _lng = abs(_bboxold select 1 select 0 ) + abs (_bboxnew select 0 select 0) - _specialFix; _cangle = 270;};
@@ -1130,13 +1125,11 @@ zlt_new_block = {
             case ("BACK") : { _lng = abs(_bboxold select 1 select 1 ) + abs (_bboxnew select 0 select 1) - _specialFix; _cangle = 180;};
         };
 
-
         switch true do {
             case (_class in  zlt_new_15cmfix) : {_lng = _lng - 0.15;};
             case (_class in  zlt_new_5cmfix) : {_lng = _lng - 0.05;};
             case (_class in  zlt_new_10cmfix) : {_lng = _lng - 0.1;};
         };
-
         if not (_placemode in ["UP","DOWN"]) then {
             _pos1 = [_oldpos, _lng , (_olddir + _cangle)] call BIS_fnc_relPos;
         } else {
@@ -1150,8 +1143,6 @@ zlt_new_block = {
         diag_log format ["NEW BLOCK %1 %2 _olddir=%3 _bboxold=%4 _bboxnew=%5 _lng=%6 _oldpos=%7 _pos1=%8", zlt_newlb, _new, _olddir, _bboxold, _bboxnew, _lng, _oldpos,_pos1  ];
         ((typeof _new) + " блок установлен!") call zlt_fnc_notify;
     };
-    //diag_log ["C",_pos1];
-
     if (_fASL) then {
         _new setposasl _pos1;
     } else {
@@ -1163,7 +1154,10 @@ zlt_new_block = {
         _new setVectorUp [0,0,1];
     };
 
-    PR(_closestBlocks) = [zlt_new_blocks,[_new],{_input0 distanceSqr _x},"ASCEND"] call BIS_fnc_sortBy;
+    PR(_closestBlocks) = (getpos _new ) nearObjects 10;
+    _closestBlocks = _closestBlocks - [_new];
+    _closestBlocks = [+_closestBlocks,[_new],{_input0 distanceSqr _x},"ASCEND"] call BIS_fnc_sortBy;
+    
     if ((count zlt_new_blocks > 0) and {(_closestBlocks select 0) distance _new < 0.05} ) then {
         "Ошибка, слишком близко к другому блоку!" call zlt_fnc_notify;
         deleteVehicle _new;
@@ -1172,7 +1166,6 @@ zlt_new_block = {
         zlt_new_blocks = zlt_new_blocks + [zlt_newlb];
         if (!isNil "zltNewAutoSelect" && {zltNewAutoSelect}) then {if !(_new in zltNewCurSel) then {zltNewCurSel pushBack _new};};
     };
-
 };
 
 zlt_save_comp = {
